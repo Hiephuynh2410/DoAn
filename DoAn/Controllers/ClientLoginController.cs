@@ -3,6 +3,7 @@ using DoAn.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
 using System.Net;
 using System.Text.RegularExpressions;
 
@@ -10,11 +11,11 @@ namespace DoAn.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class HomeController : Controller
+    public class ClientLoginController : Controller
     {
         private readonly DlctContext _dbContext;
 
-        public HomeController(DlctContext dbContext)
+        public ClientLoginController(DlctContext dbContext)
         {
             _dbContext = dbContext;
            
@@ -34,19 +35,50 @@ namespace DoAn.Controllers
 
             if (client == null)
             {
-                return BadRequest("Invalid username or password");
-            }
+                var loginErrorResponse = new
+                {
+                    Message = "Invalid username or password",
+                    Errors = new List<string>
+                    {
+                        "Invalid username"
+                    }
+                };
 
+                return BadRequest(loginErrorResponse);
+            }
+            if(string.IsNullOrWhiteSpace(loginModel.Username) &&  string.IsNullOrWhiteSpace(loginModel.Password))
+            {
+                var nameErrorRespone = new
+                {
+                    Message = "Name and password cannot be empty"
+                };
+                return BadRequest(nameErrorRespone);
+            }
             var passwordHasher = new PasswordHasher<Cilent>();
             var result = passwordHasher.VerifyHashedPassword(null, client.Password, loginModel.Password);
 
             if (result == PasswordVerificationResult.Success)
             {
-                return Ok("Login successful");
+                var loginSuccessResponse = new
+                {
+                    Message = "Login successful"
+                };
+
+                return Ok(loginSuccessResponse);
             }
 
-            return BadRequest("Invalid username or password");
+            var invalidLoginErrorResponse = new
+            {
+                Message = "Invalid username or password",
+                Errors = new List<string>
+                {
+                    "Invalid password"
+                }
+            };
+
+            return BadRequest(invalidLoginErrorResponse);
         }
+
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserRegistrationModel registrationModel)
