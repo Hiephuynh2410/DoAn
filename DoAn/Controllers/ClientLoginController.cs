@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace DoAn.Controllers
@@ -145,7 +147,6 @@ namespace DoAn.Controllers
                     Message = "Registration successful",
                     ClientId = newClient.CilentId
                 };
-
                 return Ok(registrationSuccessResponse);
             }
 
@@ -157,8 +158,85 @@ namespace DoAn.Controllers
                     .Select(e => e.ErrorMessage)
                     .ToList()
             };
-
             return BadRequest(invalidDataErrorResponse);
+        }
+
+        [HttpPut("update/{clientId}")]
+        public async Task<IActionResult> UpdateClient(int clientId, ClientUpdateModel updateModel)
+        {
+            var client = await _dbContext.Cilents.FindAsync(clientId);
+
+            if (client == null)
+            {    
+                return NotFound();
+            }
+
+            if (!string.IsNullOrWhiteSpace(updateModel.Name))
+            {
+                client.Name = updateModel.Name;
+            }
+            if (!string.IsNullOrWhiteSpace(updateModel.Username))
+            {
+                client.Username = updateModel.Username;
+            }
+            if (!string.IsNullOrWhiteSpace(updateModel.Phone))
+            {
+                client.Phone = updateModel.Phone;
+            }
+            if (!string.IsNullOrWhiteSpace(updateModel.Address))
+            {      
+                client.Address = updateModel.Address;
+            }
+            if (!string.IsNullOrWhiteSpace(updateModel.Avatar))
+            {
+                client.Avatar = updateModel.Avatar;
+            }
+            if (!string.IsNullOrWhiteSpace(updateModel.Email))
+            {
+                //kiểm tra email có trùng lặp trong DB không
+                if (_dbContext.Cilents.Any(c => c.Email == updateModel.Email && c.CilentId != clientId))
+                {
+                    var emailExistsResponse = new
+                    {
+                        Message = "Email already exists"
+                    };
+
+                    return Conflict(emailExistsResponse);
+                }
+
+                client.Email = updateModel.Email;
+            }
+
+            _dbContext.Entry(client).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+
+            var updateSuccessResponse = new
+            {
+                Message = "Client updated successfully"
+            };
+
+            return Ok(updateSuccessResponse);
+        }
+
+        [HttpDelete("delete/{clientId}")]
+        public async Task<IActionResult> DeleteClient(int clientId)
+        {
+            var client = await _dbContext.Cilents.FindAsync(clientId);
+
+            if (client == null)
+            {
+                return NotFound();
+            }
+
+            _dbContext.Cilents.Remove(client);
+            await _dbContext.SaveChangesAsync();
+
+            var deleteSuccessResponse = new
+            {
+                Message = "Client deleted successfully"
+            };
+
+            return Ok(deleteSuccessResponse);
         }
 
     }

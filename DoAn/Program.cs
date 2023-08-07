@@ -11,7 +11,6 @@ builder.Services.AddDbContext<DlctContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BookingCatToc")));
 
 
-
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
 // Add services to the container.
@@ -44,6 +43,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=ClientLogin}/{action=Index}/{id?}");
 
 app.Run();
