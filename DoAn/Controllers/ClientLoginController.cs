@@ -83,7 +83,7 @@ namespace DoAn.Controllers
 
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserRegistrationModel registrationModel)
+        public async Task<IActionResult> Register(Cilent registrationModel)
         {
             if (ModelState.IsValid)
             {
