@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace DoAn.Models;
 
@@ -8,11 +9,12 @@ public partial class Cilent
     public int CilentId { get; set; }
 
     public string? Name { get; set; }
-
+    [Required]
+    [RegularExpression(@"^[]A-Za-z0-9!#$%&'*+/=?^_`{|}~\\,.@()<>[-]*$", ErrorMessage = "Invalid username format")]
     public string? Username { get; set; }
 
     public string? Password { get; set; }
-
+   
     public string? Phone { get; set; }
 
     public string? Avatar { get; set; }

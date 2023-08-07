@@ -3,6 +3,7 @@ using DoAn.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Net;
 using System.Text;
 
 namespace DoAn.Controllers
@@ -17,6 +18,22 @@ namespace DoAn.Controllers
             _httpClient = new HttpClient();
         }
 
+        public async Task<IActionResult> Index()
+        {
+            var apiResponse = await _httpClient.GetAsync("https://localhost:7109/api/ClientLogin/");
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                var responseContent = await apiResponse.Content.ReadAsStringAsync();
+                var clients = JsonConvert.DeserializeObject<List<Cilent>>(responseContent);
+
+                return View(clients);
+            }
+            else
+            {
+                // Handle API error
+                return View(); // Return an empty view or an error view
+            }
+        }
         public IActionResult Register()
         {
             return View();
@@ -41,29 +58,14 @@ namespace DoAn.Controllers
             {
                 // Handle registration failure, display error message or validation errors
                 var responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("API Response Content: " + responseContent);
+
+
                 var errorResponse = JsonConvert.DeserializeObject<object>(responseContent);
 
                 ModelState.AddModelError("", errorResponse.ToString());
                 return View(registrationModel);
             }
         }
-
-        public async Task<IActionResult> Index()
-        {
-            var apiResponse = await _httpClient.GetAsync("https://localhost:7109/api/ClientLogin/");
-            if (apiResponse.IsSuccessStatusCode)
-            {
-                var responseContent = await apiResponse.Content.ReadAsStringAsync();
-                var clients = JsonConvert.DeserializeObject<List<Cilent>>(responseContent);
-
-                return View(clients);
-            }
-            else
-            {
-                // Handle API error
-                return View(); // Return an empty view or an error view
-            }
-        }
-        
     }
 }

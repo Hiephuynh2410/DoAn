@@ -98,7 +98,8 @@
                 @Html.DisplayFor(modelItem => item.Role.RoleId)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.CilentId">Edit</a> |
+                    <a href="@Url.Action("Update", "Client", new { clientId = item.CilentId })">Edit</a>|
+
                 <a asp-action="Details" asp-route-id="@item.CilentId">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.CilentId">Delete</a>
             </td>

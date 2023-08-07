@@ -97,19 +97,27 @@ namespace DoAn.Controllers
 
                     return Conflict(emailExistsResponse); 
                 }
-                if(string.IsNullOrWhiteSpace(registrationModel.Name) 
-                    || string.IsNullOrWhiteSpace(registrationModel.Username) 
-                    || string.IsNullOrWhiteSpace(registrationModel.Password) 
-                    || string.IsNullOrWhiteSpace(registrationModel.Phone) 
+                if(string.IsNullOrWhiteSpace(registrationModel.Name)
+                    || string.IsNullOrWhiteSpace(registrationModel.Username)
+                    || string.IsNullOrWhiteSpace(registrationModel.Password)
+                    || string.IsNullOrWhiteSpace(registrationModel.Phone)
                     || string.IsNullOrWhiteSpace(registrationModel.Email))
-                {
+{
                     var nameErrorRespone = new
                     {
-                        Message = "Name cannot be empty"
+                        Message = "Name, username, password, phone, and email cannot be empty"
                     };
                     return BadRequest(nameErrorRespone);
                 }
-                if(!Regex.IsMatch(registrationModel.Phone, @"^(?:\+84|0)\d{9,10}$"))
+                if (registrationModel.Name.Length > 100) // Adjust the maximum length as per your database column
+                {
+                    var nameErrorRespone = new
+                    {
+                        Message = "Name is too long"
+                    };
+                    return BadRequest(nameErrorRespone);
+                }
+                if (!Regex.IsMatch(registrationModel.Phone, @"^(?:\+84|0)\d{9,10}$"))
                 {
                     var phoneErrorRespone = new
                     {
@@ -162,7 +170,7 @@ namespace DoAn.Controllers
         }
 
         [HttpPut("update/{clientId}")]
-        public async Task<IActionResult> UpdateClient(int clientId, ClientUpdateModel updateModel)
+        public async Task<IActionResult> UpdateClient(int clientId, Cilent updateModel)
         {
             var client = await _dbContext.Cilents.FindAsync(clientId);
 
