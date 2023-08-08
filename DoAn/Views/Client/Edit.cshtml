@@ -44,6 +44,11 @@
     <div class="form-group">
         <label for="Avatar">Avatar:</label>
         @Html.TextBoxFor(model => model.Avatar, new { @class = "form-control" })
+        <div class="img-wrap" style="align-items:center">
+            <input type="file" name="fileUpload" id="fileUpload" accept="image/*" style="display:none;" />
+            <input type="button" id="btnUpload" value="Chọn ảnh" class="btn btn-danger" />
+            <img style="width:44%" class="wrapper-img" src="" id="pictureUpload" />
+        </div>
     </div>
 
     <div class="form-group">
@@ -88,4 +93,41 @@
 
     <button type="submit" class="btn btn-primary">Update</button>
     <a href="@Url.Action("Index", "Client")" class="btn btn-secondary">Cancel</a>
+}
+
+@*nút thêm ảnh*@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+@section upload
+    {
+    <script>
+        $(function () {
+            $('#btnUpload').click(function () {
+                $('#fileUpload').trigger('click');
+            });
+        });
+        $('#fileUpload').change(function () {
+            if (window.FormData !== undefined) {
+                var fileUpload = $('#fileUpload').get(0);
+                var files = fileUpload.files;
+                var formData = new FormData();
+                formData.append('file', files[0]);
+
+                $.ajax(
+                    {
+                        type: 'POST',
+                        url: '/Client/ProcessUpload',
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (urlImage) {
+                            $('#pictureUpload').attr('src', urlImage);
+                            $('#Avatar').val(urlImage);
+                        },
+                        error: function (err) {
+                            alert('Error ', err.statusText);
+                        }
+                    });
+            }
+        });
+    </script>
 }

@@ -16,7 +16,29 @@ namespace DoAn.Controllers
         {
             _httpClient = new HttpClient();
         }
-        //View List
+
+        //Nút thêm ảnh
+        [HttpPost]
+        public IActionResult ProcessUpload(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return Json("No file uploaded");
+            }
+
+            string fileName = Path.GetFileName(file.FileName);
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyTo(stream);
+            }
+
+            return Json("/images/" + fileName);
+        }
+
+
+    //View List
         public async Task<IActionResult> Index()
         {
             var apiResponse = await _httpClient.GetAsync("https://localhost:7109/api/ClientLogin/");
