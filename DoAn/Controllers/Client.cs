@@ -17,7 +17,7 @@ namespace DoAn.Controllers
             _httpClient = new HttpClient();
         }
 
-        //Nút thêm ảnh
+        //button choose Img
         [HttpPost]
         public IActionResult ProcessUpload(IFormFile file)
         {
@@ -36,9 +36,7 @@ namespace DoAn.Controllers
 
             return Json("/images/" + fileName);
         }
-
-
-    //View List
+        //View List
         public async Task<IActionResult> Index()
         {
             var apiResponse = await _httpClient.GetAsync("https://localhost:7109/api/ClientLogin/");
@@ -54,7 +52,7 @@ namespace DoAn.Controllers
                 return View();
             }
         }
-        //Đăng kí
+        //register
         public IActionResult Register()
         {
             return View();
@@ -85,7 +83,7 @@ namespace DoAn.Controllers
                 return View(registrationModel);
             }
         }
-        //Xóa
+        //Delete
         public async Task<IActionResult> Delete(int clientId)
         {
             var apiUrl = $"https://localhost:7109/api/ClientLogin/delete/{clientId}";
@@ -107,7 +105,6 @@ namespace DoAn.Controllers
                 return RedirectToAction("Index"); // You can choose to handle the error scenario differently
             }
         }
-
         //edit
         [HttpGet]
         public IActionResult Edit(int clientId)
@@ -140,5 +137,26 @@ namespace DoAn.Controllers
                 return View(updateModel);
             }
         }
+        //detail
+        [HttpGet]
+        public async Task<IActionResult> Detail(int clientId)
+        {
+            var apiUrl = $"https://localhost:7109/api/ClientLogin/detail/{clientId}";
+
+            var apiResponse = await _httpClient.GetAsync(apiUrl);
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                var responseContent = await apiResponse.Content.ReadAsStringAsync();
+                var clientDetail = JsonConvert.DeserializeObject<Cilent>(responseContent);
+
+                return View(clientDetail);
+            }
+            else
+            {
+                // Handle the error scenario
+                return RedirectToAction("Index"); // You can choose to handle the error differently
+            }
+        }
+
     }
 }

@@ -240,5 +240,35 @@ namespace DoAn.ApiController
 
             return Ok(deleteSuccessResponse);
         }
+
+        [HttpGet("detail/{clientId}")]
+        public async Task<IActionResult> GetClientDetail(int clientId)
+        {
+            var client = await _dbContext.Cilents.FindAsync(clientId);
+
+            if (client == null)
+            {
+                return NotFound();
+            }
+
+            var clientDetail = new
+            {
+                client.CilentId,
+                client.Name,
+                client.Username,
+                client.Phone,
+                client.Address,
+                client.Avatar,
+                client.Email,
+                client.Status,
+                client.CreatedAt,
+                client.UpdatedAt,
+                client.CreatedBy,
+                client.UpdatedBy
+            };
+
+            return Json(clientDetail); 
+        }
+
     }
 }
