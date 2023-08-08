@@ -28,7 +28,7 @@ namespace DoAn.Controllers
             var clients = _dbContext.Cilents.ToList();
             return Ok(clients);
         }
-        [HttpPost("login")]
+        [HttpGet("login")]
         public async Task<IActionResult> Login(LoginModel loginModel)
         {
             var client = await _dbContext.Cilents.FirstOrDefaultAsync(c => c.Username == loginModel.Username);
