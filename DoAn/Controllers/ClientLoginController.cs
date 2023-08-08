@@ -22,14 +22,12 @@ namespace DoAn.Controllers
             _dbContext = dbContext;
            
         }
-
         [HttpGet]
         public async Task<IActionResult> GetAllClient()
         {
             var clients = _dbContext.Cilents.ToList();
             return Ok(clients);
         }
-
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginModel loginModel)
         {
@@ -56,9 +54,9 @@ namespace DoAn.Controllers
                 };
                 return BadRequest(nameErrorRespone);
             }
+
             var passwordHasher = new PasswordHasher<Cilent>();
             var result = passwordHasher.VerifyHashedPassword(null, client.Password, loginModel.Password);
-
             if (result == PasswordVerificationResult.Success)
             {
                 var loginSuccessResponse = new
@@ -80,9 +78,7 @@ namespace DoAn.Controllers
 
             return BadRequest(invalidLoginErrorResponse);
         }
-
-
-        [HttpPost("register")]
+        [HttpGet("register")]
         public async Task<IActionResult> Register(Cilent registrationModel)
         {
             if (ModelState.IsValid)
@@ -109,7 +105,7 @@ namespace DoAn.Controllers
                     };
                     return BadRequest(nameErrorRespone);
                 }
-                if (registrationModel.Name.Length > 100) // Adjust the maximum length as per your database column
+                if (registrationModel.Name.Length > 100)
                 {
                     var nameErrorRespone = new
                     {
@@ -168,7 +164,6 @@ namespace DoAn.Controllers
             };
             return BadRequest(invalidDataErrorResponse);
         }
-
         [HttpPut("update/{clientId}")]
         public async Task<IActionResult> UpdateClient(int clientId, Cilent updateModel)
         {
@@ -225,7 +220,6 @@ namespace DoAn.Controllers
 
             return Ok(updateSuccessResponse);
         }
-
         [HttpDelete("delete/{clientId}")]
         public async Task<IActionResult> DeleteClient(int clientId)
         {
@@ -246,6 +240,7 @@ namespace DoAn.Controllers
 
             return Ok(deleteSuccessResponse);
         }
+
 
     }
 }
