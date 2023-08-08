@@ -88,42 +88,42 @@ namespace DoAn.Controllers
             }
         }
         //edit
-        //public ActionResult Edit(int id)
-        //{
-        //    var client = db.Cilents.FirstOrDefault(m => m.CilentId == id);
-        //    if (client == null)
-        //    {
-        //        return View("_NotFound");
-        //    }
-        //    return View(client);
-        //}
+        public ActionResult Edit(int id)
+        {
+            var client = db.Cilents.FirstOrDefault(m => m.CilentId == id);
+            if (client == null)
+            {
+                return View("_NotFound");
+            } 
+            return View(client);
+        }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit(int id, Cilent updatedClient)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var client = db.Cilents.FirstOrDefault(m => m.CilentId == id);
-        //        if (client == null)
-        //        {
-        //            return View("_NotFound");
-        //        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(int id, Cilent updatedClient)
+        {
+            if (ModelState.IsValid)
+            {
+                var client = db.Cilents.FirstOrDefault(m => m.CilentId == id);
+                if (client == null)
+                {
+                    return View("_NotFound");
+                }
 
-        //        client.Name = updatedClient.Name;
-        //        client.Username = updatedClient.Username;
-        //        client.Phone = updatedClient.Phone;
-        //        client.Address = updatedClient.Address;
-        //        client.Email = updatedClient.Email;
-        //        client.Avatar = updatedClient.Avatar;
+                client.Name = updatedClient.Name;
+                client.Username = updatedClient.Username;
+                client.Phone = updatedClient.Phone;
+                client.Address = updatedClient.Address;
+                client.Email = updatedClient.Email;
+                client.Avatar = updatedClient.Avatar;
 
-        //        db.SaveChanges();
-        //        return RedirectToAction("Index");
-        //    }
-        //    else
-        //    {
-        //        return View(updatedClient);
-        //    }
-        //}
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(updatedClient);
+            }
+        }
     }
 }

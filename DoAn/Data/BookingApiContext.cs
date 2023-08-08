@@ -8,7 +8,8 @@ namespace DoAn.Data
         {
 
         }
-
         public DbSet<Cilent> clients { get; set;}
+        public DbSet<Product> products { get; set; }
+
     }
 }

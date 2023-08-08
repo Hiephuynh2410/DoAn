@@ -9,7 +9,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace DoAn.Controllers
+namespace DoAn.ApiController
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -20,7 +20,7 @@ namespace DoAn.Controllers
         public ClientLoginController(DlctContext dbContext)
         {
             _dbContext = dbContext;
-           
+
         }
         [HttpGet]
         public async Task<IActionResult> GetAllClient()
@@ -46,7 +46,7 @@ namespace DoAn.Controllers
 
                 return BadRequest(loginErrorResponse);
             }
-            if(string.IsNullOrWhiteSpace(loginModel.Username) &&  string.IsNullOrWhiteSpace(loginModel.Password))
+            if (string.IsNullOrWhiteSpace(loginModel.Username) && string.IsNullOrWhiteSpace(loginModel.Password))
             {
                 var nameErrorRespone = new
                 {
@@ -91,14 +91,14 @@ namespace DoAn.Controllers
                         Message = "Email already exists"
                     };
 
-                    return Conflict(emailExistsResponse); 
+                    return Conflict(emailExistsResponse);
                 }
-                if(string.IsNullOrWhiteSpace(registrationModel.Name)
+                if (string.IsNullOrWhiteSpace(registrationModel.Name)
                     || string.IsNullOrWhiteSpace(registrationModel.Username)
                     || string.IsNullOrWhiteSpace(registrationModel.Password)
                     || string.IsNullOrWhiteSpace(registrationModel.Phone)
                     || string.IsNullOrWhiteSpace(registrationModel.Email))
-{
+                {
                     var nameErrorRespone = new
                     {
                         Message = "Name, username, password, phone, and email cannot be empty"
@@ -121,7 +121,7 @@ namespace DoAn.Controllers
                     };
                     return BadRequest(phoneErrorRespone);
                 }
-                if(!Regex.IsMatch(registrationModel.Username, "^[]A-Za-z0-9!#$%&'*+/=?^_`{|}~\\,.@()<>[-]*$"))
+                if (!Regex.IsMatch(registrationModel.Username, "^[]A-Za-z0-9!#$%&'*+/=?^_`{|}~\\,.@()<>[-]*$"))
                 {
                     var usernameErroeRespone = new
                     {
@@ -136,7 +136,7 @@ namespace DoAn.Controllers
                 {
                     Name = registrationModel.Name,
                     Username = registrationModel.Username,
-                    Password = hashedPassword, 
+                    Password = hashedPassword,
                     Phone = registrationModel.Phone,
                     Address = registrationModel.Address,
                     Avatar = registrationModel.Avatar,
@@ -170,7 +170,7 @@ namespace DoAn.Controllers
             var client = await _dbContext.Cilents.FindAsync(clientId);
 
             if (client == null)
-            {    
+            {
                 return NotFound();
             }
 
@@ -187,7 +187,7 @@ namespace DoAn.Controllers
                 client.Phone = updateModel.Phone;
             }
             if (!string.IsNullOrWhiteSpace(updateModel.Address))
-            {      
+            {
                 client.Address = updateModel.Address;
             }
             if (!string.IsNullOrWhiteSpace(updateModel.Avatar))
@@ -240,7 +240,5 @@ namespace DoAn.Controllers
 
             return Ok(deleteSuccessResponse);
         }
-
-
     }
 }
