@@ -104,8 +104,8 @@
                 @Html.DisplayFor(modelItem => item.Role.RoleId)
             </td>
             <td>
-                @*@Html.ActionLink("Edit", "Edit", new { id = item.CilentId })*@
-                    <a asp-action="Edit" asp-route-clientId="@item.CilentId">Edit</a>
+                @Html.ActionLink("Edit", "Edit", new { id = item.CilentId })
+                    @*<a asp-action="Edit" asp-route-clientId="@item.CilentId">Edit</a>*@
 
                 <a asp-action="Details" asp-route-id="@item.CilentId">Details</a> |
                 <a asp-action="Delete" asp-route-clientId="@item.CilentId">Delete</a>

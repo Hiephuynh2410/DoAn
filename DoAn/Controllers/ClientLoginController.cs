@@ -78,7 +78,7 @@ namespace DoAn.Controllers
 
             return BadRequest(invalidLoginErrorResponse);
         }
-        [HttpGet("register")]
+        [HttpPost("register")]
         public async Task<IActionResult> Register(Cilent registrationModel)
         {
             if (ModelState.IsValid)
