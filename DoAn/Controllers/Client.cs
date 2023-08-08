@@ -16,8 +16,6 @@ namespace DoAn.Controllers
         {
             _httpClient = new HttpClient();
         }
-
-
         //View List
         public async Task<IActionResult> Index()
         {
@@ -87,6 +85,7 @@ namespace DoAn.Controllers
                 return RedirectToAction("Index"); // You can choose to handle the error scenario differently
             }
         }
+
         //edit
         [HttpGet]
         public IActionResult Edit(int clientId)

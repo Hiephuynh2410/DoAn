@@ -20,13 +20,26 @@
 
     <div class="form-group">
         <label for="Password">Password:</label>
-        @Html.PasswordFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.PasswordFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" }})
     </div>
 
     <div class="form-group">
-        <label for="Phone">Phone:</label>
-        @Html.TextBoxFor(model => model.Phone, new { @class = "form-control" })
+        Phone:
+        <input type="tel" id="Phone" name="Phone" value="@Model.Phone" class="form-control" />
     </div>
+
+    //Xử lí không cho người dùng nhập chữ vào số đt
+    @section scripts {
+        <script>
+            $(document).ready(function () {
+                $('#Phone').on('input', function () {
+                    var phoneValue = $(this).val();
+                    var numericValue = phoneValue.replace(/[^0-9]/g, ''); 
+                    $(this).val(numericValue);
+                });
+            });
+        </script>
+    }
 
     <div class="form-group">
         <label for="Avatar">Avatar:</label>
