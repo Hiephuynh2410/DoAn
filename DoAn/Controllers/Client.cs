@@ -88,41 +88,35 @@ namespace DoAn.Controllers
             }
         }
         //edit
-        public ActionResult Edit(int id)
+        [HttpGet]
+        public IActionResult Edit(int clientId)
         {
-            var client = db.Cilents.FirstOrDefault(m => m.CilentId == id);
-            if (client == null)
-            {
-                return View("_NotFound");
-            } 
+            var client = new Cilent { CilentId = clientId };
             return View(client);
         }
-
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, Cilent updatedClient)
+        public async Task<IActionResult> Edit(int clientId, Cilent updateModel)
         {
-            if (ModelState.IsValid)
+            var apiUrl = $"https://localhost:7109/api/ClientLogin/update/{clientId}";
+
+            var json = JsonConvert.SerializeObject(updateModel);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync(apiUrl, content);
+
+            if (response.IsSuccessStatusCode)
             {
-                var client = db.Cilents.FirstOrDefault(m => m.CilentId == id);
-                if (client == null)
-                {
-                    return View("_NotFound");
-                }
-
-                client.Name = updatedClient.Name;
-                client.Username = updatedClient.Username;
-                client.Phone = updatedClient.Phone;
-                client.Address = updatedClient.Address;
-                client.Email = updatedClient.Email;
-                client.Avatar = updatedClient.Avatar;
-
-                db.SaveChanges();
                 return RedirectToAction("Index");
             }
             else
             {
-                return View(updatedClient);
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("API Response Content: " + responseContent);
+
+                var errorResponse = JsonConvert.DeserializeObject<object>(responseContent);
+
+                ModelState.AddModelError("", errorResponse.ToString());
+                return View(updateModel);
             }
         }
     }

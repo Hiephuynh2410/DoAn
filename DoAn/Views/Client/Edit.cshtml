@@ -4,97 +4,75 @@
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h2>Edit</h2>
-
-<form asp-action="Edit" asp-route-clientId="@Model.CilentId" method="post">
-    @Html.AntiForgeryToken()
-
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <div class="col-md-10">
-            <input asp-for="Name" class="form-control" />
-            <span asp-validation-for="Name" class="text-danger"></span>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Username"></label>
-        <div class="col-md-10">
-            <input asp-for="Username" class="form-control" />
-            <span asp-validation-for="Username" class="text-danger"></span>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Phone"></label>
-        <div class="col-md-10">
-            <input asp-for="Phone" class="form-control" />
-            <span asp-validation-for="Phone" class="text-danger"></span>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <div class="col-md-10">
-            <button type="submit" class="btn btn-primary">Save</button>
-        </div>
-    </div>
-</form>
-
-<div class="button-86">
-    <a asp-action="Index">Back to List</a>
-</div>
-@*
-<h2>Edit</h2>
-
 @using (Html.BeginForm())
 {
-    @Html.AntiForgeryToken()
-
-<div style="text-align:center">
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     @Html.HiddenFor(model => model.CilentId)
 
     <div class="form-group">
-        <strong>
-           name
-        </strong>
-        <div class="col-md-10" style="width: 100%; padding: 0 12%;">
-            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Name    , "", new { @class = "text-danger" })
-        </div>
+        <label for="Name">Name:</label>
+        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
     </div>
 
     <div class="form-group">
-        <strong>
-            Username
-        </strong>
-        <div class="col-md-10" style="width: 100%; padding: 0 12%;">
-            @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
-        </div>
-       
+        <label for="Username">Username:</label>
+        @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control" } })
     </div>
-        <div class="form-group">
-            <strong>
-                Username
-            </strong>
-            <div class="col-md-10" style="width: 100%; padding: 0 12%;">
-                @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
-            </div>
 
-        </div>
     <div class="form-group">
-        <div class="col-md-offset-2 col-md-10" style="width: 100%; padding: 0 12%; margin:1rem 0">
-            <input type="submit" value="Save" class="btn btn-primary" />
-        </div>
+        <label for="Password">Password:</label>
+        @Html.PasswordFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
     </div>
 
-</div>
+    <div class="form-group">
+        <label for="Phone">Phone:</label>
+        @Html.TextBoxFor(model => model.Phone, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label for="Avatar">Avatar:</label>
+        @Html.TextBoxFor(model => model.Avatar, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label for="Address">Address:</label>
+        @Html.TextBoxFor(model => model.Address, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label for="Email">Email:</label>
+        @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label for="Status">Status:</label>
+        @Html.TextBoxFor(model => model.Status, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label for="CreatedAt">Created At:</label>
+        @Html.TextBoxFor(model => model.CreatedAt, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label for="UpdatedAt">Updated At:</label>
+        @Html.TextBoxFor(model => model.UpdatedAt, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label for="CreatedBy">Created By:</label>
+        @Html.TextBoxFor(model => model.CreatedBy, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label for="UpdatedBy">Updated By:</label>
+        @Html.TextBoxFor(model => model.UpdatedBy, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label for="Role">Role:</label>
+        @Html.TextBoxFor(model => model.Role.RoleId, new { @class = "form-control" })
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+    <a href="@Url.Action("Index", "Client")" class="btn btn-secondary">Cancel</a>
 }
-
-<div class="button-86">
-    @Html.ActionLink("Back to List", "Index")
-</div>
-*@
