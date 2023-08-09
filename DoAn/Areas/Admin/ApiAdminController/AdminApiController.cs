@@ -4,31 +4,29 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 
-namespace DoAn.ApiController
+namespace DoAn.Areas.Admin.ApiAdminController
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ClientLoginController : Controller
+    public class AdminApiController : Controller
     {
         private readonly DlctContext _dbContext;
-        public ClientLoginController(DlctContext dbContext)
+        public AdminApiController(DlctContext dbContext)
         {
             _dbContext = dbContext;
-
         }
-
         [HttpGet]
-        public async Task<IActionResult> GetAllClient()
+        public async Task<IActionResult> GetAllStaff()
         {
-            var clients = _dbContext.Cilents.ToList();
-            return Ok(clients);
+            var staffs = _dbContext.Staff.ToList();
+            return Ok(staffs);
         }
 
         [HttpGet("login")]
-        public async Task<IActionResult> Login(Cilent loginModel)
+        public async Task<IActionResult> Login(Staff loginModel)
         {
-            var client = await _dbContext.Cilents.FirstOrDefaultAsync(c => c.Username == loginModel.Username);
-            if (client == null)
+            var staff = await _dbContext.Staff.FirstOrDefaultAsync(c => c.Username == loginModel.Username);
+            if (staff == null)
             {
                 var loginErrorResponse = new
                 {
@@ -50,8 +48,8 @@ namespace DoAn.ApiController
                 return BadRequest(nameErrorRespone);
             }
 
-            var passwordHasher = new PasswordHasher<Cilent>();
-            var result = passwordHasher.VerifyHashedPassword(null, client.Password, loginModel.Password);
+            var passwordHasher = new PasswordHasher<Staff>();
+            var result = passwordHasher.VerifyHashedPassword(null, staff.Password, loginModel.Password);
             if (result == PasswordVerificationResult.Success)
             {
                 var loginSuccessResponse = new
@@ -75,12 +73,12 @@ namespace DoAn.ApiController
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(Cilent registrationModel)
+        public async Task<IActionResult> RegisterStaff(Staff registrationModel)
         {
             if (ModelState.IsValid)
             {
                 //kiểm tra email có trùng lặp trong DB không
-                if (_dbContext.Cilents.Any(c => c.Email == registrationModel.Email))
+                if (_dbContext.Staff.Any(c => c.Email == registrationModel.Email))
                 {
                     var emailExistsResponse = new
                     {
@@ -126,10 +124,10 @@ namespace DoAn.ApiController
                     };
                     return BadRequest(usernameErroeRespone);
                 }
-                var passwordHasher = new PasswordHasher<Cilent>();
+                var passwordHasher = new PasswordHasher<Staff>();
                 var hashedPassword = passwordHasher.HashPassword(null, registrationModel.Password);
 
-                var newClient = new Cilent
+                var newStaff = new Staff
                 {
                     Name = registrationModel.Name,
                     Username = registrationModel.Username,
@@ -140,13 +138,13 @@ namespace DoAn.ApiController
                     Email = registrationModel.Email,
                 };
 
-                _dbContext.Cilents.Add(newClient);
+                _dbContext.Staff.Add(newStaff);
                 await _dbContext.SaveChangesAsync();
 
                 var registrationSuccessResponse = new
                 {
                     Message = "Registration successful",
-                    ClientId = newClient.CilentId
+                    ClientId = newStaff.StaffId
                 };
                 return Ok(registrationSuccessResponse);
             }
@@ -162,40 +160,40 @@ namespace DoAn.ApiController
             return BadRequest(invalidDataErrorResponse);
         }
 
-        [HttpPut("update/{clientId}")]
-        public async Task<IActionResult> UpdateClient(int clientId, Cilent updateModel)
+        [HttpPut("update/{staffId}")]
+        public async Task<IActionResult> UpdateStaff(int staffId, Staff updateModel)
         {
-            var client = await _dbContext.Cilents.FindAsync(clientId);
+            var Staff = await _dbContext.Staff.FindAsync(staffId);
 
-            if (client == null)
+            if (Staff == null)
             {
                 return NotFound();
             }
 
             if (!string.IsNullOrWhiteSpace(updateModel.Name))
             {
-                client.Name = updateModel.Name;
+                Staff.Name = updateModel.Name;
             }
             if (!string.IsNullOrWhiteSpace(updateModel.Username))
             {
-                client.Username = updateModel.Username;
+                Staff.Username = updateModel.Username;
             }
             if (!string.IsNullOrWhiteSpace(updateModel.Phone))
             {
-                client.Phone = updateModel.Phone;
+                Staff.Phone = updateModel.Phone;
             }
             if (!string.IsNullOrWhiteSpace(updateModel.Address))
             {
-                client.Address = updateModel.Address;
+                Staff.Address = updateModel.Address;
             }
             if (!string.IsNullOrWhiteSpace(updateModel.Avatar))
             {
-                client.Avatar = updateModel.Avatar;
+                Staff.Avatar = updateModel.Avatar;
             }
             if (!string.IsNullOrWhiteSpace(updateModel.Email))
             {
                 //kiểm tra email có trùng lặp trong DB không
-                if (_dbContext.Cilents.Any(c => c.Email == updateModel.Email && c.CilentId != clientId))
+                if (_dbContext.Staff.Any(c => c.Email == updateModel.Email && c.StaffId != staffId))
                 {
                     var emailExistsResponse = new
                     {
@@ -205,68 +203,67 @@ namespace DoAn.ApiController
                     return Conflict(emailExistsResponse);
                 }
 
-                client.Email = updateModel.Email;
+                Staff.Email = updateModel.Email;
             }
 
-            _dbContext.Entry(client).State = EntityState.Modified;
+            _dbContext.Entry(Staff).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
 
             var updateSuccessResponse = new
             {
-                Message = "Client updated successfully"
+                Message = "Staff updated successfully"
             };
 
             return Ok(updateSuccessResponse);
         }
 
-        [HttpDelete("delete/{clientId}")]
-        public async Task<IActionResult> DeleteClient(int clientId)
+        [HttpDelete("delete/{staffId}")]
+        public async Task<IActionResult> DeleteStaff(int staffId)
         {
-            var client = await _dbContext.Cilents.FindAsync(clientId);
+            var staff = await _dbContext.Staff.FindAsync(staffId);
 
-            if (client == null)
+            if (staff == null)
             {
                 return NotFound();
             }
 
-            _dbContext.Cilents.Remove(client);
+            _dbContext.Staff.Remove(staff);
             await _dbContext.SaveChangesAsync();
 
             var deleteSuccessResponse = new
             {
-                Message = "Client deleted successfully"
+                Message = "staff deleted successfully"
             };
 
             return Ok(deleteSuccessResponse);
         }
 
-        [HttpGet("detail/{clientId}")]
-        public async Task<IActionResult> GetClientDetail(int clientId)
+        [HttpGet("detail/{staffId}")]
+        public async Task<IActionResult> GetClientDetail(int staffId)
         {
-            var client = await _dbContext.Cilents.FindAsync(clientId);
+            var staff = await _dbContext.Staff.FindAsync(staffId);
 
-            if (client == null)
+            if (staff == null)
             {
                 return NotFound();
             }
-
-            var clientDetail = new
+            var stafftDetail = new
             {
-                client.CilentId,
-                client.Name,
-                client.Username,
-                client.Phone,
-                client.Address,
-                client.Avatar,
-                client.Email,
-                client.Status,
-                client.CreatedAt,
-                client.UpdatedAt,
-                client.CreatedBy,
-                client.UpdatedBy
+                staff.StaffId,
+                staff.Name,
+                staff.Username,
+                staff.Phone,
+                staff.Address,
+                staff.Avatar,
+                staff.Email,
+                staff.Status,
+                staff.CreatedAt,
+                staff.UpdatedAt,
+                staff.CreatedBy,
+                staff.UpdatedBy
             };
-
-            return Json(clientDetail); 
+            return Json(stafftDetail);
         }
+
     }
 }

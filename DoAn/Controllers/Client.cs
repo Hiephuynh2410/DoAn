@@ -1,23 +1,21 @@
-﻿using DoAn.Data;
-using DoAn.Models;
+﻿using DoAn.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Text;
-using Microsoft.AspNetCore.Mvc;
 
 namespace DoAn.Controllers
 {
     public class Client : Controller
     {
-
         private readonly HttpClient _httpClient;
         DlctContext db = new DlctContext();
         public Client()
         {
             _httpClient = new HttpClient();
         }
-
-        //button choose Img
+        //button choose image
         [HttpPost]
         public IActionResult ProcessUpload(IFormFile file)
         {
@@ -35,6 +33,34 @@ namespace DoAn.Controllers
             }
 
             return Json("/images/" + fileName);
+        }
+        //Login
+        [HttpGet]
+        public async Task<IActionResult> Login(Cilent loginModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("Login", loginModel);
+            }
+
+            var client = await db.Cilents.FirstOrDefaultAsync(c => c.Username == loginModel.Username);
+
+            if (client == null)
+            {
+                ModelState.AddModelError("", "Invalid username or password");
+                return View("Login", loginModel);
+            }
+
+            var passwordHasher = new PasswordHasher<Cilent>();
+            var result = passwordHasher.VerifyHashedPassword(client, client.Password, loginModel.Password);
+
+            if (result == PasswordVerificationResult.Success)
+            {
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", "Invalid username or password");
+            return View("Login", loginModel);
         }
         //View List
         public async Task<IActionResult> Index()
@@ -60,7 +86,7 @@ namespace DoAn.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(Cilent registrationModel)
         {
-            var apiUrl = "https://localhost:7109/api/ClientLogin/Register"; 
+            var apiUrl = "https://localhost:7109/api/ClientLogin/Register";
 
             var json = JsonConvert.SerializeObject(registrationModel);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -157,6 +183,5 @@ namespace DoAn.Controllers
                 return RedirectToAction("Index"); // You can choose to handle the error differently
             }
         }
-
     }
 }
