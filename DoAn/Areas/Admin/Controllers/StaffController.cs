@@ -111,5 +111,78 @@ namespace DoAn.Areas.Admin.Controllers
                 return View(registrationModel);
             }
         }
+        //Delete
+        public async Task<IActionResult> Delete(int staffId)
+        {
+            var apiUrl = $"https://localhost:7109/api/AdminApi/delete/{staffId}";
+
+            var response = await _httpClient.DeleteAsync(apiUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index"); // Redirect to the list of clients after successful deletion
+            }
+            else
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("API Response Content: " + responseContent);
+
+                var errorResponse = JsonConvert.DeserializeObject<object>(responseContent);
+
+                ModelState.AddModelError("", errorResponse.ToString());
+                return RedirectToAction("Index"); // You can choose to handle the error scenario differently
+            }
+        }
+        //edit
+        [HttpGet]
+        public IActionResult Edit(int staffId)
+        {
+            var staff = new Staff { StaffId = staffId };
+            return View(staff);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(int staffId, Staff updateModel)
+        {
+            var apiUrl = $"https://localhost:7109/api/AdminApi/update/{staffId}";
+
+            var json = JsonConvert.SerializeObject(updateModel);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync(apiUrl, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("API Response Content: " + responseContent);
+
+                var errorResponse = JsonConvert.DeserializeObject<object>(responseContent);
+
+                ModelState.AddModelError("", errorResponse.ToString());
+                return View(updateModel);
+            }
+        }
+        //detail
+        [HttpGet]
+        public async Task<IActionResult> Detail(int staffId)
+        {
+            var apiUrl = $"https://localhost:7109/api/AdminApi/detail/{staffId}";
+
+            var apiResponse = await _httpClient.GetAsync(apiUrl);
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                var responseContent = await apiResponse.Content.ReadAsStringAsync();
+                var StaffDetail = JsonConvert.DeserializeObject<Staff>(responseContent);
+
+                return View(StaffDetail);
+            }
+            else
+            {
+                return RedirectToAction("Index"); 
+            }
+        }
     }
 }

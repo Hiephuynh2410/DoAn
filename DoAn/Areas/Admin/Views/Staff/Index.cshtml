@@ -74,7 +74,7 @@
                 @Html.DisplayFor(modelItem => item.Phone)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Avatar)
+                <img src="@item.Avatar" alt="error image"/>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Address)
@@ -104,9 +104,9 @@
                 @Html.DisplayFor(modelItem => item.Role.RoleId)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.StaffId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.StaffId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.StaffId">Delete</a>
+                <a href="@Url.Action("Edit", "Staff", new { staffId = @item.StaffId})">Edit</a>|
+                <a href="@Url.Action("Detail", "Staff", new { staffId = @item.StaffId})">Detail</a>|
+                <a href="@Url.Action("Delete", "Staff", new { staffId = @item.StaffId})">Delete</a>
             </td>
         </tr>
 }
