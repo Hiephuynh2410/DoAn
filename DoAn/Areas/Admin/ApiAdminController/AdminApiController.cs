@@ -19,6 +19,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
         public async Task<IActionResult> GetAllStaff()
         {
             var staffs = _dbContext.Staff.ToList();
+            
             return Ok(staffs);
         }
 
@@ -126,7 +127,6 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 }
                 var passwordHasher = new PasswordHasher<Staff>();
                 var hashedPassword = passwordHasher.HashPassword(null, registrationModel.Password);
-
                 var newStaff = new Staff
                 {
                     Name = registrationModel.Name,
@@ -136,6 +136,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     Address = registrationModel.Address,
                     Avatar = registrationModel.Avatar,
                     Email = registrationModel.Email,
+                    BranchId = registrationModel.BranchId
                 };
 
                 _dbContext.Staff.Add(newStaff);
@@ -144,6 +145,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 var registrationSuccessResponse = new
                 {
                     Message = "Registration successful",
+
                     ClientId = newStaff.StaffId
                 };
                 return Ok(registrationSuccessResponse);

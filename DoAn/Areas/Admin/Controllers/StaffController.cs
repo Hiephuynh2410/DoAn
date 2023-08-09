@@ -1,6 +1,7 @@
 ﻿using DoAn.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Text;
@@ -16,6 +17,7 @@ namespace DoAn.Areas.Admin.Controllers
         {
             _httpClient = new HttpClient();
         }
+
         //button choose image
         [HttpPost]
         public IActionResult ProcessUpload(IFormFile file)
@@ -35,6 +37,7 @@ namespace DoAn.Areas.Admin.Controllers
 
             return Json("/images/" + fileName);
         }
+
         //Login
         [HttpGet]
         public async Task<IActionResult> Login(Staff loginModel)
@@ -77,14 +80,19 @@ namespace DoAn.Areas.Admin.Controllers
             }
             else
             {
-                return View();
+                var staffMembers = db.Staff.Include(s => s.BranchId).ToList();
+                return View(staffMembers);
             }
         }
+
         //register
         public IActionResult Register()
         {
+            var branches = db.Branches.ToList(); 
+            ViewBag.BranchId = new SelectList(branches, "BranchId", "Address");
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Register(Staff registrationModel)
         {
@@ -111,6 +119,7 @@ namespace DoAn.Areas.Admin.Controllers
                 return View(registrationModel);
             }
         }
+
         //Delete
         public async Task<IActionResult> Delete(int staffId)
         {
@@ -133,6 +142,7 @@ namespace DoAn.Areas.Admin.Controllers
                 return RedirectToAction("Index"); // You can choose to handle the error scenario differently
             }
         }
+
         //edit
         [HttpGet]
         public IActionResult Edit(int staffId)
@@ -165,6 +175,7 @@ namespace DoAn.Areas.Admin.Controllers
                 return View(updateModel);
             }
         }
+
         //detail
         [HttpGet]
         public async Task<IActionResult> Detail(int staffId)

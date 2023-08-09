@@ -11,6 +11,7 @@ namespace DoAn.Controllers
     {
         private readonly HttpClient _httpClient;
         DlctContext db = new DlctContext();
+
         public Client()
         {
             _httpClient = new HttpClient();
@@ -34,6 +35,7 @@ namespace DoAn.Controllers
 
             return Json("/images/" + fileName);
         }
+
         //Login
         [HttpGet]
         public async Task<IActionResult> Login(Cilent loginModel)
@@ -62,6 +64,7 @@ namespace DoAn.Controllers
             ModelState.AddModelError("", "Invalid username or password");
             return View("Login", loginModel);
         }
+
         //View List
         public async Task<IActionResult> Index()
         {
@@ -78,6 +81,7 @@ namespace DoAn.Controllers
                 return View();
             }
         }
+
         //register
         public IActionResult Register()
         {
@@ -109,6 +113,7 @@ namespace DoAn.Controllers
                 return View(registrationModel);
             }
         }
+
         //Delete
         public async Task<IActionResult> Delete(int clientId)
         {
@@ -131,6 +136,7 @@ namespace DoAn.Controllers
                 return RedirectToAction("Index"); // You can choose to handle the error scenario differently
             }
         }
+
         //edit
         [HttpGet]
         public IActionResult Edit(int clientId)
@@ -163,6 +169,7 @@ namespace DoAn.Controllers
                 return View(updateModel);
             }
         }
+
         //detail
         [HttpGet]
         public async Task<IActionResult> Detail(int clientId)
