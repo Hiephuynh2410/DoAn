@@ -1,4 +1,5 @@
-﻿using DoAn.Models;
+﻿using DoAn.Data;
+using DoAn.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,115 +19,54 @@ namespace DoAn.Areas.Admin.ApiAdminController
         [HttpGet]
         public async Task<IActionResult> GetAllStaff()
         {
-            var staffs = _dbContext.Staff.ToList();
-            
-            return Ok(staffs);
+            var staffs = await _dbContext.Staff
+        .Include(s => s.Branch)
+        .Include(s => s.Role)
+        .ToListAsync();
+
+            var staffsWithFullInfo = staffs.Select(s => new
+            {
+                s.StaffId,
+                s.Name,
+                s.Username,
+                s.Password,
+                s.Phone,
+                s.Avatar,
+                s.Address,
+                s.Email,
+                s.Status,
+                s.RoleId,
+                s.BranchId,
+                Branch = new
+                {
+                    s.Branch.Address,
+                    s.Branch.Hotline
+                },
+                Role = new
+                {
+                    s.Role.Name,
+                    s.Role.RoleId
+                },
+                s.CreatedAt,
+                s.UpdatedAt,
+                s.CreatedBy,
+                s.UpdatedBy,
+                s.Bookings,
+            }).ToList();
+
+            return Ok(staffsWithFullInfo);
         }
-
-        [HttpGet("login")]
-        public async Task<IActionResult> Login(Staff loginModel)
-        {
-            var staff = await _dbContext.Staff.FirstOrDefaultAsync(c => c.Username == loginModel.Username);
-            if (staff == null)
-            {
-                var loginErrorResponse = new
-                {
-                    Message = "Invalid username or password",
-                    Errors = new List<string>
-                    {
-                        "Invalid username"
-                    }
-                };
-
-                return BadRequest(loginErrorResponse);
-            }
-            if (string.IsNullOrWhiteSpace(loginModel.Username) && string.IsNullOrWhiteSpace(loginModel.Password))
-            {
-                var nameErrorRespone = new
-                {
-                    Message = "Name and password cannot be empty"
-                };
-                return BadRequest(nameErrorRespone);
-            }
-
-            var passwordHasher = new PasswordHasher<Staff>();
-            var result = passwordHasher.VerifyHashedPassword(null, staff.Password, loginModel.Password);
-            if (result == PasswordVerificationResult.Success)
-            {
-                var loginSuccessResponse = new
-                {
-                    Message = "Login successful"
-                };
-
-                return Ok(loginSuccessResponse);
-            }
-
-            var invalidLoginErrorResponse = new
-            {
-                Message = "Invalid username or password",
-                Errors = new List<string>
-                {
-                    "Invalid password"
-                }
-            };
-
-            return BadRequest(invalidLoginErrorResponse);
-        }
-
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterStaff(Staff registrationModel)
+        public async Task<IActionResult> RegisterStaff(Staff  registrationModel)
         {
             if (ModelState.IsValid)
             {
-                //kiểm tra email có trùng lặp trong DB không
-                if (_dbContext.Staff.Any(c => c.Email == registrationModel.Email))
-                {
-                    var emailExistsResponse = new
-                    {
-                        Message = "Email already exists"
-                    };
-
-
-                    return Conflict(emailExistsResponse);
-                }
-                if (string.IsNullOrWhiteSpace(registrationModel.Name)
-                    || string.IsNullOrWhiteSpace(registrationModel.Username)
-                    || string.IsNullOrWhiteSpace(registrationModel.Password)
-                    || string.IsNullOrWhiteSpace(registrationModel.Phone)
-                    || string.IsNullOrWhiteSpace(registrationModel.Email))
-                {
-                    var nameErrorRespone = new
-                    {
-                        Message = "Name, username, password, phone, and email cannot be empty"
-                    };
-                    return BadRequest(nameErrorRespone);
-                }
-                if (registrationModel.Name.Length > 100)
-                {
-                    var nameErrorRespone = new
-                    {
-                        Message = "Name is too long"
-                    };
-                    return BadRequest(nameErrorRespone);
-                }
-                if (!Regex.IsMatch(registrationModel.Phone, @"^(?:\+84|0)\d{9,10}$"))
-                {
-                    var phoneErrorRespone = new
-                    {
-                        Message = "Invalid phone number format"
-                    };
-                    return BadRequest(phoneErrorRespone);
-                }
-                if (!Regex.IsMatch(registrationModel.Username, "^[]A-Za-z0-9!#$%&'*+/=?^_`{|}~\\,.@()<>[-]*$"))
-                {
-                    var usernameErroeRespone = new
-                    {
-                        Message = "Invalid username format,username needs 8 digits and has 1 special character and 1 uppercase character"
-                    };
-                    return BadRequest(usernameErroeRespone);
-                }
                 var passwordHasher = new PasswordHasher<Staff>();
                 var hashedPassword = passwordHasher.HashPassword(null, registrationModel.Password);
+
+                var branch = await _dbContext.Branches.FindAsync(registrationModel.BranchId);
+                var Role = await _dbContext.Roles.FindAsync(registrationModel.RoleId);
+
                 var newStaff = new Staff
                 {
                     Name = registrationModel.Name,
@@ -136,17 +76,32 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     Address = registrationModel.Address,
                     Avatar = registrationModel.Avatar,
                     Email = registrationModel.Email,
-                    BranchId = registrationModel.BranchId
+                    Branch = branch,
+                    Role = Role,
                 };
+
 
                 _dbContext.Staff.Add(newStaff);
                 await _dbContext.SaveChangesAsync();
-
+                _dbContext.Entry(newStaff).Reference(s => s.Branch).Load();
+                _dbContext.Entry(newStaff).Reference(s => s.Role).Load();
+                // Retrieve the registered staff with navigation properties
                 var registrationSuccessResponse = new
                 {
                     Message = "Registration successful",
-
-                    ClientId = newStaff.StaffId
+                    ClientId = newStaff.StaffId,
+                    Name = newStaff.Name,
+                    Username = newStaff.Username,
+                    Branch = new
+                    {
+                        Address = newStaff.Branch?.Address,
+                        Hotline = newStaff.Branch?.Hotline
+                    },
+                    Role = new
+                    {
+                        Name = newStaff.Role?.Name,
+                        RoleId = newStaff.Role?.RoleId
+                    }
                 };
                 return Ok(registrationSuccessResponse);
             }
@@ -158,9 +113,11 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     .SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage)
                     .ToList()
+
             };
             return BadRequest(invalidDataErrorResponse);
         }
+
 
         [HttpPut("update/{staffId}")]
         public async Task<IActionResult> UpdateStaff(int staffId, Staff updateModel)

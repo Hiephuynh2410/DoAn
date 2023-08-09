@@ -50,7 +50,7 @@
                 @Html.DisplayNameFor(model => model.UpdatedBy)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Branch)
+                Branch
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Role)
@@ -99,10 +99,10 @@
                     @Html.DisplayFor(modelItem => item.UpdatedBy)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.BranchId)
+                    @Html.DisplayFor(modelItem => item.Branch.Address)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Role.RoleId)
+                    @Html.DisplayFor(modelItem => item.Role.Name)
                 </td>
                 <td>
                     <a href="@Url.Action("Edit", "Staff", new { staffId = @item.StaffId})">Edit</a>|

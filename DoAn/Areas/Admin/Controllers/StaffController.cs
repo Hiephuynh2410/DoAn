@@ -70,6 +70,7 @@ namespace DoAn.Areas.Admin.Controllers
         //View List
         public async Task<IActionResult> Index()
         {
+
             var apiResponse = await _httpClient.GetAsync("https://localhost:7109/api/AdminApi/");
             if (apiResponse.IsSuccessStatusCode)
             {
@@ -80,19 +81,25 @@ namespace DoAn.Areas.Admin.Controllers
             }
             else
             {
-                var staffMembers = db.Staff.Include(s => s.BranchId).ToList();
-                return View(staffMembers);
+                var staffList = await db.Staff
+                   .Include(s => s.Branch)
+                   .Include(s => s.Role)
+                   .ToListAsync();
+                return View(staffList);
             }
         }
 
         //register
         public IActionResult Register()
         {
-            var branches = db.Branches.ToList(); 
-            ViewBag.BranchId = new SelectList(branches, "BranchId", "Address");
+            var roles = db.Roles.ToList(); // Fetch the list of roles from the database
+            var branches = db.Branches.ToList(); // Fetch the list of branches from the database
+
+            ViewBag.Roles = new SelectList(roles, "RoleId", "Name"); // Assuming you have RoleId and RoleName properties in your Role model
+            ViewBag.Branches = new SelectList(branches, "BranchId", "Address"); // Assuming you have BranchId and BranchName properties in your Branch model
+
             return View();
         }
-
         [HttpPost]
         public async Task<IActionResult> Register(Staff registrationModel)
         {
