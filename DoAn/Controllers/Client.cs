@@ -78,7 +78,10 @@ namespace DoAn.Controllers
             }
             else
             {
-                return View();
+                var clients = await db.Cilents
+                  .Include(s => s.Role)
+                  .ToListAsync();
+                return View(clients);
             }
         }
 
@@ -141,12 +144,19 @@ namespace DoAn.Controllers
         [HttpGet]
         public IActionResult Edit(int clientId)
         {
-            var client = new Cilent { CilentId = clientId };
+            var client = db.Cilents.Find(clientId);
+            if(client == null) {
+                return NotFound();  
+            }
             return View(client);
         }
         [HttpPost]
         public async Task<IActionResult> Edit(int clientId, Cilent updateModel)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(updateModel);
+            }
             var apiUrl = $"https://localhost:7109/api/ClientLogin/update/{clientId}";
 
             var json = JsonConvert.SerializeObject(updateModel);

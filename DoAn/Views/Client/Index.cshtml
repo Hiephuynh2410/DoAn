@@ -53,7 +53,7 @@
                 @Html.DisplayNameFor(model => model.UpdatedBy)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Role)
+                @Html.DisplayNameFor(model => model.Role.Name)
             </th>
             <th></th>
         </tr>
@@ -101,7 +101,7 @@
                 @Html.DisplayFor(modelItem => item.UpdatedBy)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Role.RoleId)
+                @Html.DisplayFor(modelItem => item.Role.Name)
             </td>
             <td>
                  <a asp-action="Edit" asp-route-clientid="@item.CilentId">edit</a>

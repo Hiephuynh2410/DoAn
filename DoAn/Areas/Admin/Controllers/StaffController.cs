@@ -92,11 +92,11 @@ namespace DoAn.Areas.Admin.Controllers
         //register
         public IActionResult Register()
         {
-            var roles = db.Roles.ToList(); // Fetch the list of roles from the database
-            var branches = db.Branches.ToList(); // Fetch the list of branches from the database
+            var roles = db.Roles.ToList(); 
+            var branches = db.Branches.ToList(); 
 
-            ViewBag.Roles = new SelectList(roles, "RoleId", "Name"); // Assuming you have RoleId and RoleName properties in your Role model
-            ViewBag.Branches = new SelectList(branches, "BranchId", "Address"); // Assuming you have BranchId and BranchName properties in your Branch model
+            ViewBag.Roles = new SelectList(roles, "RoleId", "Name");
+            ViewBag.Branches = new SelectList(branches, "BranchId", "Address");
 
             return View();
         }
@@ -136,7 +136,7 @@ namespace DoAn.Areas.Admin.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index"); // Redirect to the list of clients after successful deletion
+                return RedirectToAction("Index"); 
             }
             else
             {
@@ -146,7 +146,7 @@ namespace DoAn.Areas.Admin.Controllers
                 var errorResponse = JsonConvert.DeserializeObject<object>(responseContent);
 
                 ModelState.AddModelError("", errorResponse.ToString());
-                return RedirectToAction("Index"); // You can choose to handle the error scenario differently
+                return RedirectToAction("Index");
             }
         }
 
@@ -154,12 +154,20 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(int staffId)
         {
-            var staff = new Staff { StaffId = staffId };
+            var staff = db.Staff.Find(staffId);
+            if (staff == null)
+            {
+                return NotFound();
+            }
             return View(staff);
         }
         [HttpPost]
         public async Task<IActionResult> Edit(int staffId, Staff updateModel)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(updateModel);
+            }
             var apiUrl = $"https://localhost:7109/api/AdminApi/update/{staffId}";
 
             var json = JsonConvert.SerializeObject(updateModel);

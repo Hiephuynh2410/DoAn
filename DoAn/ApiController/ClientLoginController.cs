@@ -20,8 +20,34 @@ namespace DoAn.ApiController
         [HttpGet]
         public async Task<IActionResult> GetAllClient()
         {
-            var clients = _dbContext.Cilents.ToList();
-            return Ok(clients);
+           var clients = await _dbContext.Cilents
+                .Include(c => c.Role)
+                .ToListAsync();
+
+            var ClientWithFullInfo = clients.Select(c => new
+            {
+                c.CilentId,
+                c.Name,
+                c.Username,
+                c.Password,
+                c.Phone,
+                c.Avatar,
+                c.Address,
+                c.Email,
+                c.Status,
+                c.RoleId,
+                Role = new
+                {
+                    c.Role.RoleId,
+                    c.Role.Name
+                },
+                c.CreatedAt, 
+                c.UpdatedAt,
+                c.CreatedBy,
+                c.UpdatedBy,
+                c.Bookings
+            }).ToList();
+            return Ok(ClientWithFullInfo);
         }
 
         [HttpGet("login")]
@@ -128,7 +154,7 @@ namespace DoAn.ApiController
                 }
                 var passwordHasher = new PasswordHasher<Cilent>();
                 var hashedPassword = passwordHasher.HashPassword(null, registrationModel.Password);
-
+                var Role = await _dbContext.Roles.FindAsync(registrationModel.RoleId);
                 var newClient = new Cilent
                 {
                     Name = registrationModel.Name,
@@ -138,15 +164,22 @@ namespace DoAn.ApiController
                     Address = registrationModel.Address,
                     Avatar = registrationModel.Avatar,
                     Email = registrationModel.Email,
+                    Role = Role,
                 };
 
                 _dbContext.Cilents.Add(newClient);
                 await _dbContext.SaveChangesAsync();
+                _dbContext.Entry(newClient).Reference(s => s.Role).Load();
 
                 var registrationSuccessResponse = new
                 {
                     Message = "Registration successful",
-                    ClientId = newClient.CilentId
+                    ClientId = newClient.CilentId,
+                    Role = new
+                    {
+                        Name = newClient.Role?.Name,
+                        RoleId = newClient.Role?.RoleId
+                    }
                 };
                 return Ok(registrationSuccessResponse);
             }

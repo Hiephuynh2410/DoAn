@@ -20,9 +20,9 @@ namespace DoAn.Areas.Admin.ApiAdminController
         public async Task<IActionResult> GetAllStaff()
         {
             var staffs = await _dbContext.Staff
-        .Include(s => s.Branch)
-        .Include(s => s.Role)
-        .ToListAsync();
+                .Include(s => s.Branch)
+                .Include(s => s.Role)
+                .ToListAsync();
 
             var staffsWithFullInfo = staffs.Select(s => new
             {
@@ -51,7 +51,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 s.UpdatedAt,
                 s.CreatedBy,
                 s.UpdatedBy,
-                s.Bookings,
+                //s.Bookings,
             }).ToList();
 
             return Ok(staffsWithFullInfo);
@@ -80,18 +80,16 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     Role = Role,
                 };
 
-
                 _dbContext.Staff.Add(newStaff);
                 await _dbContext.SaveChangesAsync();
                 _dbContext.Entry(newStaff).Reference(s => s.Branch).Load();
                 _dbContext.Entry(newStaff).Reference(s => s.Role).Load();
-                // Retrieve the registered staff with navigation properties
                 var registrationSuccessResponse = new
                 {
                     Message = "Registration successful",
                     ClientId = newStaff.StaffId,
-                    Name = newStaff.Name,
-                    Username = newStaff.Username,
+                    //Name = newStaff.Name,
+                    //Username = newStaff.Username,
                     Branch = new
                     {
                         Address = newStaff.Branch?.Address,
