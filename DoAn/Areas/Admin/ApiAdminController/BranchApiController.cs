@@ -1,6 +1,8 @@
 ﻿using DoAn.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Operations;
+using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 
 namespace DoAn.Areas.Admin.ApiAdminController
@@ -17,21 +19,28 @@ namespace DoAn.Areas.Admin.ApiAdminController
         [HttpGet]
         public async Task<IActionResult> GetAllBranch()
         {
-            var branchs = _dbContext.Branches.ToList();
-            return Ok(branchs);
+            var Branch = await _dbContext.Branches
+                .Include(s => s.Staff)
+                .ToListAsync();
+
+            var BranchsWithFullInfo = Branch.Select(s => new
+            {
+                s.BranchId,
+                s.Address,
+                s.Hotline,
+            }).ToList();
+
+            return Ok(BranchsWithFullInfo);
         }
         [HttpPost("create")]
         public async Task<IActionResult> CreateBranch(Branch createModel)
         {
             if (ModelState.IsValid)
             {
-                if (string.IsNullOrWhiteSpace(createModel.Address) || string.IsNullOrWhiteSpace(createModel.Hotline))
+                var addressExists = await _dbContext.Branches.AnyAsync(b => b.Address == createModel.Address);
+                if (addressExists)
                 {
-                    var nameErrorRespone = new
-                    {
-                        Message = "Address and hotline cannot be empty"
-                    };
-                    return BadRequest(nameErrorRespone);
+                    return BadRequest(new { Message = "Branch already exists." });
                 }
 
                 var newBranch = new Branch
@@ -62,9 +71,70 @@ namespace DoAn.Areas.Admin.ApiAdminController
             return BadRequest(invalidDataErrorResponse);
         }
 
-        public IActionResult Index()
+        [HttpPut("update/{branchId}")]
+        public async Task<IActionResult> UpdateBranch(int branchId, Branch updateModel)
         {
-            return View();
+            var Branch = await _dbContext.Branches.FindAsync(branchId);
+            if (Branch == null)
+            {
+                return NotFound();
+            }
+
+            if (!string.IsNullOrWhiteSpace(updateModel.Address))
+            {
+                Branch.Address = updateModel.Address;
+            }
+            if (!string.IsNullOrWhiteSpace(updateModel.Hotline))
+            {
+                Branch.Hotline = updateModel.Hotline;
+            }
+
+            _dbContext.Entry(Branch).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+
+            var updateSuccessResponse = new
+            {
+                Message = "Branch updated successfully"
+            };
+
+            return Ok(updateSuccessResponse);
+        }
+        [HttpDelete("delete/{branchId}")]
+        public async Task<IActionResult> DeleteBranch(int branchId)
+        {
+            var branch = await _dbContext.Branches.FindAsync(branchId);
+            if (branch == null)
+            {
+                return NotFound();
+            }
+
+            _dbContext.Branches.Remove(branch);
+            await _dbContext.SaveChangesAsync();
+
+            var deleteSuccessResponse = new
+            {
+                Message = "branch deleted successfully"
+            };
+
+            return Ok(deleteSuccessResponse);
+        }
+
+        [HttpGet("detail/{branchId}")]
+        public async Task<IActionResult> GetBranchDetail(int branchId)
+        {
+            var branch = await _dbContext.Branches.FindAsync(branchId);
+
+            if (branch == null)
+            {
+                return NotFound();
+            }
+            var BranchtDetail = new
+            {
+                branch.BranchId,
+                branch.Address,
+                branch.Hotline,
+            };
+            return Json(BranchtDetail);
         }
     }
 }
