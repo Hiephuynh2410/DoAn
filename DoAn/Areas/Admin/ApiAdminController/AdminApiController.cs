@@ -1,9 +1,7 @@
-﻿using DoAn.Data;
-using DoAn.Models;
+﻿using DoAn.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
 
 namespace DoAn.Areas.Admin.ApiAdminController
 {
