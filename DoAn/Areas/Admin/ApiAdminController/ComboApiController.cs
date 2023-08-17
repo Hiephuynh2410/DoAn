@@ -91,10 +91,47 @@ namespace DoAn.Areas.Admin.ApiAdminController
 
             var updateSuccessResponse = new
             {
-                Message = "Branch updated successfully"
+                Message = "Combo updated successfully"
             };
 
             return Ok(updateSuccessResponse);
+        }
+        [HttpDelete("delete/{comboId}")]
+        public async Task<IActionResult> DeleteCombo(int comboId)
+        {
+            var combo = await _dbContext.Combos.FindAsync(comboId);
+            if (combo == null)
+            {
+                return NotFound();
+            }
+
+            _dbContext.Combos.Remove(combo);
+            await _dbContext.SaveChangesAsync();
+
+            var deleteSuccessResponse = new
+            {
+                Message = "combo deleted successfully"
+            };
+
+            return Ok(deleteSuccessResponse);
+        }
+
+        [HttpGet("detail/{comboId}")]
+        public async Task<IActionResult> GetComboDetail(int comboId)
+        {
+            var combo = await _dbContext.Combos.FindAsync(comboId);
+
+            if (combo == null)
+            {
+                return NotFound();
+            }
+            var ComboDetail = new
+            {
+                combo.ComboId,
+                combo.Name,
+                combo.Price,
+            };
+            return Json(ComboDetail);
         }
     }
 }

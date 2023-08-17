@@ -1,0 +1,48 @@
+﻿@model IEnumerable<DoAn.Models.Combo>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ComboId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ComboId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                <a href="@Url.Action("Edit", "Combo", new { ComboId = @item.ComboId})">Edit</a>|
+                <a href="@Url.Action("Detail", "Combo", new { ComboId = @item.ComboId})">Details</a>|
+                <a href="@Url.Action("Delete", "Combo", new { ComboId = @item.ComboId})">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

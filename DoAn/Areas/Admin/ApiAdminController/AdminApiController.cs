@@ -118,7 +118,10 @@ namespace DoAn.Areas.Admin.ApiAdminController
         [HttpPut("update/{staffId}")]
         public async Task<IActionResult> UpdateStaff(int staffId, Staff updateModel)
         {
-            var Staff = await _dbContext.Staff.FindAsync(staffId);
+            var Staff = await _dbContext.Staff
+                .Include(s => s.Branch)
+                .Include(s => s.Role)
+                .FirstOrDefaultAsync(p => p.StaffId == staffId);
 
             if (Staff == null)
             {
@@ -160,6 +163,23 @@ namespace DoAn.Areas.Admin.ApiAdminController
 
                 Staff.Email = updateModel.Email;
             }
+            if (updateModel.BranchId.HasValue)
+            {
+                var updatedBranch = await _dbContext.Branches.FindAsync(updateModel.BranchId);
+                if (updatedBranch != null)
+                {
+                    Staff.Branch = updatedBranch;
+                }
+            }
+
+            if(updateModel.RoleId.HasValue)
+            {
+                var updatedRole = await _dbContext.Roles.FindAsync(updateModel.RoleId);
+                if(updatedRole != null)
+                {
+                    Staff.Role = updatedRole;
+                }
+            }
 
             _dbContext.Entry(Staff).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
@@ -196,13 +216,17 @@ namespace DoAn.Areas.Admin.ApiAdminController
         [HttpGet("detail/{staffId}")]
         public async Task<IActionResult> GetClientDetail(int staffId)
         {
-            var staff = await _dbContext.Staff.FindAsync(staffId);
+            var staff = await _dbContext.Staff
+                .Include(s => s.Branch)
+                .Include(s => s.Role)
+                .FirstOrDefaultAsync(s => s.StaffId == staffId);
 
             if (staff == null)
             {
                 return NotFound();
             }
-            var stafftDetail = new
+
+            var staffDetail = new
             {
                 staff.StaffId,
                 staff.Name,
@@ -215,9 +239,20 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 staff.CreatedAt,
                 staff.UpdatedAt,
                 staff.CreatedBy,
-                staff.UpdatedBy
+                staff.UpdatedBy,
+                Branch = new
+                {
+                    staff.Branch?.Address,
+                    staff.Branch?.Hotline
+                },
+                Role = new
+                {
+                    staff.Role?.Name,
+                    staff.Role?.RoleId
+                }
             };
-            return Json(stafftDetail);
+
+            return Json(staffDetail);
         }
 
     }
