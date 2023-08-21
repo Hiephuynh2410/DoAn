@@ -54,7 +54,6 @@
             </td>
             <td>
                 <img src="@Html.DisplayFor(modelItem => item.Image)" />
-                
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ProductType.Name)
@@ -63,9 +62,9 @@
                 @Html.DisplayFor(modelItem => item.Provider.Name)
             </td>
             <td>
-                    <a href="@Url.Action("Edit", "Product", new { productId = @item.ProductId})">Edit</a>|
-                    <a href="@Url.Action("Detail", "Product", new { productId = @item.ProductId})">Detail</a>|
-                    <a href="@Url.Action("Delete", "Product", new { productId = @item.ProductId})">Delete</a>
+                <a href="@Url.Action("Edit", "Product", new { productId = @item.ProductId})">Edit</a>|
+                <a href="@Url.Action("Detail", "Product", new { productId = @item.ProductId})">Detail</a>|
+                <a href="@Url.Action("Delete", "Product", new { productId = @item.ProductId})">Delete</a>
             </td>
         </tr>
 }

@@ -37,6 +37,50 @@ namespace DoAn.Areas.Admin.Controllers
             return Json("/images/" + fileName);
         }
 
+
+        //Delete
+        public async Task<IActionResult> Delete(int productId)
+        {
+            var apiUrl = $"https://localhost:7109/api/ProductApi/delete/{productId}";
+
+            var response = await _httpClient.DeleteAsync(apiUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("API Response Content: " + responseContent);
+
+                var errorResponse = JsonConvert.DeserializeObject<object>(responseContent);
+
+                ModelState.AddModelError("", errorResponse.ToString());
+                return RedirectToAction("Index");
+            }
+        }
+
+        //detail
+        [HttpGet]
+        public async Task<IActionResult> Detail(int productId)
+        {
+            var apiUrl = $"https://localhost:7109/api/ProductApi/detail/{productId}";
+
+            var apiResponse = await _httpClient.GetAsync(apiUrl);
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                var responseContent = await apiResponse.Content.ReadAsStringAsync();
+                var ProductDetail = JsonConvert.DeserializeObject<Product>(responseContent);
+
+                return View(ProductDetail);
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+        }
+
         //edit
         [HttpGet]
         public IActionResult Edit(int productId)
