@@ -1,0 +1,118 @@
+﻿@model IEnumerable<DoAn.Models.Provider>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Page Title</title>
+    <link href="~/css/site.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+
+    <div id="customPopup" class="custom-popup">
+        <p>Are you sure you want to delete this provider?</p>
+        <button id="confirmDelete">Yes</button>
+        <button id="cancelDelete">Cancel</button>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Address
+                </th>
+                <th>
+                    Phone
+                </th>
+                <th>
+                    Email
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.ProviderId
+                    </td>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.Address
+                    </td>
+                    <td>
+                        @item.Phone
+                    </td>
+                    <td>
+                        @item.Email
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Edit", "Provider", new { ProviderId = @item.ProviderId})">Edit</a>|
+                        <a href="@Url.Action("Detail", "Provider", new { ProviderId = @item.ProviderId})">Details</a>|
+                        <a href="#" class="delete-link" data-providerid="@item.ProviderId">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+
+</html>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var deleteLinks = document.querySelectorAll(".delete-link");
+        var customPopup = document.getElementById("customPopup");
+        var confirmDeleteButton = document.getElementById("confirmDelete");
+        var cancelDeleteButton = document.getElementById("cancelDelete");
+        var currentProviderId = null;
+
+        deleteLinks.forEach(function (link) {
+            link.addEventListener("click", function (event) {
+                event.preventDefault();
+                currentProviderId = link.getAttribute("data-providerid");
+                customPopup.style.display = "block";
+            });
+        });
+
+        confirmDeleteButton.addEventListener("click", function () {
+            customPopup.style.display = "none";
+            if (currentProviderId !== null) {
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "@Url.Action("Delete", "Provider")", true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            location.reload(); 
+                        } else {
+                            console.error("Error deleting provider.");
+                        }
+                    }
+                };
+                xhr.send("providerId=" + encodeURIComponent(currentProviderId));
+            }
+        });
+
+        cancelDeleteButton.addEventListener("click", function () {
+            customPopup.style.display = "none";
+            currentProviderId = null;
+        });
+    });
+
+</script>
