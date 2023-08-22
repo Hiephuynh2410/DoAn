@@ -268,10 +268,12 @@ public partial class DlctContext : DbContext
 
             entity.HasOne(d => d.ProductType).WithMany(p => p.Products)
                 .HasForeignKey(d => d.ProductTypeId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_PRODUCT_PRODUCTTYPE");
 
             entity.HasOne(d => d.Provider).WithMany(p => p.Products)
                 .HasForeignKey(d => d.ProviderId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_PRODUCT_PROVIDER");
         });
 
@@ -387,6 +389,7 @@ public partial class DlctContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false);
             entity.Property(e => e.RoleId).HasColumnName("Role_id");
+            entity.Property(e => e.Status).HasDefaultValueSql("((1))");
             entity.Property(e => e.UpdatedAt)
                 .HasMaxLength(10)
                 .IsFixedLength()

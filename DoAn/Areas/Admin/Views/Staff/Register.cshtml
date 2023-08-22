@@ -17,65 +17,73 @@
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
+                <span class="error-indicator"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Username" class="control-label"></label>
                 <input asp-for="Username" class="form-control" />
                 <span asp-validation-for="Username" class="text-danger"></span>
+                <span class="error-indicator"></span>
+
             </div>
             <div class="form-group">
                 <label asp-for="Password" class="control-label"></label>
                 <input asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
+                <span class="error-indicator"></span>
+
             </div>
             <div class="form-group">
                 <label asp-for="Phone" class="control-label"></label>
                 <input asp-for="Phone" class="form-control" />
                 <span asp-validation-for="Phone" class="text-danger"></span>
+                <span class="error-indicator"></span>
+
             </div>
             <div class="form-group">
                 <label asp-for="Avatar" class="control-label"></label>
                 <input asp-for="Avatar" class="form-control" />
                 <span asp-validation-for="Avatar" class="text-danger"></span>
+                <span class="error-indicator"></span>
+
+                <div class="img-wrap" style="align-items:center">
+                    <input type="file" name="fileUpload" id="fileUpload" accept="image/*" style="display:none;" />
+                    <input type="button" id="btnUpload" value="Chọn ảnh" class="btn btn-danger" />
+                    <img style="width:44%" class="wrapper-img" src="" id="pictureUpload" />
+                </div>
             </div>
             <div class="form-group">
                 <label asp-for="Address" class="control-label"></label>
                 <input asp-for="Address" class="form-control" />
                 <span asp-validation-for="Address" class="text-danger"></span>
+                <span class="error-indicator"></span>
+
             </div>
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
+                <span class="error-indicator"></span>
+
             </div>
             <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
-                <span asp-validation-for="Status" class="text-danger"></span>
+                <label class="control-label">Status</label>
+                <div class="radio-buttons">
+                    <label class="form-check-label">
+                        <input type="radio" asp-for="Status" class="form-check-input" value="true" checked /> Active
+                    </label>
+                    <label class="form-check-label">
+                        <input type="radio" asp-for="Status" class="form-check-input" value="false" /> Non-Active
+                    </label>
+                    <span class="error-indicator"></span>
+                </div>
             </div>
+
+
+
             <div class="form-group">
                 <label for="RoleId">Role:</label>
                 @Html.DropDownList("RoleId", (SelectList)ViewBag.Roles, "Select a role", new { @class = "form-control" })
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedAt" class="control-label"></label>
-                <input asp-for="CreatedAt" class="form-control" />
-                <span asp-validation-for="CreatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdatedAt" class="control-label"></label>
-                <input asp-for="UpdatedAt" class="form-control" />
-                <span asp-validation-for="UpdatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedBy" class="control-label"></label>
-                <input asp-for="CreatedBy" class="form-control" />
-                <span asp-validation-for="CreatedBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdatedBy" class="control-label"></label>
-                <input asp-for="UpdatedBy" class="form-control" />
-                <span asp-validation-for="UpdatedBy" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label for="BranchId">Branch:</label>
@@ -91,4 +99,45 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+@section upload {
+    <script>
+        $(function () {
+            $('#btnUpload').click(function () {
+                $('#fileUpload').trigger('click');
+            });
+        });
+        $('#fileUpload').change(function () {
+            if (window.FormData !== undefined) {
+                var fileUpload = $('#fileUpload').get(0);
+                var files = fileUpload.files;
+                var formData = new FormData();
+                formData.append('file', files[0]);
 
+                $.ajax({
+                    type: 'POST',
+                    url: '/Admin/Product/ProcessUpload',
+                    contentType: false,
+                    processData: false,
+                    data: formData,
+                    success: function (urlImage) {
+                        $('#pictureUpload').attr('src', urlImage);
+                        $('#Avatar').val(urlImage);
+                    },
+                    error: function (err) {
+                        alert('Error: ' + err.statusText);
+                    }
+                });
+            }
+        });
+    </script>
+}
+
+<style>
+    .error-indicator::after {
+        content: "•"; /* Display a dot or any other indicator you prefer */
+        color: red; /* Customize the color */
+        font-weight: bold; /* Customize the font weight */
+        margin-left: 5px; /* Add some spacing between the indicator and the input */
+    }
+</style>

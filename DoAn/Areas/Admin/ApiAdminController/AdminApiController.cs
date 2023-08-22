@@ -74,6 +74,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     Address = registrationModel.Address,
                     Avatar = registrationModel.Avatar,
                     Email = registrationModel.Email,
+                    Status = registrationModel.Status,
                     Branch = branch,
                     Role = role,
                 };
@@ -118,70 +119,42 @@ namespace DoAn.Areas.Admin.ApiAdminController
         [HttpPut("update/{staffId}")]
         public async Task<IActionResult> UpdateStaff(int staffId, Staff updateModel)
         {
-            var Staff = await _dbContext.Staff
-                .Include(s => s.Branch)
-                .Include(s => s.Role)
+            var staff = await _dbContext.Staff
                 .FirstOrDefaultAsync(p => p.StaffId == staffId);
 
-            if (Staff == null)
+            if (staff == null)
             {
                 return NotFound();
             }
 
-            if (!string.IsNullOrWhiteSpace(updateModel.Name))
-            {
-                Staff.Name = updateModel.Name;
-            }
-            if (!string.IsNullOrWhiteSpace(updateModel.Username))
-            {
-                Staff.Username = updateModel.Username;
-            }
-            if (!string.IsNullOrWhiteSpace(updateModel.Phone))
-            {
-                Staff.Phone = updateModel.Phone;
-            }
-            if (!string.IsNullOrWhiteSpace(updateModel.Address))
-            {
-                Staff.Address = updateModel.Address;
-            }
-            if (!string.IsNullOrWhiteSpace(updateModel.Avatar))
-            {
-                Staff.Avatar = updateModel.Avatar;
-            }
-            if (!string.IsNullOrWhiteSpace(updateModel.Email))
-            {
-                //kiểm tra email có trùng lặp trong DB không
-                if (_dbContext.Staff.Any(c => c.Email == updateModel.Email && c.StaffId != staffId))
-                {
-                    var emailExistsResponse = new
-                    {
-                        Message = "Email already exists"
-                    };
+            // Update other properties...
+            staff.Name = updateModel.Name;
+            staff.Username = updateModel.Username;
+            staff.Phone = updateModel.Phone;
+            staff.Address = updateModel.Address;
+            staff.Avatar = updateModel.Avatar;
+            staff.Status = updateModel.Status;
 
-                    return Conflict(emailExistsResponse);
-                }
-
-                Staff.Email = updateModel.Email;
-            }
-            if (updateModel.BranchId.HasValue)
+            // Update related branch and role properties
+            if (updateModel.BranchId != staff.BranchId)
             {
-                var updatedBranch = await _dbContext.Branches.FindAsync(updateModel.BranchId);
-                if (updatedBranch != null)
+                var newBranch = await _dbContext.Branches.FindAsync(updateModel.BranchId);
+                if (newBranch != null)
                 {
-                    Staff.Branch = updatedBranch;
+                    staff.Branch = newBranch;
                 }
             }
 
-            if(updateModel.RoleId.HasValue)
+            if (updateModel.RoleId != staff.RoleId)
             {
-                var updatedRole = await _dbContext.Roles.FindAsync(updateModel.RoleId);
-                if(updatedRole != null)
+                var newRole = await _dbContext.Roles.FindAsync(updateModel.RoleId);
+                if (newRole != null)
                 {
-                    Staff.Role = updatedRole;
+                    staff.Role = newRole;
                 }
             }
 
-            _dbContext.Entry(Staff).State = EntityState.Modified;
+            _dbContext.Entry(staff).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
 
             var updateSuccessResponse = new
@@ -191,6 +164,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
 
             return Ok(updateSuccessResponse);
         }
+
 
         [HttpDelete("delete/{staffId}")]
         public async Task<IActionResult> DeleteStaff(int staffId)

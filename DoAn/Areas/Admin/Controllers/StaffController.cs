@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace DoAn.Areas.Admin.Controllers
 {
@@ -103,31 +105,71 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(Staff registrationModel)
         {
-            //var currenttime = DateTime.Now;
-            //registrationModel.CreatedAt = currenttime.ToString();
             var apiUrl = "https://localhost:7109/api/AdminApi/register";
 
-            var json = JsonConvert.SerializeObject(registrationModel);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PostAsync(apiUrl, content);
-
-            if (response.IsSuccessStatusCode)
+            if (!string.IsNullOrEmpty(registrationModel.Phone))
             {
-                return RedirectToAction("Index");
+                var phoneRegex = new Regex(@"^(03|05|07|08|09|01[2|6|8|9])(?!84)[0-9]{8}$");
+                if (!phoneRegex.IsMatch(registrationModel.Phone) || registrationModel.Phone.Length > 10)
+                {
+                    ModelState.AddModelError("Phone", "Invalid Vietnamese phone number");
+                }
+            }
+
+            if (ModelState.IsValid)
+            {
+                // Set the "Status" property to true by default if not explicitly set
+                registrationModel.Status = Request.Form["Status"] == "true";
+                var json = JsonConvert.SerializeObject(registrationModel);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync(apiUrl, content);
+           
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine("API Response Content: " + responseContent);
+
+                    dynamic errorResponse = JsonConvert.DeserializeObject(responseContent);
+
+                    if (errorResponse != null)
+                    {
+                        ModelState.AddModelError("", errorResponse.Message);
+
+                        if (errorResponse.Errors != null)
+                        {
+                            foreach (var error in errorResponse.Errors)
+                            {
+                                ModelState.AddModelError("", error.ToString());
+                            }
+                        }
+                    }
+
+                    var roles = db.Roles.ToList();
+                    var branches = db.Branches.ToList();
+
+                    ViewBag.Roles = new SelectList(roles, "RoleId", "Name");
+                    ViewBag.Branches = new SelectList(branches, "BranchId", "Address");
+
+                    return View(registrationModel);
+                }
             }
             else
             {
-                var responseContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine("API Response Content: " + responseContent);
+                var roles = db.Roles.ToList();
+                var branches = db.Branches.ToList();
 
+                ViewBag.Roles = new SelectList(roles, "RoleId", "Name");
+                ViewBag.Branches = new SelectList(branches, "BranchId", "Address");
 
-                var errorResponse = JsonConvert.DeserializeObject<object>(responseContent);
-
-                ModelState.AddModelError("", errorResponse.ToString());
                 return View(registrationModel);
             }
         }
+
 
         //Delete
         public async Task<IActionResult> Delete(int staffId)
@@ -170,6 +212,7 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 return View(updateModel);
             }
+            updateModel.Status = Request.Form["Status"] == "true";
             var apiUrl = $"https://localhost:7109/api/AdminApi/update/{staffId}";
 
             var json = JsonConvert.SerializeObject(updateModel);

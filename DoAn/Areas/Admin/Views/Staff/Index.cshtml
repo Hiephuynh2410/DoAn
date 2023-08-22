@@ -5,7 +5,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Staff</h1>
 
 <p>
     <a asp-action="Register">Create New</a>
@@ -78,7 +78,13 @@
                     @Html.DisplayFor(modelItem => item.Email)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Status)
+                    @if(item.Status == true)
+                    {
+                        <p style="color: green">Active</p>
+                    } else
+                    {
+                        <p style="color: red">Non-Active</p>
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CreatedAt)
