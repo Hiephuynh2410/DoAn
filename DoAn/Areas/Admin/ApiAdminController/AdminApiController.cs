@@ -55,7 +55,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
             return Ok(staffsWithFullInfo);
         }
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterStaff(Staff  registrationModel)
+        public async Task<IActionResult> RegisterStaff(Staff registrationModel)
         {
             if (ModelState.IsValid)
             {
@@ -63,7 +63,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 var hashedPassword = passwordHasher.HashPassword(null, registrationModel.Password);
 
                 var branch = await _dbContext.Branches.FindAsync(registrationModel.BranchId);
-                var Role = await _dbContext.Roles.FindAsync(registrationModel.RoleId);
+                var role = await _dbContext.Roles.FindAsync(registrationModel.RoleId);
 
                 var newStaff = new Staff
                 {
@@ -75,19 +75,19 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     Avatar = registrationModel.Avatar,
                     Email = registrationModel.Email,
                     Branch = branch,
-                    Role = Role,
+                    Role = role,
                 };
 
                 _dbContext.Staff.Add(newStaff);
                 await _dbContext.SaveChangesAsync();
+
                 _dbContext.Entry(newStaff).Reference(s => s.Branch).Load();
                 _dbContext.Entry(newStaff).Reference(s => s.Role).Load();
+
                 var registrationSuccessResponse = new
                 {
                     Message = "Registration successful",
                     ClientId = newStaff.StaffId,
-                    //Name = newStaff.Name,
-                    //Username = newStaff.Username,
                     Branch = new
                     {
                         Address = newStaff.Branch?.Address,
@@ -109,10 +109,10 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     .SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage)
                     .ToList()
-
             };
             return BadRequest(invalidDataErrorResponse);
         }
+
 
 
         [HttpPut("update/{staffId}")]

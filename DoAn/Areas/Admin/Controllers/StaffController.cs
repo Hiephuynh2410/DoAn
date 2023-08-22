@@ -103,6 +103,8 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(Staff registrationModel)
         {
+            //var currenttime = DateTime.Now;
+            //registrationModel.CreatedAt = currenttime.ToString();
             var apiUrl = "https://localhost:7109/api/AdminApi/register";
 
             var json = JsonConvert.SerializeObject(registrationModel);
