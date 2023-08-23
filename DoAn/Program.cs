@@ -12,9 +12,12 @@ builder.Services.AddDbContext<DlctContext>(options =>
 
 
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+// Add services to the container.
+builder.Services.AddControllersWithViews();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSession(); // Add this line to enable session
 builder.Services.AddNotyf(config =>
 {
     config.DurationInSeconds = 10;
@@ -23,7 +26,18 @@ builder.Services.AddNotyf(config =>
 });
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+// Configure authorization policies
+//builder.Services.AddAuthorization(options =>
+//{
+//    options.AddPolicy("AdminOnly", policy =>
+//        policy.RequireRole("Admin"));
+//});
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set your desired session timeout
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -38,7 +52,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseSession();
+app.UseAuthentication();
 app.UseAuthorization();
 //app.UseEndpoints(endpoints =>
 //{

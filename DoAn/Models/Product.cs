@@ -21,11 +21,23 @@ public partial class Product
 
     public int? ProviderId { get; set; }
 
+    public DateTime? CreatedAt { get; set; }
+
+    public int? CreatedBy { get; set; }
+
+    public DateTime? UpdatedAt { get; set; }
+
+    public int? UpdatedBy { get; set; }
+
     public virtual ICollection<Billdetail> Billdetails { get; set; } = new List<Billdetail>();
 
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
+    public virtual Staff? CreatedByNavigation { get; set; }
+
     public virtual Producttype? ProductType { get; set; }
 
     public virtual Provider? Provider { get; set; }
+
+    public virtual Staff? UpdatedByNavigation { get; set; }
 }

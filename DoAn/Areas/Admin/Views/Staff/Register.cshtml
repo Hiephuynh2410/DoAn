@@ -17,7 +17,8 @@
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
-                <span class="error-indicator"></span>
+                <span class="error-indicator indicator-hidden"></span>
+
             </div>
             <div class="form-group">
                 <label asp-for="Username" class="control-label"></label>
@@ -103,32 +104,49 @@
 @section upload {
     <script>
         $(function () {
+            // Ẩn thẻ ban đầu
+            $('.error-indicator').hide();
+
+            // Kiểm tra khi thay đổi các trường để hiển thị/ẩn thẻ
+            $('input, select').on('change', function () {
+                if ($('.text-danger:visible').length > 0) {
+                    $('.error-indicator').show();
+                } else {
+                    $('.error-indicator').hide();
+                }
+            });
+
+            // Xử lý sự kiện khi nút "Chọn ảnh" được click
             $('#btnUpload').click(function () {
                 $('#fileUpload').trigger('click');
             });
-        });
-        $('#fileUpload').change(function () {
-            if (window.FormData !== undefined) {
-                var fileUpload = $('#fileUpload').get(0);
-                var files = fileUpload.files;
-                var formData = new FormData();
-                formData.append('file', files[0]);
 
-                $.ajax({
-                    type: 'POST',
-                    url: '/Admin/Product/ProcessUpload',
-                    contentType: false,
-                    processData: false,
-                    data: formData,
-                    success: function (urlImage) {
-                        $('#pictureUpload').attr('src', urlImage);
-                        $('#Avatar').val(urlImage);
-                    },
-                    error: function (err) {
-                        alert('Error: ' + err.statusText);
-                    }
-                });
-            }
+            $('#fileUpload').change(function () {
+                if (window.FormData !== undefined) {
+                    var fileUpload = $('#fileUpload').get(0);
+                    var files = fileUpload.files;
+                    var formData = new FormData();
+                    formData.append('file', files[0]);
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Admin/Staff/ProcessUpload',
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (urlImage) {
+                            $('#pictureUpload').attr('src', urlImage);
+                            $('#Avatar').val(urlImage);
+
+                            // Hiển thị nút khi có hình ảnh
+                            $('#btnUpload').show();
+                        },
+                        error: function (err) {
+                            alert('Error: ' + err.statusText);
+                        }
+                    });
+                }
+            });
         });
     </script>
 }
@@ -139,5 +157,10 @@
         color: red; /* Customize the color */
         font-weight: bold; /* Customize the font weight */
         margin-left: 5px; /* Add some spacing between the indicator and the input */
+    }
+
+    /* Ẩn thẻ khi không có lỗi */
+    .indicator-hidden {
+        display: none;
     }
 </style>

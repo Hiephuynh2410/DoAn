@@ -1,7 +1,13 @@
-﻿using DoAn.Models;
+﻿using DoAn.Data;
+using DoAn.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace DoAn.Areas.Admin.ApiAdminController
 {
@@ -14,6 +20,31 @@ namespace DoAn.Areas.Admin.ApiAdminController
         {
             _dbContext = dbContext;
         }
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginModel loginModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var staff = await _dbContext.Staff.FirstOrDefaultAsync(s => s.Username == loginModel.Username);
+
+                if (staff != null)
+                {
+                    var passwordHasher = new PasswordHasher<Staff>();
+                    var result = passwordHasher.VerifyHashedPassword(staff, staff.Password, loginModel.Password);
+
+                    if (result == PasswordVerificationResult.Success)
+                    {
+                        return Ok(new { Message = "Login successful", RoleId = staff.RoleId });
+                    }
+                }
+
+                return Unauthorized(new { Message = "Invalid username or password" });
+            }
+
+            return BadRequest(new { Message = "Invalid login data" });
+        }
+
+
         [HttpGet]
         public async Task<IActionResult> GetAllStaff()
         {
@@ -33,6 +64,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 s.Address,
                 s.Email,
                 s.Status,
+                s.CreatedAt,
                 s.RoleId,
                 s.BranchId,
                 Branch = new
@@ -45,7 +77,6 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     s.Role.Name,
                     s.Role.RoleId
                 },
-                s.CreatedAt,
                 s.UpdatedAt,
                 s.CreatedBy,
                 s.UpdatedBy,
@@ -75,6 +106,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     Avatar = registrationModel.Avatar,
                     Email = registrationModel.Email,
                     Status = registrationModel.Status,
+                    CreatedAt = DateTime.Now,
                     Branch = branch,
                     Role = role,
                 };
@@ -115,7 +147,6 @@ namespace DoAn.Areas.Admin.ApiAdminController
         }
 
 
-
         [HttpPut("update/{staffId}")]
         public async Task<IActionResult> UpdateStaff(int staffId, Staff updateModel)
         {
@@ -134,7 +165,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
             staff.Address = updateModel.Address;
             staff.Avatar = updateModel.Avatar;
             staff.Status = updateModel.Status;
-
+            staff.UpdatedAt = DateTime.Now;
             // Update related branch and role properties
             if (updateModel.BranchId != staff.BranchId)
             {

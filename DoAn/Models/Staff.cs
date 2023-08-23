@@ -25,13 +25,13 @@ public partial class Staff
 
     public int? RoleId { get; set; }
 
-    public string? CreatedAt { get; set; }
+    public DateTime? CreatedAt { get; set; }
 
-    public string? UpdatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 
-    public string? CreatedBy { get; set; }
+    public int? CreatedBy { get; set; }
 
-    public string? UpdatedBy { get; set; }
+    public int? UpdatedBy { get; set; }
 
     public int? BranchId { get; set; }
 
@@ -39,7 +39,19 @@ public partial class Staff
 
     public virtual Branch? Branch { get; set; }
 
+    public virtual ICollection<Combo> ComboCreatedByNavigations { get; set; } = new List<Combo>();
+
+    public virtual ICollection<Combo> ComboUpdatedByNavigations { get; set; } = new List<Combo>();
+
+    public virtual ICollection<Product> ProductCreatedByNavigations { get; set; } = new List<Product>();
+
+    public virtual ICollection<Product> ProductUpdatedByNavigations { get; set; } = new List<Product>();
+
     public virtual Role? Role { get; set; }
 
     public virtual ICollection<Scheduledetail> Scheduledetails { get; set; } = new List<Scheduledetail>();
+
+    public virtual ICollection<Service> ServiceCreatedByNavigations { get; set; } = new List<Service>();
+
+    public virtual ICollection<Service> ServiceUpdatedByNavigations { get; set; } = new List<Service>();
 }

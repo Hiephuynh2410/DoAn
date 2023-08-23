@@ -1,9 +1,7 @@
 ﻿using DoAn.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -40,35 +38,7 @@ namespace DoAn.Areas.Admin.Controllers
             return Json("/images/" + fileName);
         }
 
-        //Login
-        [HttpGet]
-        public async Task<IActionResult> Login(Staff loginModel)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View("Login", loginModel);
-            }
-
-            var staff = await db.Staff.FirstOrDefaultAsync(c => c.Username == loginModel.Username);
-
-            if (staff == null)
-            {
-                ModelState.AddModelError("", "Invalid username or password");
-                return View("Login", loginModel);
-            }
-
-            var passwordHasher = new PasswordHasher<Staff>();
-            var result = passwordHasher.VerifyHashedPassword(staff, staff.Password, loginModel.Password);
-
-            if (result == PasswordVerificationResult.Success)
-            {
-                return RedirectToAction("Index");
-            }
-
-            ModelState.AddModelError("", "Invalid username or password");
-            return View("Login", loginModel);
-        }
-
+      
         //View List
         public async Task<IActionResult> Index()
         {
@@ -91,6 +61,46 @@ namespace DoAn.Areas.Admin.Controllers
             }
         }
 
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(Staff loginModel)
+        {
+            var apiUrl = "https://localhost:7109/api/AdminApi/login";
+
+            var json = JsonConvert.SerializeObject(loginModel);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync(apiUrl, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var user = JsonConvert.DeserializeObject<Staff>(responseContent);
+
+                // Store the user's role ID in session
+                HttpContext.Session.SetInt32("RoleId", user.Role.RoleId);
+
+                // Set UserRole in ViewBag
+                ViewBag.UserRole = user.RoleId;
+
+                // Redirect to Index action of Staff controller
+                return RedirectToAction("Index", "Staff");
+            }
+            else
+            {
+                ViewData["ErrorMessage"] = "Invalid username or password";
+                return View("Login", loginModel); // Return the Login view with the error message
+            }
+        }
+
+
+
         //register
         public IActionResult Register()
         {
@@ -107,7 +117,40 @@ namespace DoAn.Areas.Admin.Controllers
         {
             var apiUrl = "https://localhost:7109/api/AdminApi/register";
 
-            if (!string.IsNullOrEmpty(registrationModel.Phone))
+            if (string.IsNullOrEmpty(registrationModel.Name))
+            {
+                ModelState.AddModelError("Name", "Name is required.");
+            }
+
+            if (string.IsNullOrEmpty(registrationModel.Username))
+            {
+                ModelState.AddModelError("Username", "Username is required.");
+            }
+            if (string.IsNullOrEmpty(registrationModel.Password))
+            {
+                ModelState.AddModelError("Password", "Password is required.");
+            }
+            if (string.IsNullOrEmpty(registrationModel.Avatar))
+            {
+                ModelState.AddModelError("Avatar", "Avatar is required.");
+            }
+            if (string.IsNullOrEmpty(registrationModel.Phone))
+            {
+                ModelState.AddModelError("Phone", "Phone is required.");
+            }
+            if (string.IsNullOrEmpty(registrationModel.Address))
+            {
+                ModelState.AddModelError("Address", "Address is required.");
+            }
+            if (string.IsNullOrEmpty(registrationModel.Email))
+            {
+                ModelState.AddModelError("Email", "Email is required.");
+            }
+            if (string.IsNullOrEmpty(registrationModel.Phone))
+            {
+                ModelState.AddModelError("Phone", "Phone is required.");
+            }
+            else
             {
                 var phoneRegex = new Regex(@"^(03|05|07|08|09|01[2|6|8|9])(?!84)[0-9]{8}$");
                 if (!phoneRegex.IsMatch(registrationModel.Phone) || registrationModel.Phone.Length > 10)
@@ -115,6 +158,16 @@ namespace DoAn.Areas.Admin.Controllers
                     ModelState.AddModelError("Phone", "Invalid Vietnamese phone number");
                 }
             }
+            if (string.IsNullOrEmpty(Request.Form["BranchId"]))
+            {
+                ModelState.AddModelError("BranchId", "Branch is required.");
+            }
+
+            if (string.IsNullOrEmpty(Request.Form["RoleId"]))
+            {
+                ModelState.AddModelError("RoleId", "Role is required.");
+            }
+
 
             if (ModelState.IsValid)
             {
@@ -199,6 +252,11 @@ namespace DoAn.Areas.Admin.Controllers
         public IActionResult Edit(int staffId)
         {
             var staff = db.Staff.Find(staffId);
+            var roles = db.Roles.ToList();
+            var branches = db.Branches.ToList();
+
+            ViewBag.Roles = new SelectList(roles, "RoleId", "Name");
+            ViewBag.Branches = new SelectList(branches, "BranchId", "Address");
             if (staff == null)
             {
                 return NotFound();

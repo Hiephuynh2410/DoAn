@@ -34,7 +34,7 @@
                          class="img-fluid" alt="Phone image">
                 </div>
                 <div class="col-md-8 col-lg-7 col-xl-6">
-                    @using (Html.BeginForm("Index", "Staff", FormMethod.Post))
+                    @using (Html.BeginForm("Login", "Staff", FormMethod.Post))
                     {
                         @Html.ValidationSummary(false, "", new { @class = "text-danger" })
                         <div class="wrapper-img">
@@ -43,19 +43,19 @@
                                 <div class="form-outline mb-4">
                                     <label class="form-label" for="form1Example23">UserName</label>
                                     @Html.TextBoxFor(model => model.Username, new { @class = "form-control", @autofocus = "autofocus", @placeholder = "Username....." })
-                                    @ViewData["ErrorAccount"]
                                 </div>
 
                                 <!-- Password input -->
                                 <div class="form-outline mb-4">
                                     <label class="form-label" for="form1Example23">PassWord</label>
                                     @Html.PasswordFor(model => model.Password, new { @class = "form-control", @placeholder = "Password....." })
-                                    @ViewData["ErrorPass"]
                                 </div>
 
 
                                 <!-- Submit button -->
                                 <button type="submit" class="btn btn-primary btn-lg btn-block">Sign in</button>
+                                @Html.Raw(TempData["msg"])
+                                @ViewData["ErrorMessage"]
                             </form>
                         </div>
                     }

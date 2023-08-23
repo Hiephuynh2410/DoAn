@@ -27,7 +27,7 @@ public partial class DlctContext : DbContext
 
     public virtual DbSet<Cart> Carts { get; set; }
 
-    public virtual DbSet<Cilent> Cilents { get; set; }
+    public virtual DbSet<Client> Clients { get; set; }
 
     public virtual DbSet<Combo> Combos { get; set; }
 
@@ -64,15 +64,15 @@ public partial class DlctContext : DbContext
             entity.Property(e => e.BillId)
                 .ValueGeneratedNever()
                 .HasColumnName("Bill_id");
-            entity.Property(e => e.CilentId).HasColumnName("Cilent_id");
+            entity.Property(e => e.ClientId).HasColumnName("Client_id");
             entity.Property(e => e.CreatedAt)
                 .HasMaxLength(10)
                 .IsFixedLength()
                 .HasColumnName("Created_at");
             entity.Property(e => e.Date).HasColumnType("datetime");
 
-            entity.HasOne(d => d.Cilent).WithMany(p => p.Bills)
-                .HasForeignKey(d => d.CilentId)
+            entity.HasOne(d => d.Client).WithMany(p => p.Bills)
+                .HasForeignKey(d => d.ClientId)
                 .HasConstraintName("FK_BILL_CILENT");
         });
 
@@ -101,11 +101,10 @@ public partial class DlctContext : DbContext
             entity.ToTable("BOOKING");
 
             entity.Property(e => e.BookingId).HasColumnName("Booking_id");
-            entity.Property(e => e.CilentId).HasColumnName("Cilent_id");
+            entity.Property(e => e.ClientId).HasColumnName("Client_id");
             entity.Property(e => e.ComboId).HasColumnName("Combo_id");
             entity.Property(e => e.CreatedAt)
-                .HasMaxLength(10)
-                .IsFixedLength()
+                .HasColumnType("datetime")
                 .HasColumnName("Created_at");
             entity.Property(e => e.DateTime)
                 .HasColumnType("datetime")
@@ -116,8 +115,8 @@ public partial class DlctContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.StaffId).HasColumnName("Staff_id");
 
-            entity.HasOne(d => d.Cilent).WithMany(p => p.Bookings)
-                .HasForeignKey(d => d.CilentId)
+            entity.HasOne(d => d.Client).WithMany(p => p.Bookings)
+                .HasForeignKey(d => d.ClientId)
                 .HasConstraintName("FK_BOOKING_CILENT");
 
             entity.HasOne(d => d.Combo).WithMany(p => p.Bookings)
@@ -180,23 +179,21 @@ public partial class DlctContext : DbContext
                 .HasConstraintName("FK_CART_CILENT");
         });
 
-        modelBuilder.Entity<Cilent>(entity =>
+        modelBuilder.Entity<Client>(entity =>
         {
-            entity.ToTable("CILENT");
+            entity.HasKey(e => e.ClientId).HasName("PK_CILENT");
 
-            entity.Property(e => e.CilentId).HasColumnName("Cilent__id");
+            entity.ToTable("CLIENT");
+
+            entity.Property(e => e.ClientId).HasColumnName("Client__id");
             entity.Property(e => e.Address).HasMaxLength(255);
             entity.Property(e => e.Avatar)
                 .HasMaxLength(255)
                 .IsUnicode(false);
             entity.Property(e => e.CreatedAt)
-                .HasMaxLength(10)
-                .IsFixedLength()
+                .HasColumnType("datetime")
                 .HasColumnName("Created_at");
-            entity.Property(e => e.CreatedBy)
-                .HasMaxLength(10)
-                .IsFixedLength()
-                .HasColumnName("Created_by");
+            entity.Property(e => e.CreatedBy).HasColumnName("Created_by");
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .IsUnicode(false);
@@ -209,18 +206,14 @@ public partial class DlctContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.RoleId).HasColumnName("Role_id");
             entity.Property(e => e.UpdatedAt)
-                .HasMaxLength(10)
-                .IsFixedLength()
+                .HasColumnType("datetime")
                 .HasColumnName("Updated_at");
-            entity.Property(e => e.UpdatedBy)
-                .HasMaxLength(10)
-                .IsFixedLength()
-                .HasColumnName("Updated_by");
+            entity.Property(e => e.UpdatedBy).HasColumnName("Updated_by");
             entity.Property(e => e.Username)
                 .HasMaxLength(255)
                 .IsUnicode(false);
 
-            entity.HasOne(d => d.Role).WithMany(p => p.Cilents)
+            entity.HasOne(d => d.Role).WithMany(p => p.Clients)
                 .HasForeignKey(d => d.RoleId)
                 .HasConstraintName("FK_CILENT_ROLE");
         });
@@ -230,7 +223,23 @@ public partial class DlctContext : DbContext
             entity.ToTable("COMBO");
 
             entity.Property(e => e.ComboId).HasColumnName("Combo_id");
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("Created_at");
+            entity.Property(e => e.CreatedBy).HasColumnName("Created_by");
             entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("Updated_at");
+            entity.Property(e => e.UpdatedBy).HasColumnName("Updated_by");
+
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ComboCreatedByNavigations)
+                .HasForeignKey(d => d.CreatedBy)
+                .HasConstraintName("FK_COMBO_STAFF");
+
+            entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.ComboUpdatedByNavigations)
+                .HasForeignKey(d => d.UpdatedBy)
+                .HasConstraintName("FK_COMBO_STAFF1");
         });
 
         modelBuilder.Entity<Combodetail>(entity =>
@@ -258,6 +267,10 @@ public partial class DlctContext : DbContext
             entity.ToTable("PRODUCT");
 
             entity.Property(e => e.ProductId).HasColumnName("Product_id");
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("Created_at");
+            entity.Property(e => e.CreatedBy).HasColumnName("Created_by");
             entity.Property(e => e.Description).HasMaxLength(255);
             entity.Property(e => e.Image)
                 .HasMaxLength(255)
@@ -265,16 +278,26 @@ public partial class DlctContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.ProductTypeId).HasColumnName("Product_type_id");
             entity.Property(e => e.ProviderId).HasColumnName("Provider_id");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("Updated_at");
+            entity.Property(e => e.UpdatedBy).HasColumnName("Updated_by");
+
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ProductCreatedByNavigations)
+                .HasForeignKey(d => d.CreatedBy)
+                .HasConstraintName("FK_PRODUCT_STAFF");
 
             entity.HasOne(d => d.ProductType).WithMany(p => p.Products)
                 .HasForeignKey(d => d.ProductTypeId)
-                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_PRODUCT_PRODUCTTYPE");
 
             entity.HasOne(d => d.Provider).WithMany(p => p.Products)
                 .HasForeignKey(d => d.ProviderId)
-                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_PRODUCT_PROVIDER");
+
+            entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.ProductUpdatedByNavigations)
+                .HasForeignKey(d => d.UpdatedBy)
+                .HasConstraintName("FK_PRODUCT_STAFF2");
         });
 
         modelBuilder.Entity<Producttype>(entity =>
@@ -334,7 +357,7 @@ public partial class DlctContext : DbContext
             entity.HasOne(d => d.Staff).WithMany(p => p.Scheduledetails)
                 .HasForeignKey(d => d.StaffId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_SCHEDULEDETAIL_STAFF");
+                .HasConstraintName("FK_SCHEDULEDETAIL_STAFF1");
         });
 
         modelBuilder.Entity<Service>(entity =>
@@ -342,12 +365,28 @@ public partial class DlctContext : DbContext
             entity.ToTable("SERVICE");
 
             entity.Property(e => e.ServiceId).HasColumnName("Service_id");
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("Created_at");
+            entity.Property(e => e.CreatedBy).HasColumnName("Created_by");
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.ServiceTypeId).HasColumnName("Service_type_id");
+            entity.Property(e => e.UpdatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("Updated_at");
+            entity.Property(e => e.UpdatedBy).HasColumnName("Updated_by");
+
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ServiceCreatedByNavigations)
+                .HasForeignKey(d => d.CreatedBy)
+                .HasConstraintName("FK_SERVICE_STAFF");
 
             entity.HasOne(d => d.ServiceType).WithMany(p => p.Services)
                 .HasForeignKey(d => d.ServiceTypeId)
                 .HasConstraintName("FK_SERVICE_ServiceType");
+
+            entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.ServiceUpdatedByNavigations)
+                .HasForeignKey(d => d.UpdatedBy)
+                .HasConstraintName("FK_SERVICE_STAFF1");
         });
 
         modelBuilder.Entity<Servicetype>(entity =>
@@ -371,13 +410,9 @@ public partial class DlctContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.BranchId).HasColumnName("Branch_id");
             entity.Property(e => e.CreatedAt)
-                .HasMaxLength(10)
-                .IsFixedLength()
+                .HasColumnType("datetime")
                 .HasColumnName("Created_at");
-            entity.Property(e => e.CreatedBy)
-                .HasMaxLength(10)
-                .IsFixedLength()
-                .HasColumnName("Created_by");
+            entity.Property(e => e.CreatedBy).HasColumnName("Created_by");
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .IsUnicode(false);
@@ -389,15 +424,10 @@ public partial class DlctContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false);
             entity.Property(e => e.RoleId).HasColumnName("Role_id");
-            entity.Property(e => e.Status).HasDefaultValueSql("((1))");
             entity.Property(e => e.UpdatedAt)
-                .HasMaxLength(10)
-                .IsFixedLength()
+                .HasColumnType("datetime")
                 .HasColumnName("Updated_at");
-            entity.Property(e => e.UpdatedBy)
-                .HasMaxLength(10)
-                .IsFixedLength()
-                .HasColumnName("Updated_by");
+            entity.Property(e => e.UpdatedBy).HasColumnName("Updated_by");
             entity.Property(e => e.Username)
                 .HasMaxLength(255)
                 .IsUnicode(false);

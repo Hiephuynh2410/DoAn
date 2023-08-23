@@ -54,9 +54,45 @@
                 <div class="img-wrap" style="align-items:center">
                     <input type="file" name="fileUpload" id="fileUpload" accept="image/*" style="display:none;" />
                     <input type="button" id="btnUpload" value="Chọn ảnh" class="btn btn-danger" />
-                    <img style="width:44%" class="wrapper-img" src="" id="pictureUpload" />
+                    <img class="wrapper-img" src="" id="pictureUpload" />
                 </div>
             </div>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+            @section upload
+                {
+                <script>
+                    $(function () {
+                        $('#btnUpload').click(function () {
+                            $('#fileUpload').trigger('click');
+                        });
+                    });
+                    $('#fileUpload').change(function () {
+                        if (window.FormData !== undefined) {
+                            var fileUpload = $('#fileUpload').get(0);
+                            var files = fileUpload.files;
+                            var formData = new FormData();
+                            formData.append('file', files[0]);
+
+                            $.ajax(
+                                {
+                                    type: 'POST',
+                                    url: '@Url.Action("ProcessUpload", "Staff")',
+                                    contentType: false,
+                                    processData: false,
+                                    data: formData,
+                                    success: function (urlImage) {
+                                        $('#pictureUpload').attr('src', urlImage);
+                                        $('#Avatar').val(urlImage);
+                                    },
+                                    error: function (err) {
+                                        alert('Error ', err.statusText);
+                                    }
+                                });
+                        }
+                    });
+                </script>
+            }
+
             <div class="form-group">
                 <label asp-for="Address" class="control-label"></label>
                 <input asp-for="Address" class="form-control" />
@@ -81,15 +117,12 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="RoleId" class="control-label"></label>
-                <select asp-for="RoleId" class="form-control" asp-items="ViewBag.RoleId"></select>
-                <span asp-validation-for="RoleId" class="text-danger"></span>
+                <label for="RoleId">Role:</label>
+                @Html.DropDownList("RoleId", (SelectList)ViewBag.Roles, "Select a role", new { @class = "form-control" })
             </div>
-           
             <div class="form-group">
-                <label asp-for="BranchId" class="control-label"></label>
-                <select asp-for="BranchId" class="form-control" asp-items="ViewBag.BranchId"></select>
-                <span asp-validation-for="BranchId" class="text-danger"></span>
+                <label for="BranchId">Branch:</label>
+                @Html.DropDownList("BranchId", (SelectList)ViewBag.Branches, "Select a branch", new { @class = "form-control" })
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -102,39 +135,3 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@*nút thêm ảnh*@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-@section upload
-    {
-    <script>
-        $(function () {
-            $('#btnUpload').click(function () {
-                $('#fileUpload').trigger('click');
-            });
-        });
-        $('#fileUpload').change(function () {
-            if (window.FormData !== undefined) {
-                var fileUpload = $('#fileUpload').get(0);
-                var files = fileUpload.files;
-                var formData = new FormData();
-                formData.append('file', files[0]);
-
-                $.ajax(
-                    {
-                        type: 'POST',
-                        url: '/Client/ProcessUpload',
-                        contentType: false,
-                        processData: false,
-                        data: formData,
-                        success: function (urlImage) {
-                            $('#pictureUpload').attr('src', urlImage);
-                            $('#Avatar').val(urlImage);
-                        },
-                        error: function (err) {
-                            alert('Error ', err.statusText);
-                        }
-                    });
-            }
-        });
-    </script>
-}
