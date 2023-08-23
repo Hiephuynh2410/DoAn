@@ -65,6 +65,12 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            if (HttpContext.Session.TryGetValue("RoleId", out byte[] roleIdBytes))
+            {
+                int roleId = BitConverter.ToInt32(roleIdBytes, 0);
+                ViewBag.UserRole = roleId;
+                // Nếu bạn muốn thực hiện thêm xử lý, ví dụ như truy vấn thông tin Role từ CSDL dựa trên roleId, thì bạn có thể thực hiện ở đây.
+            }
             return View();
         }
 
@@ -81,16 +87,15 @@ namespace DoAn.Areas.Admin.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                var user = JsonConvert.DeserializeObject<Staff>(responseContent);
+                var user = JsonConvert.DeserializeObject<Role>(responseContent);
 
                 // Store the user's role ID in session
-                HttpContext.Session.SetInt32("RoleId", user.Role.RoleId);
+                HttpContext.Session.SetInt32("RoleId", user.RoleId);
 
                 // Set UserRole in ViewBag
-                ViewBag.UserRole = user.RoleId;
+                TempData["UserRole"] = user.RoleId;
 
-                // Redirect to Index action of Staff controller
-                return RedirectToAction("Index", "Staff");
+                return RedirectToAction("Index", "Staff"); // Redirect to Index action of Home controller
             }
             else
             {
