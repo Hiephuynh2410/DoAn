@@ -3,8 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http;
+using DoAn.Data;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DoAn.Areas.Admin.Controllers
 {
@@ -16,6 +20,39 @@ namespace DoAn.Areas.Admin.Controllers
         public StaffController()
         {
             _httpClient = new HttpClient();
+        }
+
+        [HttpGet]
+        public ActionResult login()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult login(Staff staff)
+        {
+            var tendangnhap = Request.Form["UserName"].ToString(); 
+            var matkhau = Request.Form["Password"].ToString();
+
+            Staff nv = db.Staff.FirstOrDefault(x => x.Username == tendangnhap && x.Password == matkhau);
+
+            if (nv != null)
+            {
+                HttpContext.Session.SetString("Username", nv.Username);
+                HttpContext.Session.SetString("Role", nv.RoleId.ToString());
+                TempData["UserRole"] = nv.RoleId;
+                return RedirectToAction("Index", "Combo");
+            }
+            else if (nv == null)
+            {
+                ViewData["ErrorAccount"] = "sai mật khẩu hoặc Tên đăng nhập không tồn tại vui lòng nhập lại";
+                return this.login();
+            }
+            else
+            {
+                ViewData["ErrorPass"] = "Mật khẩu không đúng";
+                return this.login();
+            }
+            return RedirectToAction("Index", "Combo");
         }
 
         //button choose image
@@ -60,50 +97,6 @@ namespace DoAn.Areas.Admin.Controllers
                 return View(staffList);
             }
         }
-
-
-        [HttpGet]
-        public IActionResult Login()
-        {
-            if (HttpContext.Session.TryGetValue("RoleId", out byte[] roleIdBytes))
-            {
-                int roleId = BitConverter.ToInt32(roleIdBytes, 0);
-                ViewBag.UserRole = roleId;
-                // Nếu bạn muốn thực hiện thêm xử lý, ví dụ như truy vấn thông tin Role từ CSDL dựa trên roleId, thì bạn có thể thực hiện ở đây.
-            }
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Login(Staff loginModel)
-        {
-            var apiUrl = "https://localhost:7109/api/AdminApi/login";
-
-            var json = JsonConvert.SerializeObject(loginModel);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PostAsync(apiUrl, content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var user = JsonConvert.DeserializeObject<Role>(responseContent);
-
-                // Store the user's role ID in session
-                HttpContext.Session.SetInt32("RoleId", user.RoleId);
-
-                // Set UserRole in ViewBag
-                TempData["UserRole"] = user.RoleId;
-
-                return RedirectToAction("Index", "Staff"); // Redirect to Index action of Home controller
-            }
-            else
-            {
-                ViewData["ErrorMessage"] = "Invalid username or password";
-                return View("Login", loginModel); // Return the Login view with the error message
-            }
-        }
-
 
 
         //register

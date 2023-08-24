@@ -9,9 +9,7 @@
     <link rel="stylesheet" href="~/css/styles.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DoAn.styles.css" asp-append-version="true" />
-    <!-- Include Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
 </head>
 <body>
     <!--  Body Wrapper -->
@@ -19,22 +17,27 @@
          data-sidebar-position="fixed" data-header-position="fixed">
         <!-- Sidebar Start -->
         <aside class="left-sidebar">
+            <div class="brand-logo d-flex align-items-center justify-content-between">
+                <a href="./index.html" class="text-nowrap logo-img">
+                    <img src="~/images/logos/dark-logo.svg" width="180" alt="" />
+                </a>
+                <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+                    <i class="ti ti-x fs-8"></i>
+                </div>
+            </div>
             <!-- Sidebar scroll-->
             <div>
-              
-                    @Html.Partial("_SidebarAdmin") 
+                @Html.Partial("_SidebarAdmin") 
                 <!-- End Sidebar navigation -->
-            </div>
+            </div> 
             <!-- End Sidebar scroll-->
         </aside>
-        <!--  Sidebar End -->
         <!--  Main wrapper -->
         <div class="body-wrapper">
             <!--  Header Start -->
             @Html.Partial("_HeaderAdmin")
             <!--  Header End -->
             <div class="container-fluid">
-                <!--  Row 1 -->
                @RenderBody()
             </div>
         </div>
@@ -43,18 +46,14 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/sidebarmenu.js"></script>
     <script src="~/js/app.min.js"></script>
-    <script src="~/lib/apexcharts/dist/apexcharts.min.js"></script>
-    <script src="~/lib/simplebar/dist/simplebar.js"></script>
     <script src="~/js/dashboard.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <!-- Include Bootstrap JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
     @RenderSection("upload", required: false)
 </body>

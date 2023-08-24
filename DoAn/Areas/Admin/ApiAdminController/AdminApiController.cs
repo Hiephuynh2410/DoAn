@@ -1,5 +1,7 @@
 ﻿using DoAn.Data;
 using DoAn.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,34 +18,65 @@ namespace DoAn.Areas.Admin.ApiAdminController
     public class AdminApiController : Controller
     {
         private readonly DlctContext _dbContext;
-        public AdminApiController(DlctContext dbContext)
+        private readonly IConfiguration _configuration;
+        public AdminApiController(DlctContext dbContext, IConfiguration configuration)
         {
             _dbContext = dbContext;
+            _configuration = configuration;
         }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginModel loginModel)
         {
-            if (ModelState.IsValid)
+            var user = await _dbContext.Staff
+                .Include(s => s.Role)
+                .FirstOrDefaultAsync(u => u.Username == loginModel.Username);
+
+            if (user == null || !VerifyPasswordHash(loginModel.Password, user.Password))
             {
-                var staff = await _dbContext.Staff.FirstOrDefaultAsync(s => s.Username == loginModel.Username);
-
-                if (staff != null)
-                {
-                    var passwordHasher = new PasswordHasher<Staff>();
-                    var result = passwordHasher.VerifyHashedPassword(staff, staff.Password, loginModel.Password);
-
-                    if (result == PasswordVerificationResult.Success)
-                    {
-                        return Ok(new { Message = "Login successful", RoleId = staff.RoleId });
-                    }
-                }
-
-                return Unauthorized(new { Message = "Invalid username or password" });
+                return Unauthorized();
             }
 
-            return BadRequest(new { Message = "Invalid login data" });
+            var token = GenerateJwtToken(user);
+
+            var response = new
+            {
+                UserId = user.StaffId,
+                RoleId = user.Role?.Name,
+                Token = token
+            };
+
+            return Ok(response);
         }
 
+        private bool VerifyPasswordHash(string password, string storedHash)
+        {
+            var passwordHasher = new PasswordHasher<Staff>();
+            var result = passwordHasher.VerifyHashedPassword(null, storedHash, password);
+            return result == PasswordVerificationResult.Success;
+        }
+
+        private string GenerateJwtToken(Staff user)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.StaffId.ToString()),
+                new Claim(ClaimTypes.Role, user.Role?.RoleId.ToString()), // Assuming RoleId is an integer
+            };
+
+            var token = new JwtSecurityToken(
+                _configuration["Jwt:Issuer"],
+                _configuration["Jwt:Issuer"],
+                claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: credentials);
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            return tokenHandler.WriteToken(token);
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetAllStaff()
