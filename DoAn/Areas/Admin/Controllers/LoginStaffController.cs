@@ -9,10 +9,10 @@ namespace DoAn.Areas.Admin.Controllers
     {
         DlctContext db = new DlctContext();
         [HttpGet]
-        public ActionResult login()
+        public ActionResult login(Staff nv)
         {
-            bool showStaffMenu = true; 
-            ViewBag.ShowStaffMenu = showStaffMenu;
+            TempData["UserRole"] = nv.RoleId;
+            TempData["UserAvatar"] = nv.Avatar;
             return View();
         }
         [HttpPost]
@@ -30,10 +30,10 @@ namespace DoAn.Areas.Admin.Controllers
 
                 if (passwordVerificationResult == PasswordVerificationResult.Success)
                 {
-                    HttpContext.Session.SetString("Username", nv.Username);
-                    HttpContext.Session.SetString("Role", nv.RoleId.ToString());
+                    //HttpContext.Session.SetString("Username", nv.Username);
+                    //HttpContext.Session.SetString("Role", nv.RoleId.ToString());
                     TempData["UserRole"] = nv.RoleId;
-                    ViewData["UserAvatar"] = nv.Avatar;
+                    TempData["UserAvatar"] = nv.Avatar;
 
                     return RedirectToAction("Index", "Combo");
                 }

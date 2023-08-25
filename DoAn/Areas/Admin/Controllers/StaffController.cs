@@ -61,7 +61,7 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 var staffList = await db.Staff
                    .Include(s => s.Branch)
-                   .Include(s => s.Role)
+                   .Include(s => s.RoleId)
                    .ToListAsync();
                 return View(staffList);
             }
