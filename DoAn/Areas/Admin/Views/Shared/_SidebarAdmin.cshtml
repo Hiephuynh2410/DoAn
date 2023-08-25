@@ -1,4 +1,7 @@
-﻿@using Microsoft.AspNetCore.Http
+﻿    @using Microsoft.AspNetCore.Http
+@{
+    string userRole = Context.Session.GetString("Role");
+}
 
 <div class="upload-section">
     <div id="sidebar-container">
@@ -20,12 +23,15 @@
                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                     <span class="hide-menu">UI COMPONENTS</span>
                 </li>
-                <li class="sidebar-item" id="staffMenuItem">
-                    <a class="sidebar-link" href="@Url.Action("Index", "Staff")">
-                        <i class="ti ti-bolt"></i>
-                        <span class="hide-menu">Staff</span>
-                    </a>
-                </li>
+                @if (userRole == "1")
+                {
+                    <li class="sidebar-item">   
+                        <a class="sidebar-link" href="@Url.Action("Index", "Staff")">
+                            <i class="ti ti-bolt"></i>
+                            <span class="hide-menu">Staff</span>
+                        </a>
+                    </li>
+                }
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="@Url.Action("Index", "Provider")">
                         <i class="ti ti-cards"></i>
@@ -94,26 +100,3 @@
     <!-- Sidebar navigation-->
 
 </div>
-<script>
-    function updateStaffMenuItemVisibility() {
-        var userRole = @((int)(TempData["UserRole"] ?? 0));
-        console.log("User Role:", userRole);
-        var staffMenuItem = document.getElementById("staffMenuItem");
-
-        if (staffMenuItem) {
-            if (userRole === 2) {
-                staffMenuItem.style.display = "none";
-            } else {
-                staffMenuItem.style.display = "block"; // Show the menu item for other roles
-            }
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        updateStaffMenuItemVisibility();
-    });
-
-    document.addEventListener("userRoleChanged", function () {
-        updateStaffMenuItemVisibility();
-    });
-</script>

@@ -1,7 +1,7 @@
 ﻿using DoAn.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Http;
 namespace DoAn.Areas.Admin.Controllers
 {
     [Area("Admin")]
@@ -30,10 +30,10 @@ namespace DoAn.Areas.Admin.Controllers
 
                 if (passwordVerificationResult == PasswordVerificationResult.Success)
                 {
-                    //HttpContext.Session.SetString("Username", nv.Username);
-                    //HttpContext.Session.SetString("Role", nv.RoleId.ToString());
-                    TempData["UserRole"] = nv.RoleId;
-                    TempData["UserAvatar"] = nv.Avatar;
+                    HttpContext.Session.SetString("Username", nv.Username);
+                    HttpContext.Session.SetString("Role", nv.RoleId.ToString());
+                    //TempData["UserRole"] = nv.RoleId;
+                    //TempData["UserAvatar"] = nv.Avatar;
 
                     return RedirectToAction("Index", "Combo");
                 }
