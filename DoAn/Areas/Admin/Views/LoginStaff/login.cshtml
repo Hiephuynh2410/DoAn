@@ -34,7 +34,7 @@
                          class="img-fluid" alt="Phone image">
                 </div>
                 <div class="col-md-8 col-lg-7 col-xl-6">
-                    @using (Html.BeginForm("login", "Staff", FormMethod.Post))
+                    @using (Html.BeginForm("login", "LoginStaff", FormMethod.Post))
                     {
                         @Html.ValidationSummary(false, "", new { @class = "text-danger" })
                         <div class="wrapper-img">

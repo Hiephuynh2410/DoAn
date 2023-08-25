@@ -1,57 +1,54 @@
-﻿//using DoAn.Models;
-//using Microsoft.AspNetCore.Mvc;
+﻿using DoAn.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
-//namespace DoAn.Areas.Admin.Controllers
-//{
-//    public class LoginStaffController : Controller
-//    {
-//        DlctContext db = new DlctContext();
-//        [HttpGet]
-//        public ActionResult DangNhap()
-//        {
-//            return View();
-//        }
-//        [HttpPost]
-//        public ActionResult DangNhap(FormCollection collection, Staff nhanvien)
-//        {
-//            var tendangnhap = collection["UserName"];
-//            var matkhau = collection["Password"];
-//            var email = collection["Email"];
+namespace DoAn.Areas.Admin.Controllers
+{
+    [Area("Admin")]
+    public class LoginStaffController : Controller
+    {
+        DlctContext db = new DlctContext();
+        [HttpGet]
+        public ActionResult login()
+        {
+            bool showStaffMenu = true; 
+            ViewBag.ShowStaffMenu = showStaffMenu;
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Login(Staff staff)
+        {
+            var UserName = Request.Form["Username"].ToString();
+            var Passwword = Request.Form["Password"].ToString();
 
-//            Staff nv = db.Staff.FirstOrDefault(x => x.Username == tendangnhap && x.Password == matkhau);
+            Staff nv = db.Staff.FirstOrDefault(x => x.Username == UserName);
 
-//            if (nv != null)
-//            {
-//                ViewBag.ThongBao = "Chúc mừng đăng nhập thà nh công";
-//                HttpContext.Session.SetString("User", nv.);
-//                HttpContext.Session.SetInt32("CHucVU", nv.CHUCVU.MaCV ?? 0);
-//                HttpContext.Session.SetInt32("TaiKhoan", nv.MaNV);
-//                HttpContext.Session.SetString("CHucVU1", nv.CHUCVU.TenCV);
-//                HttpContext.Session.SetString("User", nv.UserName);
-//                HttpContext.Session.SetInt32("Account", nv.MaCV ?? 0);
-//                HttpContext.Session.SetString("FullTaiKhoan", nv.ToString());
-//                HttpContext.Session.SetInt32("TaiKhoanAdmin", nv.MaNV ?? 0);
-//                HttpContext.Session.SetString("Image", nv.HinhNV);
+            if (nv != null)
+            {
+                var passwordHasher = new PasswordHasher<Staff>();
+                var passwordVerificationResult = passwordHasher.VerifyHashedPassword(nv, nv.Password, Passwword);
 
+                if (passwordVerificationResult == PasswordVerificationResult.Success)
+                {
+                    HttpContext.Session.SetString("Username", nv.Username);
+                    HttpContext.Session.SetString("Role", nv.RoleId.ToString());
+                    TempData["UserRole"] = nv.RoleId;
+                    ViewData["UserAvatar"] = nv.Avatar;
 
-//            }
-//            else if (nv == null)
-//            {
-//                ViewData["ErrorAccount"] = "sai mật khẩu hoặc Tên đăng nhập không tồn tại vui lòng nhập lại";
-//                return this.DangNhap();
-//            }
-//            else
-//            {
-//                ViewData["ErrorPass"] = "Mật khẩu không đúng";
-//                return this.DangNhap();
-//            }
-//            return RedirectToAction("Index", "NhanVien");
-//        }
+                    return RedirectToAction("Index", "Combo");
+                }
+                else
+                {
+                    ViewData["ErrorPass"] = "Mật khẩu không đúng";
+                }
+            }
+            else
+            {
+                ViewData["ErrorAccount"] = "sai mật khẩu hoặc Tên đăng nhập không tồn tại vui lòng nhập lại";
+            }
 
-//        public ActionResult Logout()
-//        {
-//            Session["User"] = null;
-//            return RedirectToAction("DangNhap", "LoginAdmin");
-//        }
-//    }
-//}
+            return View("Login");
+        }
+
+    }
+}

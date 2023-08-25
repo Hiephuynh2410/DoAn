@@ -22,38 +22,7 @@ namespace DoAn.Areas.Admin.Controllers
             _httpClient = new HttpClient();
         }
 
-        [HttpGet]
-        public ActionResult login()
-        {
-            return View();
-        }
-        [HttpPost]
-        public ActionResult login(Staff staff)
-        {
-            var tendangnhap = Request.Form["UserName"].ToString(); 
-            var matkhau = Request.Form["Password"].ToString();
-
-            Staff nv = db.Staff.FirstOrDefault(x => x.Username == tendangnhap && x.Password == matkhau);
-
-            if (nv != null)
-            {
-                HttpContext.Session.SetString("Username", nv.Username);
-                HttpContext.Session.SetString("Role", nv.RoleId.ToString());
-                TempData["UserRole"] = nv.RoleId;
-                return RedirectToAction("Index", "Combo");
-            }
-            else if (nv == null)
-            {
-                ViewData["ErrorAccount"] = "sai mật khẩu hoặc Tên đăng nhập không tồn tại vui lòng nhập lại";
-                return this.login();
-            }
-            else
-            {
-                ViewData["ErrorPass"] = "Mật khẩu không đúng";
-                return this.login();
-            }
-            return RedirectToAction("Index", "Combo");
-        }
+       
 
         //button choose image
         [HttpPost]

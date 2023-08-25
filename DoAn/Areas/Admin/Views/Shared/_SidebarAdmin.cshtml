@@ -1,4 +1,5 @@
-﻿
+﻿@using Microsoft.AspNetCore.Http
+
 <div class="upload-section">
     <div id="sidebar-container">
         <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
@@ -19,8 +20,14 @@
                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                     <span class="hide-menu">UI COMPONENTS</span>
                 </li>
+                <li class="sidebar-item" id="staffMenuItem">
+                    <a class="sidebar-link" href="@Url.Action("Index", "Staff")">
+                        <i class="ti ti-bolt"></i>
+                        <span class="hide-menu">Staff</span>
+                    </a>
+                </li>
 
-                @if (TempData["UserRole"]?.ToString() != "2")
+             @*   @if (TempData["UserRole"] != null && (int)TempData["UserRole"] != 2)
                 {
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="@Url.Action("Index", "Staff")">
@@ -28,8 +35,7 @@
                             <span class="hide-menu">Staff</span>
                         </a>
                     </li>
-                }
-
+                }*@
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="@Url.Action("Index", "Provider")">
                         <i class="ti ti-cards"></i>
@@ -99,18 +105,37 @@
    
 </div>
 <script>
-    $(document).ready(function () {
-        // Perform AJAX request when the page loads
-        loadSidebarContent();
+    // JavaScript code to hide/show the "Staff" menu item based on user role
+    //document.addEventListener("DOMContentLoaded", function () {
+    //    var userRole = @((int)(TempData["UserRole"] ?? 0));
+    //    console.log("User Role:", userRole);
+    //    var staffMenuItem = document.getElementById("staffMenuItem");
+
+    //    if (staffMenuItem && userRole === 2) {
+    //        staffMenuItem.style.display = "none";
+    //    } else {
+    //        staffMenuItem.style.display = "block"; // Show the menu item for other roles
+    //    }
+    //});
+    function updateStaffMenuItemVisibility() {
+        var userRole = @((int)(TempData["UserRole"] ?? 0));
+        console.log("User Role:", userRole);
+        var staffMenuItem = document.getElementById("staffMenuItem");
+
+        if (staffMenuItem) {
+            if (userRole === 2) {
+                staffMenuItem.style.display = "none";
+            } else {
+                staffMenuItem.style.display = "block"; // Show the menu item for other roles
+            }
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        updateStaffMenuItemVisibility();
     });
 
-    function loadSidebarContent() {
-        $.ajax({
-            url: '@Url.Action("login", "Staff")', // Replace with your controller and action names
-            method: 'POST',
-            success: function (data) {
-                $('#sidebar-container').html(data); // Update the sidebar content
-            }
-        });
-    }
+    document.addEventListener("userRoleChanged", function () {
+        updateStaffMenuItemVisibility();
+    });
 </script>
