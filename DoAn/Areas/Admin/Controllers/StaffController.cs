@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 using DoAn.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 
 namespace DoAn.Areas.Admin.Controllers
 {
@@ -22,8 +23,7 @@ namespace DoAn.Areas.Admin.Controllers
             _httpClient = new HttpClient();
         }
 
-       
-
+        
         //button choose image
         [HttpPost]
         public IActionResult ProcessUpload(IFormFile file)
@@ -67,13 +67,52 @@ namespace DoAn.Areas.Admin.Controllers
             }
         }
 
+        //login
+        [HttpGet]
+        public ActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(Staff staff)  // Change method name to "Login"
+        {
+            var UserName = Request.Form["Username"].ToString();
+            var Password = Request.Form["Password"].ToString();
+
+            Staff nv = db.Staff.FirstOrDefault(x => x.Username == UserName);
+
+            if (nv != null)
+            {
+                var passwordHasher = new PasswordHasher<Staff>();
+                var passwordVerificationResult = passwordHasher.VerifyHashedPassword(nv, nv.Password, Password);
+
+                if (passwordVerificationResult == PasswordVerificationResult.Success)
+                {
+                    HttpContext.Session.SetString("Username", nv.Username);
+                    HttpContext.Session.SetString("Avatar", nv.Avatar);
+                    HttpContext.Session.SetString("Role", nv.RoleId.ToString());
+
+                    return RedirectToAction("Index", "Combo");
+                }
+                else
+                {
+                    ViewData["ErrorPass"] = "Mật khẩu không đúng";
+                }
+            }
+            else
+            {
+                ViewData["ErrorAccount"] = "sai mật khẩu hoặc Tên đăng nhập không tồn tại vui lòng nhập lại";
+            }
+
+            return View("Login");
+        }
 
         //register
         public IActionResult Register()
         {
             var roles = db.Roles.ToList(); 
-            var branches = db.Branches.ToList(); 
-
+            var branches = db.Branches.ToList();
             ViewBag.Roles = new SelectList(roles, "RoleId", "Name");
             ViewBag.Branches = new SelectList(branches, "BranchId", "Address");
 
@@ -138,7 +177,7 @@ namespace DoAn.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                // Set the "Status" property to true by default if not explicitly set
+                registrationModel.RoleId = int.Parse(Request.Form["RoleId"]);
                 registrationModel.Status = Request.Form["Status"] == "true";
                 var json = JsonConvert.SerializeObject(registrationModel);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -147,6 +186,8 @@ namespace DoAn.Areas.Admin.Controllers
            
                 if (response.IsSuccessStatusCode)
                 {
+
+                    HttpContext.Session.SetString("Role", registrationModel.RoleId.ToString());
                     return RedirectToAction("Index");
                 }
                 else
@@ -171,7 +212,6 @@ namespace DoAn.Areas.Admin.Controllers
 
                     var roles = db.Roles.ToList();
                     var branches = db.Branches.ToList();
-
                     ViewBag.Roles = new SelectList(roles, "RoleId", "Name");
                     ViewBag.Branches = new SelectList(branches, "BranchId", "Address");
 
@@ -279,6 +319,21 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 return RedirectToAction("Index"); 
             }
+        }
+
+        //logout
+        public IActionResult Logout()
+        {
+            // Remove session keys related to user data
+            HttpContext.Session.Remove("Username");
+            HttpContext.Session.Remove("Avatar");
+            HttpContext.Session.Remove("Role");
+
+            // Invalidate the whole session
+            HttpContext.Session.Clear();
+
+            // Redirect to the login page or another suitable page
+            return RedirectToAction("Index", "Staff");
         }
     }
 }

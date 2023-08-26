@@ -1,6 +1,8 @@
 ﻿    @using Microsoft.AspNetCore.Http
 @{
     string userRole = Context.Session.GetString("Role");
+    bool isAdmin = userRole == "1";
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 }
 
 <div class="upload-section">
@@ -23,7 +25,7 @@
                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                     <span class="hide-menu">UI COMPONENTS</span>
                 </li>
-                @if (userRole == "1")
+                @if (isAdmin)
                 {
                     <li class="sidebar-item">   
                         <a class="sidebar-link" href="@Url.Action("Index", "Staff")">
@@ -59,21 +61,27 @@
                     <span class="hide-menu">AUTH</span>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="./authentication-login.html" aria-expanded="false">
-                        <span>
-                            <i class="ti ti-login"></i>
-                        </span>
-                        <span class="hide-menu">Login</span>
-                    </a>
+                    @if (Context.Session.GetString("Role") == null)
+                    {
+                        <a class="sidebar-link" href="@Url.Action("Login", "Staff", new { area = "Admin" })">
+                            <span>
+                                <i class="ti ti-login"></i>
+                            </span>
+                            LogIn
+                        </a>
+                    } else
+                    {
+                        <a class="sidebar-link" href="@Url.Action("Logout", "Staff", new { area = "Admin" })">
+                            <span>
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                            </span>
+                            LogOut
+                        </a>
+                        
+                    }
                 </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="./authentication-register.html" aria-expanded="false">
-                        <span>
-                            <i class="ti ti-user-plus"></i>
-                        </span>
-                        <span class="hide-menu">Register</span>
-                    </a>
-                </li>
+
+               
                 <li class="nav-small-cap">
                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                     <span class="hide-menu">EXTRA</span>

@@ -28,7 +28,7 @@ builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromSeconds(10);
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
@@ -60,7 +60,7 @@ app.UseEndpoints(endpoints =>
     );
     endpoints.MapGet("/", async context =>
     {
-        context.Response.Redirect("/Admin/LoginStaff/Login");
+        context.Response.Redirect("/Admin/Staff/Index");
     });
 });
 app.Run();
