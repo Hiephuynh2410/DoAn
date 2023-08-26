@@ -2,6 +2,7 @@
 
 @{
     string userAvatar = Context.Session.GetString("Avatar");
+    string userId = Context.Session.GetString("UserId");
 }
 
 <div class="upload-section-header">
@@ -13,12 +14,7 @@
                         <i class="ti ti-menu-2"></i>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link nav-icon-hover" href="javascript:void(0)">
-                        <i class="ti ti-bell-ringing"></i>
-                        <div class="notification bg-primary rounded-circle"></div>
-                    </a>
-                </li> 
+               
             </ul>
             <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
                 <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
@@ -39,17 +35,44 @@
                             <div class="message-body">
                                 <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
                                     <i class="ti ti-user fs-6"></i>
-                                    <p class="mb-0 fs-3">My Profile</p>
+                                    @if (Context.Session.GetString("Role") == null)
+                                    {
+                                        <p class="mb-0 fs-3">
+                                            My Profile
+                                        </p>
+                                    } else
+                                    {
+
+                                        @if (Context.Session.GetString("Role") == "1")
+                                        {
+                                            <p class="mb-0 fs-3">
+                                                <a class="mb-0 fs-3" href="@Url.Action("Edit", "Staff", new { staffId = userId })">Edit profile</a>
+                                            </p>
+                                        }
+                                        else
+                                        {
+                                            <p class="mb-0 fs-3">
+                                            </p>
+                                        }
+                                    }
                                 </a>
-                                <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                              @*  <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
                                     <i class="ti ti-mail fs-6"></i>
                                     <p class="mb-0 fs-3">My Account</p>
-                                </a>
-                                <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                                </a>*@
+                                @*<a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
                                     <i class="ti ti-list-check fs-6"></i>
                                     <p class="mb-0 fs-3">My Task</p>
-                                </a>
-                                <a href="./authentication-login.html" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+                                </a>*@
+                                @if (Context.Session.GetString("Role") == null)
+                                {
+                                    <a href="@Url.Action("Login", "Staff", new { area = "Admin" })" class="btn btn-outline-primary mx-3 mt-2 d-block">Login</a>
+
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("Logout", "Staff", new { area = "Admin" })" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+                                }
                             </div>
                         </div>
                     </li>
@@ -58,3 +81,21 @@
         </nav>
     </header>
 </div>
+<style>
+    .dropdown-menu {
+        left: auto; 
+        right: 0; 
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var dropdownTrigger = document.getElementById("drop2");
+        var dropdownMenu = document.querySelector(".dropdown-menu");
+
+        dropdownTrigger.addEventListener("click", function (event) {
+            event.preventDefault();
+            dropdownMenu.classList.toggle("show");
+        });
+    });
+</script>

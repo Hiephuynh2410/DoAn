@@ -6,27 +6,14 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-
-<!doctype html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Modernize Free</title>
-    <link rel="shortcut icon" type="image/png" href="~/images/logos/favicon.png" />
-    <link rel="stylesheet" href="~/css/styles.min.css" />
-</head>
-
-<body>
     <!--  Body Wrapper -->
     <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
          data-sidebar-position="fixed" data-header-position="fixed">
         <div class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
             <div class="d-flex align-items-center justify-content-center w-100">
-                <div class="row justify-content-center w-100">
-                    <div class="col-md-8 col-lg-6" style="margin-top:5rem">
-                        <div class="card mb-0">
+                    <div class="row justify-content-center w-100">
+                    <div class="col-md-8 col-lg-6" >
+                        <div class="card mb-0">    
                             <div class="card-body d-flex flex-column align-items-center">
                                 <a href="" class="text-nowrap logo-img text-center d-block py-3 w-100">
                                     <img src="~/images/logos/dark-logo.svg" width="180" alt="">
@@ -116,12 +103,50 @@
             </div>
         </div>
     </div>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
-</html>
-
+<div class="container">
+    <div class="text">
+        Contact us Form
+    </div>
+    <form action="#">
+        <div class="form-row">
+            <div class="input-data">
+                <input type="text" required>
+                <div class="underline"></div>
+                <label for="">First Name</label>
+            </div>
+            <div class="input-data">
+                <input type="text" required>
+                <div class="underline"></div>
+                <label for="">Last Name</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="input-data">
+                <input type="text" required>
+                <div class="underline"></div>
+                <label for="">Email Address</label>
+            </div>
+            <div class="input-data">
+                <input type="text" required>
+                <div class="underline"></div>
+                <label for="">Website Name</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="input-data textarea">
+                <textarea rows="8" cols="80" required></textarea>
+                <br />
+                <div class="underline"></div>
+                <label for="">Write your message</label>
+                <br />
+                <div class="form-row submit-btn">
+                    <div class="input-data">
+                        <div class="inner"></div>
+                        <input type="submit" value="submit">
+                    </div>
+                </div>
+    </form>
+</div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 @section upload {
     <script>
@@ -191,4 +216,5 @@
     .indicator-hidden {
         display: none;
     }
+
 </style>

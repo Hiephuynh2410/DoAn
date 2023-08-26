@@ -91,6 +91,7 @@ namespace DoAn.Areas.Admin.Controllers
                 {
                     HttpContext.Session.SetString("Username", nv.Username);
                     HttpContext.Session.SetString("Avatar", nv.Avatar);
+                    HttpContext.Session.SetString("UserId", nv.StaffId.ToString());
                     HttpContext.Session.SetString("Role", nv.RoleId.ToString());
 
                     return RedirectToAction("Index", "Combo");

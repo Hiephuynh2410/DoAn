@@ -64,7 +64,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
 
             var invalidDataErrorResponse = new
             {
-                Message = "Invalid Provider data",
+                Message = "Invalid Provider data", 
                 Errors = ModelState.Values
                     .SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage)

@@ -29,3 +29,13 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1000;
 }
+
+/* Add responsive styles for smaller screens */
+@media (max-width: 768px) {
+    .col-md-8 {
+        max-width: 100%; /* Allow the content to take up full width */
+        margin: 0; /* Remove horizontal margin */
+    }
+}
+
+
