@@ -177,7 +177,6 @@ namespace DoAn.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                registrationModel.RoleId = int.Parse(Request.Form["RoleId"]);
                 registrationModel.Status = Request.Form["Status"] == "true";
                 var json = JsonConvert.SerializeObject(registrationModel);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -186,8 +185,6 @@ namespace DoAn.Areas.Admin.Controllers
            
                 if (response.IsSuccessStatusCode)
                 {
-
-                    HttpContext.Session.SetString("Role", registrationModel.RoleId.ToString());
                     return RedirectToAction("Index");
                 }
                 else

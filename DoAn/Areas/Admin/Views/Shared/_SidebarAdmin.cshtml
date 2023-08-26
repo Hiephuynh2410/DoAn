@@ -25,15 +25,16 @@
                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                     <span class="hide-menu">UI COMPONENTS</span>
                 </li>
-                @if (isAdmin)
-                {
-                    <li class="sidebar-item">   
-                        <a class="sidebar-link" href="@Url.Action("Index", "Staff")">
-                            <i class="ti ti-bolt"></i>
-                            <span class="hide-menu">Staff</span>
-                        </a>
-                    </li>
-                }
+                
+                    @if (Context.Session.GetString("Role") == "1")
+                    {
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="@Url.Action("Index", "Staff")">
+                                <i class="ti ti-bolt"></i>
+                                <span class="hide-menu">Staff</span>
+                            </a>
+                        </li>
+                    }
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="@Url.Action("Index", "Provider")">
                         <i class="ti ti-cards"></i>
