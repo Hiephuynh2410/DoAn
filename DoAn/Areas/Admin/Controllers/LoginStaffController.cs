@@ -31,9 +31,8 @@ namespace DoAn.Areas.Admin.Controllers
                 if (passwordVerificationResult == PasswordVerificationResult.Success)
                 {
                     HttpContext.Session.SetString("Username", nv.Username);
+                    HttpContext.Session.SetString("Avatar", nv.Avatar);
                     HttpContext.Session.SetString("Role", nv.RoleId.ToString());
-                    //TempData["UserRole"] = nv.RoleId;
-                    //TempData["UserAvatar"] = nv.Avatar;
 
                     return RedirectToAction("Index", "Combo");
                 }

@@ -58,5 +58,9 @@ app.UseEndpoints(endpoints =>
         name: "default",
         pattern: "{controller=Client}/{action=Index}/{id?}"
     );
+    endpoints.MapGet("/", async context =>
+    {
+        context.Response.Redirect("/Admin/LoginStaff/Login");
+    });
 });
 app.Run();

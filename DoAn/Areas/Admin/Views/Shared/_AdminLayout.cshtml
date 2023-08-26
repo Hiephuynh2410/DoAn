@@ -28,7 +28,6 @@
             <!-- Sidebar scroll-->
             <div>
                 <partial name="_SidebarAdmin" />
-                @*@Html.Partial("_SidebarAdmin") *@
                 <!-- End Sidebar navigation -->
             </div> 
             <!-- End Sidebar scroll-->
@@ -36,7 +35,7 @@
         <!--  Main wrapper -->
         <div class="body-wrapper">
             <!--  Header Start -->
-            @Html.Partial("_HeaderAdmin")
+            <partial name="_HeaderAdmin"/>
             <!--  Header End -->
             <div class="container-fluid">
                @RenderBody()

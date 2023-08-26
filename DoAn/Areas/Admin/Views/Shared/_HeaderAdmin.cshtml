@@ -1,4 +1,10 @@
-﻿<div class="upload-section-header">
+﻿@using Microsoft.AspNetCore.Http
+
+@{
+    string userAvatar = Context.Session.GetString("Avatar");
+}
+
+<div class="upload-section-header">
     <header class="app-header">
         <nav class="navbar navbar-expand-lg navbar-light">
             <ul class="navbar-nav">
@@ -12,20 +18,21 @@
                         <i class="ti ti-bell-ringing"></i>
                         <div class="notification bg-primary rounded-circle"></div>
                     </a>
-                </li>
+                </li> 
             </ul>
             <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
                 <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
                     <li class="nav-item dropdown">
-                       
-                        @if (ViewData["UserAvatar"]?.ToString() == null)
+                        @if (!string.IsNullOrEmpty(userAvatar))
                         {
-                            <i class="fas fa-user fa-fw"></i>
+                            <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="@userAvatar" alt="" width="35" height="35" class="rounded-circle">
+                            </a>
                         }
                         else
                         {
                             <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="@ViewData["UserAvatar"]" alt="" width="35" height="35" class="rounded-circle">
+                                <img src="~/images/img.jpg " alt="Default Avatar" width="35" height="35" class="rounded-circle">
                             </a>
                         }
                         <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
