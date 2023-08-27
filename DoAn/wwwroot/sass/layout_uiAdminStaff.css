@@ -1,0 +1,86 @@
+@import url("Global.css");
+.wrapper-box {
+  padding: 4rem;
+  width: 100%;
+}
+.wrapper-box .toolBar-control {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  gap: 2rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+.wrapper-box .toolBar-control .wrap-search {
+  max-width: 60rem;
+  width: 100%;
+}
+.wrapper-box .toolBar-control .wrap-search .search-staff {
+  border: 0.1rem solid #dbdbdb;
+  border-radius: 5rem;
+  overflow: hidden;
+  padding: 0.7rem 0;
+  position: relative;
+}
+.wrapper-box .toolBar-control .wrap-search .search-staff .box-search {
+  padding-left: 1.6rem;
+}
+.wrapper-box .toolBar-control .wrap-search .search-staff .box-search input {
+  width: 83%;
+}
+.wrapper-box .toolBar-control .wrap-search .search-staff .box-search .btnSearch-staff {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  padding: 0 1.5rem;
+  background: #542afb;
+  color: #fff;
+  cursor: pointer;
+}
+.wrapper-box .table-infoStaff {
+  max-width: 100%;
+  width: 100%;
+  padding: 1.5rem 1rem;
+  background-color: #fff;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+  border-radius: 1rem;
+  overflow-y: auto;
+}
+.wrapper-box .table-infoStaff::-webkit-scrollbar {
+  width: 1rem;
+  height: 0.5rem;
+}
+.wrapper-box .table-infoStaff::-webkit-scrollbar-thumb {
+  background: #008678;
+  border-radius: 5rem;
+}
+.wrapper-box .table-infoStaff::-webkit-scrollbar-track {
+  background: transparent;
+}
+.wrapper-box .table-infoStaff .table-List {
+  overflow-y: auto;
+  width: 2000px;
+}
+.wrapper-box .table-infoStaff .table-List .title-infoList {
+  text-align: center;
+  background: #008678;
+  font-size: 1.5rem;
+  color: #fff;
+}
+.wrapper-box .table-infoStaff .table-List .title-infoList td {
+  padding: 0.3rem 2rem;
+}
+.wrapper-box .table-infoStaff .table-List .item-infoList {
+  text-align: center;
+}
+.wrapper-box .table-infoStaff .table-List .item-infoList td {
+  font-size: 1.4rem;
+}
+.wrapper-box .table-infoStaff .table-List .item-infoList td img {
+  width: 5rem;
+  height: 5rem;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-radius: 5rem;
+}/*# sourceMappingURL=layout_uiAdminStaff.css.map */

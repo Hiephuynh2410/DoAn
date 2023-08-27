@@ -1,0 +1,78 @@
+@import url('Global.css');
+
+body {
+    background: url(../images/bg-form.svg) repeat-x;
+    background-position: center top;
+    background-repeat: repeat;
+    background-size: 30rem;
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+
+    .register {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        margin: auto;
+        padding: 3rem;
+        border-radius: 1rem;
+        max-width: 55rem;
+        width: 95%;
+        box-shadow: 0 .5rem 1rem rgba(0,0,0, .2);
+
+        h3{
+            text-align: center;
+            font-size: 2.5rem;
+        }
+
+        p{
+            text-align: center;
+            font-size: 1.7rem;
+            color: #677788;
+
+            
+        }
+
+        form {
+            margin-top: 5rem;
+
+            .wrap-box {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1rem; 
+                
+                .box-input {
+                    flex: 1 1 23rem;
+                }
+            }
+
+            .box-input {
+                margin-bottom: 2rem;
+
+                span{
+                    display: block;
+                    font-size: 1.5rem;
+                    margin-bottom: .3rem;
+                }
+
+                input,
+                select {
+                    padding: 1rem 1.5rem;
+                    border: .1rem solid #e7eaf3;
+                    width: 100%;
+                    border-radius: 1rem;
+                    font-size: 16px;
+
+                    &::placeholder{
+                        font-size: 1.5rem;
+                    }
+
+                    &:focus {
+                        border-color: #6765d8;
+                    }
+                }
+            }
+        }
+    }
+}

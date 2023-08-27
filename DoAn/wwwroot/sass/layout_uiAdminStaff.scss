@@ -1,0 +1,109 @@
+@import url('Global.css');
+
+.wrapper-box {
+    padding: 4rem;
+    width: 100%;
+
+    .toolBar-control {
+        display: flex;
+        flex-wrap: wrap-reverse;
+        gap: 2rem;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+
+        .wrap-search{
+            max-width: 60rem;
+            width: 100%;
+
+                .search-staff{
+                    border: .1rem solid #dbdbdb;
+                    border-radius: 5rem;
+                    overflow: hidden;
+                    padding: .7rem 0;
+                    position: relative;
+                    
+                    
+
+                    .box-search {
+                        padding-left: 1.6rem;
+
+                        input{
+                            width: 83%;
+                        }
+
+                        .btnSearch-staff {
+                            position: absolute;
+                            right: 0;
+                            top: 0;
+                            bottom: 0;
+                            padding: 0 1.5rem;
+                            background: #542afb;
+                            color: #fff;
+                            cursor: pointer;
+                        }
+                    }
+                }
+        }
+
+    }
+
+    .table-infoStaff{
+        max-width: 100%;
+        width: 100%;
+        padding: 1.5rem 1rem;
+        background-color: #fff;
+        box-shadow: 0 .5rem 1rem rgba(0,0,0, .2);
+        border-radius: 1rem;
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+            width: 1rem;
+            height: .5rem;
+        }
+
+        &::-webkit-scrollbar-thumb{
+            background: #008678;
+            border-radius: 5rem;
+        }
+
+        &::-webkit-scrollbar-track{
+            background: transparent;
+            
+        }
+
+        .table-List {
+            overflow-y: auto;
+            width: 2000px;
+
+            .title-infoList {
+                text-align: center;
+                background: #008678;
+                font-size: 1.5rem;
+                color: #fff;
+        
+                td{
+                    padding: .3rem 2rem;
+                }
+            }
+
+            .item-infoList {
+                text-align: center;
+                
+
+                td {
+
+                    font-size: 1.4rem;
+                    img {
+                        width: 5rem;
+                        height: 5rem;
+                        object-fit: cover;
+                        border-radius: 5rem;
+                    }
+                }
+            }
+        }
+    }
+}
+
+

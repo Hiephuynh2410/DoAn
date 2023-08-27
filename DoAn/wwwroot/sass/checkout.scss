@@ -1,0 +1,186 @@
+.checkout {
+    padding: 3rem 7%;
+
+    .checkout-container {
+        display: flex;
+        flex-wrap: wrap-reverse;
+        gap: 2rem;
+
+        .left-sideBar {
+            flex: 1 1 40rem;
+
+            .breadcrumb {
+                display: flex;
+    
+                .breadcrumb-item {
+                    font-size: 1.4rem;
+                    margin-bottom: 1rem;
+                    color: #737373;
+    
+                    a {
+                        font-size: 1.4rem;
+    
+                        &::after {
+                            content: "";
+                            display: inline-block;
+                            width: 6px;
+                            height: 11px;
+                            vertical-align: middle;
+                            margin: 0 0.5em;
+                            background-image: url(../images/arrow-right.svg),none;
+                        }
+                    }
+                }
+            }
+    
+            .title-payment {
+                font-size: 2rem;
+            }
+    
+            h3 {
+                font-size: 1.4rem;
+                color: #737373;
+            }
+    
+            form {
+                .box-input {
+                   display: flex;
+                   gap: 1rem;
+    
+                    input {
+                        flex: 1 1 8rem;
+                        padding: .7rem 1.5rem;
+                        border: .15rem solid #dbdbdb;
+                        width: 100%;
+                        margin-bottom: 1rem;
+                        border-radius: .5rem;
+    
+                        &:focus {
+                            border-color: #6765d8;
+                        }
+                    }
+                }
+
+                .field {
+                    display: flex;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    gap: .5rem;
+
+                    .box-selectOption {
+                        flex: 1 1 21rem;
+                        justify-content: space-between;
+                        padding: .7rem 1.5rem;
+                        border: .15rem solid #dbdbdb;
+                        width: 100%;
+                        margin-bottom: 1rem;
+                        border-radius: .5rem;
+
+                        h3 {
+                            font-size: 1.2rem;
+                            font-weight: 400;
+                            margin: 0;
+                        }
+                    }
+                }
+            }
+
+            .payment-method {
+                h3 {
+
+                }
+
+                .box-payment {
+                    display: flex;
+                    align-items: center;
+                    padding: .8rem;
+                    border: .1rem solid #dbdbdb;
+                    border-radius: .5rem;
+
+                    input,
+                    img {
+                        margin-right: 1rem;
+                    }
+
+                    span {
+                        font-size: 1.5rem;
+                    }
+                }
+            }
+        }
+
+        .sidebar {
+            flex: 1 1 42rem;
+
+            .sideBar-container {
+                .confirm-order {
+                    padding: 2rem;
+                    border: .1rem solid #dbdbdb;
+                    height: 35rem;
+                    overflow: auto;
+
+                    .box-confirm {
+                        display: flex;
+                        align-items: center;
+                        flex-wrap: wrap;
+                        gap: 1rem;
+                        margin-bottom: .5rem;
+
+
+                        .img-confirmCart {
+                            max-width: 8rem;
+
+                            img {
+                                width: 100%;
+                            }
+
+                            span {
+                                
+                            }
+                        }
+
+                        .name-confirmCart {
+                            max-width: 15rem;
+                            width: 100%;
+                        }
+
+                        input {
+                            text-align: center;
+                        }
+
+                        .total-amount {
+                            font-size: 1.6rem;
+                            color: #38d33d;
+                        }
+                    }
+                }
+
+                #box-discountInput {
+                    margin-top: 2rem;
+
+                    .box {
+                        display: flex;
+                        align-items: center;
+                        gap: 1rem;
+
+                        #discountInput {
+                            width: 100%;
+                            border: .1rem solid #dbdbdb;
+                            padding: .8rem 1.5rem;
+                            border-radius: .5rem;
+                        }
+
+                        .btn-send{
+                            border-radius: .2rem;
+                            background: #c8c8c8;  
+                        }
+
+                        .btn-send.active {
+                            background: #542afb;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

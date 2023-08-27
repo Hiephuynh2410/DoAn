@@ -4,47 +4,65 @@
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
+<div class="wrapper-box" style="padding:7rem">
+    <div class="toolBar-control">
+        <button class="btn-create" onclick="window.location.href='/Admin/Branch/Create'">
+            Create new
+        </button>
 
-<h1>Index</h1>
+        <div class="wrap-search">
+            <div class="search-staff">
+                <div class="box-search">
+                    <input type="text" value="" name="" id="" placeholder="Tìm kiếm chi nhanh ... ">
+                    <button class="btnSearch-staff"> Tìm kiếm</button>
+                </div>
+            </div>
+        </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.BranchId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Hotline)
-            </th>
-            
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.BranchId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Hotline)
-            </td>
-              
-            <td>
-                <a href="@Url.Action("Edit", "Branch", new { branchId = @item.BranchId})">Edit</a>|
-                <a href="@Url.Action("Detail", "Branch", new { branchId = @item.BranchId})">Details</a>|
-                <a href="@Url.Action("Delete", "Branch", new { branchId = @item.BranchId})">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+        <div></div>
+    </div>
+    <div class="table-infoStaff">
+        <table class="table-List">
+            <tr class="title-infoList">
+                <th>Branch ID</th>
+                <th>Address</th>
+                <th>Hotline</th>
+                <th>Action</th>
+            </tr>
+            <tbody class="box-tbody">
+                @foreach (var item in Model)
+                {
+                    <tr class="item-infoList">
+                        <td>@item.BranchId</td>
+                        <td>@item.Address</td>
+                        <td>@item.Hotline</td>
+                        <td>
+                            <button class="btn-edit" onclick="navigateTo('Edit', @item.BranchId)">
+                                Edit
+                            </button>
+                            <button class="btn-detail" onclick="navigateTo('Detail', @item.BranchId)">
+                                Detail
+                            </button>
+                            <button class="btn-delete" onclick="deleteStaff(@item.BranchId)">
+                                Delete
+                            </button>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    function navigateTo(action, BranchId) {
+        window.location.href = `/Admin/Branch/${action}?BranchId=${BranchId}`;
+    }
+
+    function deleteStaff(BranchId) {
+        if (confirm('Are you sure you want to delete this branch?')) {
+            navigateTo('Delete', BranchId);
+        }
+    }
+</script>
+

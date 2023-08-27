@@ -1,0 +1,141 @@
+.checkout {
+  padding: 3rem 7%;
+}
+.checkout .checkout-container {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  gap: 2rem;
+}
+.checkout .checkout-container .left-sideBar {
+  flex: 1 1 40rem;
+}
+.checkout .checkout-container .left-sideBar .breadcrumb {
+  display: flex;
+}
+.checkout .checkout-container .left-sideBar .breadcrumb .breadcrumb-item {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: #737373;
+}
+.checkout .checkout-container .left-sideBar .breadcrumb .breadcrumb-item a {
+  font-size: 1.4rem;
+}
+.checkout .checkout-container .left-sideBar .breadcrumb .breadcrumb-item a::after {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 11px;
+  vertical-align: middle;
+  margin: 0 0.5em;
+  background-image: url(../images/arrow-right.svg), none;
+}
+.checkout .checkout-container .left-sideBar .title-payment {
+  font-size: 2rem;
+}
+.checkout .checkout-container .left-sideBar h3 {
+  font-size: 1.4rem;
+  color: #737373;
+}
+.checkout .checkout-container .left-sideBar form .box-input {
+  display: flex;
+  gap: 1rem;
+}
+.checkout .checkout-container .left-sideBar form .box-input input {
+  flex: 1 1 8rem;
+  padding: 0.7rem 1.5rem;
+  border: 0.15rem solid #dbdbdb;
+  width: 100%;
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+}
+.checkout .checkout-container .left-sideBar form .box-input input:focus {
+  border-color: #6765d8;
+}
+.checkout .checkout-container .left-sideBar form .field {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.checkout .checkout-container .left-sideBar form .field .box-selectOption {
+  flex: 1 1 21rem;
+  justify-content: space-between;
+  padding: 0.7rem 1.5rem;
+  border: 0.15rem solid #dbdbdb;
+  width: 100%;
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+}
+.checkout .checkout-container .left-sideBar form .field .box-selectOption h3 {
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin: 0;
+}
+.checkout .checkout-container .left-sideBar .payment-method .box-payment {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem;
+  border: 0.1rem solid #dbdbdb;
+  border-radius: 0.5rem;
+}
+.checkout .checkout-container .left-sideBar .payment-method .box-payment input,
+.checkout .checkout-container .left-sideBar .payment-method .box-payment img {
+  margin-right: 1rem;
+}
+.checkout .checkout-container .left-sideBar .payment-method .box-payment span {
+  font-size: 1.5rem;
+}
+.checkout .checkout-container .sidebar {
+  flex: 1 1 42rem;
+}
+.checkout .checkout-container .sidebar .sideBar-container .confirm-order {
+  padding: 2rem;
+  border: 0.1rem solid #dbdbdb;
+  height: 35rem;
+  overflow: auto;
+}
+.checkout .checkout-container .sidebar .sideBar-container .confirm-order .box-confirm {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.checkout .checkout-container .sidebar .sideBar-container .confirm-order .box-confirm .img-confirmCart {
+  max-width: 8rem;
+}
+.checkout .checkout-container .sidebar .sideBar-container .confirm-order .box-confirm .img-confirmCart img {
+  width: 100%;
+}
+.checkout .checkout-container .sidebar .sideBar-container .confirm-order .box-confirm .name-confirmCart {
+  max-width: 15rem;
+  width: 100%;
+}
+.checkout .checkout-container .sidebar .sideBar-container .confirm-order .box-confirm input {
+  text-align: center;
+}
+.checkout .checkout-container .sidebar .sideBar-container .confirm-order .box-confirm .total-amount {
+  font-size: 1.6rem;
+  color: #38d33d;
+}
+.checkout .checkout-container .sidebar .sideBar-container #box-discountInput {
+  margin-top: 2rem;
+}
+.checkout .checkout-container .sidebar .sideBar-container #box-discountInput .box {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.checkout .checkout-container .sidebar .sideBar-container #box-discountInput .box #discountInput {
+  width: 100%;
+  border: 0.1rem solid #dbdbdb;
+  padding: 0.8rem 1.5rem;
+  border-radius: 0.5rem;
+}
+.checkout .checkout-container .sidebar .sideBar-container #box-discountInput .box .btn-send {
+  border-radius: 0.2rem;
+  background: #c8c8c8;
+}
+.checkout .checkout-container .sidebar .sideBar-container #box-discountInput .box .btn-send.active {
+  background: #542afb;
+}/*# sourceMappingURL=checkout.css.map */

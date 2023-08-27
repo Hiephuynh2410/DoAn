@@ -5,27 +5,32 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Detail</h1>
-
-<div>
-    <h4>Branch</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Address)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Address)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Hotline)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Hotline)
-        </dd>
-    </dl>
+<div class="wrapper-box" style="padding:7rem">
+    <div class="table-infoStaff">
+        <table class="table-List">
+            <tr class="title-infoList">
+                <th>Branch ID</th>
+                <th>Address</th>
+                <th>Hotline</th>
+                <th></th>
+            </tr>
+            <tbody class="box-tbody">
+                <tr class="item-infoList">
+                    <td>@Model.BranchId</td>
+                    <td>@Model.Address</td>
+                    <td>@Model.Hotline</td>
+                    <td>
+                        <button class="btn-edit" onclick="navigateTo('Edit', @Model.BranchId)">
+                            Edit
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.BranchId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+<script>
+    function navigateTo(action, BranchId) {
+        window.location.href = `/Admin/Branch/${action}?BranchId=${BranchId}`;
+    }
+</script>

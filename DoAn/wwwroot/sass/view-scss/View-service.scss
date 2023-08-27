@@ -1,0 +1,45 @@
+@import url('Global.css');
+
+.full-section {
+    padding: 5rem 10%;
+
+    .fullsection-container {
+
+        .box {
+            display: flex;
+            flex-direction: row-reverse;
+            gap: 2rem;
+            margin-bottom: 3rem;
+
+            .box-viewDetail {
+                display: inline-block;
+
+                h3 {
+                    font-size: 2.5rem;
+                }
+
+                span {
+                    display: block;
+                    font-size: 1.6rem;
+                    margin-bottom: 2rem;
+                }
+
+                .btn-send {
+                    align-items: center;
+                    font-size: 1.4rem;
+                }
+            }
+
+            .box-imageDetail {
+                max-width: 50rem;
+                
+
+                img {
+                    width: 100%;
+                    border-radius: 1rem;
+                }
+            }
+        }
+    }
+
+}
