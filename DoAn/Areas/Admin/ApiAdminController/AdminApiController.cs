@@ -140,6 +140,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     Email = registrationModel.Email,
                     Status = registrationModel.Status,
                     CreatedAt = DateTime.Now,
+                    CreatedBy = registrationModel.CreatedBy,
                     Branch = branch,
                     Role = role,
                 };
@@ -199,6 +200,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
             staff.Avatar = updateModel.Avatar;
             staff.Status = updateModel.Status;
             staff.UpdatedAt = DateTime.Now;
+            staff.UpdatedBy = updateModel.UpdatedBy;
             // Update related branch and role properties
             if (updateModel.BranchId != staff.BranchId)
             {

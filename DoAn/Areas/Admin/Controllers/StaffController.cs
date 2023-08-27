@@ -3,12 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using System.Net.NetworkInformation;
 using System.Text;
 using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Http;
-using DoAn.Data;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 
 namespace DoAn.Areas.Admin.Controllers
@@ -63,6 +59,7 @@ namespace DoAn.Areas.Admin.Controllers
                    .Include(s => s.Branch)
                    .Include(s => s.RoleId)
                    .ToListAsync();
+                
                 return View(staffList);
             }
         }
@@ -79,7 +76,7 @@ namespace DoAn.Areas.Admin.Controllers
         {
             var UserName = Request.Form["Username"].ToString();
             var Password = Request.Form["Password"].ToString();
-
+            var Name = Request.Form["Name"].ToString(); 
             Staff nv = db.Staff.FirstOrDefault(x => x.Username == UserName);
 
             if (nv != null)
@@ -93,6 +90,7 @@ namespace DoAn.Areas.Admin.Controllers
                     HttpContext.Session.SetString("Avatar", nv.Avatar);
                     HttpContext.Session.SetString("UserId", nv.StaffId.ToString());
                     HttpContext.Session.SetString("Role", nv.RoleId.ToString());
+                    HttpContext.Session.SetString("Name", nv.Name);
 
                     return RedirectToAction("Index", "Combo");
                 }
@@ -178,6 +176,9 @@ namespace DoAn.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
+                string createdByUserName = HttpContext.Session.GetString("Name");
+
+                registrationModel.CreatedBy = createdByUserName;
                 registrationModel.Status = Request.Form["Status"] == "true";
                 var json = JsonConvert.SerializeObject(registrationModel);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -276,6 +277,19 @@ namespace DoAn.Areas.Admin.Controllers
                 return View(updateModel);
             }
             updateModel.Status = Request.Form["Status"] == "true";
+
+            //int updatedById;
+            //if (int.TryParse(HttpContext.Session.GetString("UserId"), out updatedById))
+            //{
+            //    updateModel.UpdatedBy = updatedById.ToString();
+            //}
+            //else
+            //{
+            //    // Handle the case where user ID retrieval fails
+            //    ModelState.AddModelError("", "Unable to determine the user performing the edit.");
+            //    return View(updateModel);
+            //}
+
             var apiUrl = $"https://localhost:7109/api/AdminApi/update/{staffId}";
 
             var json = JsonConvert.SerializeObject(updateModel);
@@ -285,6 +299,22 @@ namespace DoAn.Areas.Admin.Controllers
 
             if (response.IsSuccessStatusCode)
             {
+                try
+                {
+                    var updatedStaff = await db.Staff.FirstOrDefaultAsync(s => s.StaffId == staffId);
+                    if (updatedStaff != null)
+                    {
+                        string editorName = HttpContext.Session.GetString("Name");
+                        updatedStaff.UpdatedBy = editorName;
+
+                        db.Entry(updatedStaff).State = EntityState.Modified;
+                        await db.SaveChangesAsync();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "An error occurred while saving the editor's name: " + ex.Message);
+                }
                 return RedirectToAction("Index");
             }
             else

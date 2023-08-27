@@ -193,7 +193,9 @@ public partial class DlctContext : DbContext
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("Created_at");
-            entity.Property(e => e.CreatedBy).HasColumnName("Created_by");
+            entity.Property(e => e.CreatedBy)
+                .HasMaxLength(50)
+                .HasColumnName("Created_by");
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .IsUnicode(false);
@@ -208,7 +210,9 @@ public partial class DlctContext : DbContext
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("Updated_at");
-            entity.Property(e => e.UpdatedBy).HasColumnName("Updated_by");
+            entity.Property(e => e.UpdatedBy)
+                .HasMaxLength(50)
+                .HasColumnName("Updated_by");
             entity.Property(e => e.Username)
                 .HasMaxLength(255)
                 .IsUnicode(false);
@@ -412,7 +416,9 @@ public partial class DlctContext : DbContext
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("Created_at");
-            entity.Property(e => e.CreatedBy).HasColumnName("Created_by");
+            entity.Property(e => e.CreatedBy)
+                .HasMaxLength(50)
+                .HasColumnName("Created_by");
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .IsUnicode(false);
@@ -427,7 +433,9 @@ public partial class DlctContext : DbContext
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("Updated_at");
-            entity.Property(e => e.UpdatedBy).HasColumnName("Updated_by");
+            entity.Property(e => e.UpdatedBy)
+                .HasMaxLength(50)
+                .HasColumnName("Updated_by");
             entity.Property(e => e.Username)
                 .HasMaxLength(255)
                 .IsUnicode(false);
