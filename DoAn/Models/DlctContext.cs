@@ -194,7 +194,7 @@ public partial class DlctContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("Created_at");
             entity.Property(e => e.CreatedBy)
-                .HasMaxLength(50)
+                .HasMaxLength(255)
                 .HasColumnName("Created_by");
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
@@ -211,7 +211,7 @@ public partial class DlctContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("Updated_at");
             entity.Property(e => e.UpdatedBy)
-                .HasMaxLength(50)
+                .HasMaxLength(255)
                 .HasColumnName("Updated_by");
             entity.Property(e => e.Username)
                 .HasMaxLength(255)
@@ -417,7 +417,7 @@ public partial class DlctContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("Created_at");
             entity.Property(e => e.CreatedBy)
-                .HasMaxLength(50)
+                .HasMaxLength(255)
                 .HasColumnName("Created_by");
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
@@ -434,7 +434,7 @@ public partial class DlctContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("Updated_at");
             entity.Property(e => e.UpdatedBy)
-                .HasMaxLength(50)
+                .HasMaxLength(255)
                 .HasColumnName("Updated_by");
             entity.Property(e => e.Username)
                 .HasMaxLength(255)
