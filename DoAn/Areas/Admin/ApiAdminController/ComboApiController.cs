@@ -25,6 +25,10 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 s.ComboId,
                 s.Name,
                 s.Price,
+                s.CreatedAt,
+                s.UpdatedAt,
+                s.UpdatedBy,
+                s.CreatedBy,
             }).ToList();
 
             return Ok(BranchsWithFullInfo);
@@ -44,7 +48,9 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 var newCombo = new Combo
                 {
                     Name = createModel.Name,
-                    Price = createModel.Price
+                    Price = createModel.Price,
+                    CreatedAt = DateTime.Now,
+                    CreatedBy = createModel.CreatedBy,  
                 };
 
                 _dbContext.Combos.Add(newCombo);
@@ -85,7 +91,8 @@ namespace DoAn.Areas.Admin.ApiAdminController
             {
                 combo.Price = updateModel.Price;
             }
-
+            combo.UpdatedAt = DateTime.Now;
+            combo.UpdatedBy = updateModel.UpdatedBy;
             _dbContext.Entry(combo).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
 

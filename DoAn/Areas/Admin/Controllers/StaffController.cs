@@ -151,8 +151,6 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("RoleId", "Role is required.");
             }
-
-
             if (ModelState.IsValid)
             {
                 string createdByUserName = HttpContext.Session.GetString("Name");
@@ -256,18 +254,6 @@ namespace DoAn.Areas.Admin.Controllers
                 return View(updateModel);
             }
             updateModel.Status = Request.Form["Status"] == "true";
-
-            //int updatedById;
-            //if (int.TryParse(HttpContext.Session.GetString("UserId"), out updatedById))
-            //{
-            //    updateModel.UpdatedBy = updatedById.ToString();
-            //}
-            //else
-            //{
-            //    // Handle the case where user ID retrieval fails
-            //    ModelState.AddModelError("", "Unable to determine the user performing the edit.");
-            //    return View(updateModel);
-            //}
 
             var apiUrl = $"https://localhost:7109/api/AdminApi/update/{staffId}";
 

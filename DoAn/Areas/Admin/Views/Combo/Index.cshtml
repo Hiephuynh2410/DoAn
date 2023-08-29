@@ -5,44 +5,73 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ComboId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ComboId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                <a href="@Url.Action("Edit", "Combo", new { ComboId = @item.ComboId})">Edit</a>|
-                <a href="@Url.Action("Detail", "Combo", new { ComboId = @item.ComboId})">Details</a>|
-                <a href="@Url.Action("Delete", "Combo", new { ComboId = @item.ComboId})">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="wrapper-box" style="padding:7rem">
+    <div class="toolBar-control">
+        <button class="btn-create" onclick="window.location.href='/Admin/Combo/Create'">
+            Create new
+        </button>
+
+        <div class="wrap-search">
+            <div class="search-staff">
+                <div class="box-search">
+                    <input type="text" value="" name="" id="" placeholder="Search Combo ... ">
+                    <button class="btnSearch-staff"> Search</button>
+                </div>
+            </div>
+        </div>
+
+        <div></div>
+    </div>
+    <div class="table-infoStaff">
+        <table class="table-List">
+            <tr class="title-infoList">
+                <th>Combo ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Created At</th>
+                <th>Create By</th>
+                <th>Updated At</th>
+                <th>Updated By</th>
+                <th>Action</th>
+            </tr>
+
+            <tbody class="box-tbody">
+                @foreach (var item in Model)
+                {
+                    <tr class="item-infoList">
+                        <td>@item.ComboId</td>
+                        <td>@item.Name</td>
+                        <td>@item.Price</td>
+                        <td>@item.CreatedAt</td>
+                        <td>@item.CreatedBy</td>
+                        <td>@item.UpdatedAt</td>
+                        <td>@item.UpdatedBy</td>
+                        <td>
+                            <button class="btn-edit" onclick="navigateTo('Edit', @item.ComboId)">
+                                Edit
+                            </button>
+                            <button class="btn-detail" onclick="navigateTo('Detail', @item.ComboId)">
+                                Detail
+                            </button>
+                            <button class="btn-delete" onclick="deleteStaff(@item.ComboId)">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    function navigateTo(action, comboId) {
+        window.location.href = `/Admin/Combo/${action}?comboId=${comboId}`;
+    }
+
+    function deleteStaff(comboId) {
+        if (confirm('Are you sure you want to delete this Combo?')) {
+            navigateTo('Delete', comboId);
+        }
+    }
+</script>

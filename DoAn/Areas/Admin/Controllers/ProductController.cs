@@ -41,6 +41,10 @@ namespace DoAn.Areas.Admin.Controllers
         //Delete
         public async Task<IActionResult> Delete(int productId)
         {
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                return RedirectToAction("Login", "Staff");
+            }
             var apiUrl = $"https://localhost:7109/api/ProductApi/delete/{productId}";
 
             var response = await _httpClient.DeleteAsync(apiUrl);
@@ -65,6 +69,10 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Detail(int productId)
         {
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                return RedirectToAction("Login", "Staff");
+            }
             var apiUrl = $"https://localhost:7109/api/ProductApi/detail/{productId}";
 
             var apiResponse = await _httpClient.GetAsync(apiUrl);
@@ -85,6 +93,10 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(int productId)
         {
+            if(HttpContext.Session.GetString("UserId") == null)
+            {
+                return RedirectToAction("Login", "Staff");
+            }
             var product = db.Products.Find(productId);
             var ProductType = db.Producttypes.ToList();
             var providers = db.Providers.ToList();
@@ -135,6 +147,10 @@ namespace DoAn.Areas.Admin.Controllers
         //create
         public IActionResult Create()
         {
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                return RedirectToAction("Login", "Staff");
+            }
             var ProductType = db.Producttypes.ToList();
             var providers = db.Providers.ToList();
 

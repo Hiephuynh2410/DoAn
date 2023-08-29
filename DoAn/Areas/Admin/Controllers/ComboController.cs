@@ -20,13 +20,24 @@ namespace DoAn.Areas.Admin.Controllers
         //Create
         public IActionResult Create()
         {
-
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                return RedirectToAction("Login", "Staff");
+            }
             return View();
         }
         [HttpPost]
         public async Task<IActionResult> Create(Combo registrationModel)
         {
             var apiUrl = "https://localhost:7109/api/ComboApi/create";
+            int createdByUserId;
+
+            var userIdSessionValue = HttpContext.Session.GetString("UserId");
+
+            if (!string.IsNullOrEmpty(userIdSessionValue) && int.TryParse(userIdSessionValue, out createdByUserId))
+            {
+                registrationModel.CreatedBy = createdByUserId;
+            }
 
             var json = JsonConvert.SerializeObject(registrationModel);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -53,6 +64,10 @@ namespace DoAn.Areas.Admin.Controllers
         //Delete
         public async Task<IActionResult> Delete(int comboId)
         {
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                return RedirectToAction("Login", "Staff");
+            }
             var apiUrl = $"https://localhost:7109/api/ComboApi/delete/{comboId}";
 
             var response = await _httpClient.DeleteAsync(apiUrl);
@@ -77,6 +92,11 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(int comboId)
         {
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                return RedirectToAction("Login", "Staff");
+            }
+
             var combo = db.Combos.Find(comboId);
             if (combo == null)
             {
@@ -90,6 +110,11 @@ namespace DoAn.Areas.Admin.Controllers
             if (!ModelState.IsValid)
             {
                 return View(updateModel);
+            }
+            var userIdSessionValue = HttpContext.Session.GetString("UserId");
+            if (!string.IsNullOrEmpty(userIdSessionValue) && int.TryParse(userIdSessionValue, out int updatedByUserId))
+            {
+                updateModel.UpdatedBy = updatedByUserId;
             }
             var apiUrl = $"https://localhost:7109/api/ComboApi/update/{comboId}";
 
@@ -118,6 +143,10 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Detail(int comboId)
         {
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                return RedirectToAction("Login", "Staff");
+            }
             var apiUrl = $"https://localhost:7109/api/ComboApi/detail/{comboId}";
 
             var apiResponse = await _httpClient.GetAsync(apiUrl);
