@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Identity;
-
 namespace DoAn.Areas.Admin.Controllers
 {
     [Area("Admin")]
@@ -19,7 +18,25 @@ namespace DoAn.Areas.Admin.Controllers
             _httpClient = new HttpClient();
         }
 
-        
+        [HttpGet]
+        public IActionResult showPassword()
+        {
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult showPassword(string username)
+        {
+            var staff = db.Staff.FirstOrDefault(s => s.Username == username);
+            if (staff != null)
+            {
+                TempData["Password"] = staff.Password; // Đây là mật khẩu trước khi mã hóa
+                return RedirectToAction("showPassword");
+            }
+            ModelState.AddModelError("", "Username not found.");
+            return View();
+        }
         //button choose image
         [HttpPost]
         public IActionResult ProcessUpload(IFormFile file)
@@ -28,29 +45,23 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 return Json("No file uploaded");
             }
-
             string fileName = Path.GetFileName(file.FileName);
             string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
-
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 file.CopyTo(stream);
             }
-
             return Json("/images/" + fileName);
         }
-
       
         //View List
         public async Task<IActionResult> Index()
         {
-
             var apiResponse = await _httpClient.GetAsync("https://localhost:7109/api/AdminApi/");
             if (apiResponse.IsSuccessStatusCode)
             {
                 var responseContent = await apiResponse.Content.ReadAsStringAsync();
                 var staff = JsonConvert.DeserializeObject<List<Staff>>(responseContent);
-
                 return View(staff);
             }
             else
@@ -59,7 +70,6 @@ namespace DoAn.Areas.Admin.Controllers
                    .Include(s => s.Branch)
                    .Include(s => s.RoleId)
                    .ToListAsync();
-                
                 return View(staffList);
             }
         }
@@ -72,18 +82,16 @@ namespace DoAn.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(Staff staff)  // Change method name to "Login"
+        public async Task<IActionResult> Login(Staff staff)
         {
             var UserName = Request.Form["Username"].ToString();
             var Password = Request.Form["Password"].ToString();
             var Name = Request.Form["Name"].ToString(); 
             Staff nv = db.Staff.FirstOrDefault(x => x.Username == UserName);
-
             if (nv != null)
             {
                 var passwordHasher = new PasswordHasher<Staff>();
                 var passwordVerificationResult = passwordHasher.VerifyHashedPassword(nv, nv.Password, Password);
-
                 if (passwordVerificationResult == PasswordVerificationResult.Success)
                 {
                     HttpContext.Session.SetString("Username", nv.Username);
@@ -91,7 +99,6 @@ namespace DoAn.Areas.Admin.Controllers
                     HttpContext.Session.SetString("UserId", nv.StaffId.ToString());
                     HttpContext.Session.SetString("Role", nv.RoleId.ToString());
                     HttpContext.Session.SetString("Name", nv.Name);
-
                     return RedirectToAction("Index", "Combo");
                 }
                 else
@@ -103,7 +110,6 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 ViewData["ErrorAccount"] = "sai mật khẩu hoặc Tên đăng nhập không tồn tại vui lòng nhập lại";
             }
-
             return View("Login");
         }
 
@@ -121,39 +127,12 @@ namespace DoAn.Areas.Admin.Controllers
         public async Task<IActionResult> Register(Staff registrationModel)
         {
             var apiUrl = "https://localhost:7109/api/AdminApi/register";
-
-            if (string.IsNullOrEmpty(registrationModel.Name))
+            if (string.IsNullOrEmpty(registrationModel.Name) && string.IsNullOrEmpty(registrationModel.Username) 
+                && string.IsNullOrEmpty(registrationModel.Password) && string.IsNullOrEmpty(registrationModel.Phone)
+                && string.IsNullOrEmpty(registrationModel.Avatar) && string.IsNullOrEmpty(registrationModel.Address)
+                && string.IsNullOrEmpty(registrationModel.Email) && string.IsNullOrEmpty(registrationModel.Phone))
             {
-                ModelState.AddModelError("Name", "Name is required.");
-            }
-
-            if (string.IsNullOrEmpty(registrationModel.Username))
-            {
-                ModelState.AddModelError("Username", "Username is required.");
-            }
-            if (string.IsNullOrEmpty(registrationModel.Password))
-            {
-                ModelState.AddModelError("Password", "Password is required.");
-            }
-            if (string.IsNullOrEmpty(registrationModel.Avatar))
-            {
-                ModelState.AddModelError("Avatar", "Avatar is required.");
-            }
-            if (string.IsNullOrEmpty(registrationModel.Phone))
-            {
-                ModelState.AddModelError("Phone", "Phone is required.");
-            }
-            if (string.IsNullOrEmpty(registrationModel.Address))
-            {
-                ModelState.AddModelError("Address", "Address is required.");
-            }
-            if (string.IsNullOrEmpty(registrationModel.Email))
-            {
-                ModelState.AddModelError("Email", "Email is required.");
-            }
-            if (string.IsNullOrEmpty(registrationModel.Phone))
-            {
-                ModelState.AddModelError("Phone", "Phone is required.");
+                ModelState.AddModelError("Name", "cannot be empty.");
             }
             else
             {

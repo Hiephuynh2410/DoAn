@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace DoAn.Areas.Admin.ApiAdminController
 {
@@ -32,6 +33,8 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 s.Image,
                 s.ProductTypeId,
                 s.ProviderId,
+                s.CreatedAt, s.UpdatedAt,
+                s.CreatedBy, s.UpdatedBy,
                 ProductType = new
                 {
                     Name = s.ProductType?.Name
@@ -64,6 +67,8 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     Price = registrationModel.Price,
                     Quantity = registrationModel.Quantity,
                     Image = registrationModel.Image,
+                    CreatedAt = DateTime.Now,
+                    CreatedBy = registrationModel.CreatedBy,
                     ProductType = productType,
                     Provider = provider,
                 };
@@ -90,7 +95,6 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 };
                 return Ok(registrationSuccessResponse);
             }
-
             var invalidDataErrorResponse = new
             {
                 Message = "Invalid create data",
@@ -110,7 +114,6 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 .Include(p => p.ProductType)
                 .Include(p => p.Provider)
                 .FirstOrDefaultAsync(p => p.ProductId == productId);
-
             if (productToUpdate == null)
             {
                 return NotFound();
@@ -159,6 +162,8 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 }
             }
 
+            productToUpdate.UpdatedAt = DateTime.Now;
+            productToUpdate.UpdatedBy = updateModel.UpdatedBy;
             _dbContext.Entry(productToUpdate).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
 

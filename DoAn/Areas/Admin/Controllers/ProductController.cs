@@ -104,11 +104,16 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 return View(updateModel);
             }
+            var userIdSessionValue = HttpContext.Session.GetString("UserId");
+            if (!string.IsNullOrEmpty(userIdSessionValue) && int.TryParse(userIdSessionValue, out int updatedByUserId))
+            {
+                updateModel.UpdatedBy = updatedByUserId;
+            }
             var apiUrl = $"https://localhost:7109/api/ProductApi/update/{productId}";
 
             var json = JsonConvert.SerializeObject(updateModel);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-
+          
             var response = await _httpClient.PutAsync(apiUrl, content);
 
             if (response.IsSuccessStatusCode)
@@ -142,6 +147,14 @@ namespace DoAn.Areas.Admin.Controllers
         public async Task<IActionResult> Create(Product registrationModel)
         {
             var apiUrl = "https://localhost:7109/api/ProductApi/create";
+            int createdByUserId;
+
+            var userIdSessionValue = HttpContext.Session.GetString("UserId");
+
+            if (!string.IsNullOrEmpty(userIdSessionValue) && int.TryParse(userIdSessionValue, out createdByUserId))
+            {
+                registrationModel.CreatedBy = createdByUserId;
+            }
 
             var json = JsonConvert.SerializeObject(registrationModel);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -150,6 +163,8 @@ namespace DoAn.Areas.Admin.Controllers
 
             if (response.IsSuccessStatusCode)
             {
+               
+
                 return RedirectToAction("Index");
             }
             else
@@ -164,6 +179,7 @@ namespace DoAn.Areas.Admin.Controllers
                 return View(registrationModel);
             }
         }
+
         //View List
         public async Task<IActionResult> Index()
         {

@@ -3,6 +3,7 @@
 @{
     string userAvatar = Context.Session.GetString("Avatar");
     string userId = Context.Session.GetString("UserId");
+    string name = Context.Session.GetString("Name");
 }
 
 <div class="upload-section-header">
@@ -14,8 +15,15 @@
                         <i class="ti ti-menu-2"></i>
                     </a>
                 </li>
-               
             </ul>
+            @if (!string.IsNullOrEmpty(userId))
+            {
+                <p>
+                    <Strong>
+                        WelcomBack @name !
+                    </Strong>
+                </p>
+            }
             <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
                 <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
                     <li class="nav-item dropdown">
@@ -40,13 +48,13 @@
                                         <p class="mb-0 fs-3">
                                             My Profile
                                         </p>
-                                    } else
+                                    }
+                                    else
                                     {
-
                                         @if (Context.Session.GetString("Role") == "1")
                                         {
                                             <p class="mb-0 fs-3">
-                                                <a class="mb-0 fs-3" href="@Url.Action("Edit", "Staff", new { staffId = userId })">Edit profile</a>
+                                                <a class="mb-0 fs-3 edit-link" href="@Url.Action("Edit", "Staff", new { staffId = userId })">Edit profile</a>
                                             </p>
                                         }
                                         else
@@ -56,7 +64,7 @@
                                         }
                                     }
                                 </a>
-                              @*  <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                              @*<a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
                                     <i class="ti ti-mail fs-6"></i>
                                     <p class="mb-0 fs-3">My Account</p>
                                 </a>*@

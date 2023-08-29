@@ -5,147 +5,101 @@
     ViewData["Title"] = "Register";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
+<div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
+    <div class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
+        <div class="d-flex align-items-center justify-content-center w-100">
+                <div class="row justify-content-center w-100">
+                <div class="col-md-8 col-lg-6" >
+                    <div class="card mb-0">    
+                        <div class="card-body d-flex flex-column align-items-center">
+                            <a href="" class="text-nowrap logo-img text-center d-block py-3 w-100">
+                                <img src="~/images/logos/dark-logo.svg" width="180" alt="">
+                            </a>
+                            <p class="text-center">Your Social Campaigns</p>
+                                    <div class="img-wrap" style="align-items: center;display: flex;justify-content: center;">
+                                        <input type="file" name="fileUpload" id="fileUpload" accept="image/*" style="display:none;" />
+                                        <img style="width: 100px; border-radius: 50%; height: 100px; object-fit:cover" class="wrapper-img" src="~/images/img.jpg" id="pictureUpload" />
+                                        <span asp-validation-for="Avatar" class="text-danger"></span>
+                                    </div>
+                            <form asp-action="Register" >
+                                <div style="display:flex">
 
-    <!--  Body Wrapper -->
-    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
-         data-sidebar-position="fixed" data-header-position="fixed">
-        <div class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
-            <div class="d-flex align-items-center justify-content-center w-100">
-                    <div class="row justify-content-center w-100">
-                    <div class="col-md-8 col-lg-6" >
-                        <div class="card mb-0">    
-                            <div class="card-body d-flex flex-column align-items-center">
-                                <a href="" class="text-nowrap logo-img text-center d-block py-3 w-100">
-                                    <img src="~/images/logos/dark-logo.svg" width="180" alt="">
-                                </a>
-                                <p class="text-center">Your Social Campaigns</p>
-                                        <div class="img-wrap" style="align-items: center;display: flex;justify-content: center;">
-                                            <input type="file" name="fileUpload" id="fileUpload" accept="image/*" style="display:none;" />
-                                            <img style="width: 100px; border-radius: 50%; height: 100px; object-fit:cover" class="wrapper-img" src="~/images/img.jpg" id="pictureUpload" />
+                                    <div style="flex:1; margin:0 2rem">
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        <div class="mb-3">
+                                            <label for="exampleInputtext1" class="form-label">Name</label>
+                                            <input asp-for="Name" class="form-control" />
+                                            <span asp-validation-for="Name" class="text-danger"></span>
                                         </div>
-                                <form asp-action="Register" >
-                                    <div style="display:flex">
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label">UserName</label>
+                                            <input asp-for="Username" class="form-control" />
+                                            <span asp-validation-for="Name" class="text-danger"></span>
 
-                                        <div style="flex:1; margin:0 2rem">
-                                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                            <div class="mb-3">
-                                                <label for="exampleInputtext1" class="form-label">Name</label>
-                                                <input asp-for="Name" class="form-control" />
-                                                <span class="error-indicator indicator-hidden"></span>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="email" class="form-label">UserName</label>
-                                                <input asp-for="Username" class="form-control" />
-                                                <span class="error-indicator indicator-hidden"></span>
-                                            </div>
-                                            <div class="mb-4">
-                                                <label for="phone" class="form-label">Phone</label>
-                                                <input asp-for="Phone" class="form-control" />
-                                                <span class="error-indicator"></span>
-                                            </div>
-                                            <div class="mb-4">
-                                                <label for="Password" class="form-label">Password</label>
-                                                <input asp-for="Password" class="form-control" />
-                                                <span class="error-indicator"></span>
-                                            </div>
-                                            <div class="form-group">
-                                                <div class="d-flex align-items-center">
-                                                    <label for="Avatar" class="form-label">Avatar</label>
-                                                    <input asp-for="Avatar" class="form-control flex-grow-1 visually-hidden" />
-                                                    <input type="button" id="btnUpload" value="Chọn ảnh" class="btn btn-primary rounded-2 ml-2" />
-                                                </div>
-                                                <span class="error-indicator"></span>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="phone" class="form-label">Phone</label>
+                                            <input asp-for="Phone" class="form-control" />
+                                            <span asp-validation-for="Name" class="text-danger"></span>
+                                            <span asp-validation-for="Phone" class="text-danger"></span>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="Password" class="form-label">Password</label>
+                                            <input asp-for="Password" class="form-control" />
+                                            <span asp-validation-for="Name" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="d-flex align-items-center">
+                                                <label for="Avatar" class="form-label">Avatar</label>
+                                                <input asp-for="Name" class="form-control flex-grow-1 visually-hidden" />
+                                                <input type="button" id="btnUpload" value="Chọn ảnh" class="btn btn-primary rounded-2 ml-2" />
                                             </div>
                                         </div>
+                                    </div>
                                     
-                                        <div style="flex:1; margin:0 2rem">
+                                    <div style="flex:1; margin:0 2rem">
                                             <div class="mb-4">
                                                 <label for="Address" class="form-label">Address</label>
                                                 <input asp-for="Address" class="form-control" />
-                                                <span class="error-indicator"></span>
-                                            </div>
+                                            <span asp-validation-for="Name" class="text-danger"></span>
+                                        </div>
                                             <div class="mb-4">
                                                 <label for="Email" class="form-label">Email</label>
                                                 <input asp-for="Email" class="form-control" />
-                                                <span class="error-indicator"></span>
-                                            </div>
-                                            <div class="mb-4">
-                                                <label for="Status" class="form-label">Status</label>
-                                                <div class="radio-buttons" style="display:flex; justify-content:space-around">
-                                                    <label class="form-check-label">
-                                                        <input type="radio" asp-for="Status" class="form-check-input" value="true" checked /> Active
-                                                    </label>
-                                                    <label class="form-check-label">
-                                                        <input type="radio" asp-for="Status" class="form-check-input" value="false" /> Non-Active
-                                                    </label>
-                                                    <span class="error-indicator"></span>
-                                                </div>
-                                            </div>
-                                            <div class="mb-4">
-                                                <label for="RoleId" class="form-label">Role</label>
-                                                @Html.DropDownList("RoleId", (SelectList)ViewBag.Roles, "Select a role", new { @class = "form-control" })
-                                                <span class="error-indicator"></span>
-                                            </div>
-                                            <div class="mb-4">
-                                                <label for="BranchId" class="form-label">Branch</label>
-                                                @Html.DropDownList("BranchId", (SelectList)ViewBag.Branches, "Select a branch", new { @class = "form-control" })
+                                                <span asp-validation-for="Name" class="text-danger"></span>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="Status" class="form-label">Status</label>
+                                            <div class="radio-buttons" style="display:flex; justify-content:space-around">
+                                                <label class="form-check-label">
+                                                    <input type="radio" asp-for="Status" class="form-check-input" value="true" checked /> Active
+                                                </label>
+                                                <label class="form-check-label">
+                                                    <input type="radio" asp-for="Status" class="form-check-input" value="false" /> Non-Active
+                                                </label>
                                                 <span class="error-indicator"></span>
                                             </div>
                                         </div>
-                                    
+                                        <div class="mb-4">
+                                            <label for="RoleId" class="form-label">Role</label>
+                                            @Html.DropDownList("RoleId", (SelectList)ViewBag.Roles, "Select a role", new { @class = "form-control" })
+                                            <span asp-validation-for="RoleId" class="text-danger"></span>
+                                        </div>
+                                            <div class="mb-4">
+                                                <label for="BranchId" class="form-label">Branch</label>
+                                                @Html.DropDownList("BranchId", (SelectList)ViewBag.Branches, "Select a branch", new { @class = "form-control" })
+                                            <span asp-validation-for="BranchId" class="text-danger"></span>
+                                        </div>
                                     </div>
-                                        <input type="submit" value="Create" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2" />
-                                </form>
-                            </div>
+                                </div>
+                                    <input type="submit" value="Create" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2" />
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-<div class="container">
-    <div class="text">
-        Contact us Form
-    </div>
-    <form action="#">
-        <div class="form-row">
-            <div class="input-data">
-                <input type="text" required>
-                <div class="underline"></div>
-                <label for="">First Name</label>
-            </div>
-            <div class="input-data">
-                <input type="text" required>
-                <div class="underline"></div>
-                <label for="">Last Name</label>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="input-data">
-                <input type="text" required>
-                <div class="underline"></div>
-                <label for="">Email Address</label>
-            </div>
-            <div class="input-data">
-                <input type="text" required>
-                <div class="underline"></div>
-                <label for="">Website Name</label>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="input-data textarea">
-                <textarea rows="8" cols="80" required></textarea>
-                <br />
-                <div class="underline"></div>
-                <label for="">Write your message</label>
-                <br />
-                <div class="form-row submit-btn">
-                    <div class="input-data">
-                        <div class="inner"></div>
-                        <input type="submit" value="submit">
-                    </div>
-                </div>
-    </form>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 @section upload {
