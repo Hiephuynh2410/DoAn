@@ -74,6 +74,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
             };
             return BadRequest(invalidDataErrorResponse);
         }
+
         [HttpPut("update/{comboId}")]
         public async Task<IActionResult> UpdateCombo(int comboId, Combo updateModel)
         {
@@ -103,6 +104,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
 
             return Ok(updateSuccessResponse);
         }
+
         [HttpDelete("delete/{comboId}")]
         public async Task<IActionResult> DeleteCombo(int comboId)
         {

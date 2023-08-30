@@ -5,22 +5,19 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-
 <div class="wrapper-box" style="padding:7rem">
     <div class="toolBar-control">
         <button class="btn-create" onclick="window.location.href='/Admin/Combo/Create'">
             Create new
         </button>
-
         <div class="wrap-search">
             <div class="search-staff">
                 <div class="box-search">
                     <input type="text" value="" name="" id="" placeholder="Search Combo ... ">
-                    <button class="btnSearch-staff"> Search</button>
+                    <button class="btnSearch-staff">Search</button>
                 </div>
             </div>
         </div>
-
         <div></div>
     </div>
     <div class="table-infoStaff">
@@ -35,9 +32,8 @@
                 <th>Updated By</th>
                 <th>Action</th>
             </tr>
-
             <tbody class="box-tbody">
-                @foreach (var item in Model)
+               @foreach (var item in Model)
                 {
                     <tr class="item-infoList">
                         <td>@item.ComboId</td>
