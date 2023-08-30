@@ -34,7 +34,18 @@
                                 <span class="hide-menu">Staff</span>
                             </a>
                         </li>
+                   
                     }
+                @if (Context.Session.GetString("Role") == "1")
+                {
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="@Url.Action("Index", "Role")">
+                            <i class="ti ti-bolt"></i>
+                            <span class="hide-menu">Role</span>
+                        </a>
+                    </li>
+                }
+               
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="@Url.Action("Index", "Provider")">
                         <i class="ti ti-cards"></i>

@@ -7,16 +7,15 @@ using System.Text;
 namespace DoAn.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class ProviderController : Controller
+    public class RoleController : Controller
     {
         DlctContext db = new DlctContext();
         private readonly HttpClient _httpClient;
 
-        public ProviderController()
+        public RoleController()
         {
             _httpClient = new HttpClient();
         }
-
         //Create
         public IActionResult Create()
         {
@@ -27,9 +26,9 @@ namespace DoAn.Areas.Admin.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Create(Provider registrationModel)
+        public async Task<IActionResult> Create(Role registrationModel)
         {
-            var apiUrl = "https://localhost:7109/api/ProviderApi/create";
+            var apiUrl = "https://localhost:7109/api/RoleApi/create";
 
             var json = JsonConvert.SerializeObject(registrationModel);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -52,57 +51,31 @@ namespace DoAn.Areas.Admin.Controllers
                 return View(registrationModel);
             }
         }
-
-        //Delete
-        public async Task<IActionResult> Delete(int providerId)
+        //edit
+        [HttpGet]
+        public IActionResult Edit(int RoleId)
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
                 return RedirectToAction("Login", "Staff");
             }
-            var apiUrl = $"https://localhost:7109/api/ProviderApi/delete/{providerId}";
 
-            var response = await _httpClient.DeleteAsync(apiUrl);
-
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var responseContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine("API Response Content: " + responseContent);
-
-                var errorResponse = JsonConvert.DeserializeObject<object>(responseContent);
-
-                ModelState.AddModelError("", errorResponse.ToString());
-                return RedirectToAction("Index");
-            }
-        }
-
-        //edit
-        [HttpGet]
-        public IActionResult Edit(int providerId)
-        {
-            var provider = db.Providers.Find(providerId);
-            if (provider == null)
+            var Role = db.Roles.Find(RoleId);
+            if (Role == null)
             {
                 return NotFound();
             }
-            return View(provider);
+            return View(Role);
         }
         [HttpPost]
-        public async Task<IActionResult> Edit(int providerId, Provider updateModel)
+        public async Task<IActionResult> Edit(int RoleId, Role updateModel)
         {
-            if (HttpContext.Session.GetString("UserId") == null)
-            {
-                return RedirectToAction("Login", "Staff");
-            }
             if (!ModelState.IsValid)
             {
                 return View(updateModel);
             }
-            var apiUrl = $"https://localhost:7109/api/ProviderApi/update/{providerId}";
+           
+            var apiUrl = $"https://localhost:7109/api/RoleApi/update/{RoleId}";
 
             var json = JsonConvert.SerializeObject(updateModel);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -125,47 +98,73 @@ namespace DoAn.Areas.Admin.Controllers
             }
         }
 
-        //detail
-        [HttpGet]
-        public async Task<IActionResult> Detail(int providerId)
+        //Delete
+        public async Task<IActionResult> Delete(int RoleId)
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
                 return RedirectToAction("Login", "Staff");
             }
-            var apiUrl = $"https://localhost:7109/api/ProviderApi/detail/{providerId}";
+            var apiUrl = $"https://localhost:7109/api/RoleApi/delete/{RoleId}";
+
+            var response = await _httpClient.DeleteAsync(apiUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("API Response Content: " + responseContent);
+
+                var errorResponse = JsonConvert.DeserializeObject<object>(responseContent);
+
+                ModelState.AddModelError("", errorResponse.ToString());
+                return RedirectToAction("Index");
+            }
+        }
+
+        //detail
+        [HttpGet]
+        public async Task<IActionResult> Detail(int RoleId)
+        {
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                return RedirectToAction("Login", "Staff");
+            }
+            var apiUrl = $"https://localhost:7109/api/RoleApi/detail/{RoleId}";
 
             var apiResponse = await _httpClient.GetAsync(apiUrl);
             if (apiResponse.IsSuccessStatusCode)
             {
                 var responseContent = await apiResponse.Content.ReadAsStringAsync();
-                var ProviderDetail = JsonConvert.DeserializeObject<Provider>(responseContent);
+                var roleDetail = JsonConvert.DeserializeObject<Role>(responseContent);
 
-                return View(ProviderDetail);
+                return View(roleDetail);
             }
             else
             {
                 return RedirectToAction("Index");
             }
         }
-
         //View List
         public async Task<IActionResult> Index()
         {
 
-            var apiResponse = await _httpClient.GetAsync("https://localhost:7109/api/ProviderApi/");
+            var apiResponse = await _httpClient.GetAsync("https://localhost:7109/api/RoleApi/");
             if (apiResponse.IsSuccessStatusCode)
             {
                 var responseContent = await apiResponse.Content.ReadAsStringAsync();
-                var provider = JsonConvert.DeserializeObject<List<Provider>>(responseContent);
+                var Role = JsonConvert.DeserializeObject<List<Role>>(responseContent);
 
-                return View(provider);
+                return View(Role);
             }
             else
             {
-                var provider = await db.Providers
+                var Role = await db.Roles
                    .ToListAsync();
-                return View(provider);
+                return View(Role);
             }
         }
     }
