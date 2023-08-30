@@ -86,24 +86,31 @@ namespace DoAn.Areas.Admin.Controllers
         {
             var UserName = Request.Form["Username"].ToString();
             var Password = Request.Form["Password"].ToString();
-            var Name = Request.Form["Name"].ToString(); 
+            var Name = Request.Form["Name"].ToString();
             Staff nv = db.Staff.FirstOrDefault(x => x.Username == UserName);
             if (nv != null)
             {
-                var passwordHasher = new PasswordHasher<Staff>();
-                var passwordVerificationResult = passwordHasher.VerifyHashedPassword(nv, nv.Password, Password);
-                if (passwordVerificationResult == PasswordVerificationResult.Success)
+                if (nv.Status == true) 
                 {
-                    HttpContext.Session.SetString("Username", nv.Username);
-                    HttpContext.Session.SetString("Avatar", nv.Avatar);
-                    HttpContext.Session.SetString("UserId", nv.StaffId.ToString());
-                    HttpContext.Session.SetString("Role", nv.RoleId.ToString());
-                    HttpContext.Session.SetString("Name", nv.Name);
-                    return RedirectToAction("Index", "Combo");
+                    var passwordHasher = new PasswordHasher<Staff>();
+                    var passwordVerificationResult = passwordHasher.VerifyHashedPassword(nv, nv.Password, Password);
+                    if (passwordVerificationResult == PasswordVerificationResult.Success)
+                    {
+                        HttpContext.Session.SetString("Username", nv.Username);
+                        HttpContext.Session.SetString("Avatar", nv.Avatar);
+                        HttpContext.Session.SetString("UserId", nv.StaffId.ToString());
+                        HttpContext.Session.SetString("Role", nv.RoleId.ToString());
+                        HttpContext.Session.SetString("Name", nv.Name);
+                        return RedirectToAction("Index", "Combo");
+                    }
+                    else
+                    {
+                        ViewData["ErrorPass"] = "sai mật khẩu hoặc Tên đăng nhập không tồn tại vui lòng nhập lại";
+                    }
                 }
                 else
                 {
-                    ViewData["ErrorPass"] = "Mật khẩu không đúng";
+                    ViewData["ErrorAccount"] = "Tài khoản chưa được kích hoạt. Vui lòng liên hệ quản trị viên.";
                 }
             }
             else

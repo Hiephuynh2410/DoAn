@@ -15,7 +15,6 @@
 </head>
 
 <body>
-    <!--  Body Wrapper -->
     <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
          data-sidebar-position="fixed" data-header-position="fixed">
         <div class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
@@ -35,10 +34,16 @@
                                         <label for="exampleInputEmail1" class="form-label">Username</label>
                                         @Html.TextBoxFor(model => model.Username, new { @class = "form-control", @autofocus = "autofocus", @placeholder = "Username....." })
                                     </div>
+                                    
                                     <div class="mb-4">
                                         <label for="exampleInputPassword1" class="form-label">Password</label>
                                         @Html.PasswordFor(model => model.Password, new { @class = "form-control", @placeholder = "Password....." })
+                                        <span style="color:red">
+                                            @ViewData["ErrorAccount"]
+                                            @ViewData["ErrorPass"]
+                                        </span>
                                     </div>
+
                                     <div class="d-flex align-items-center justify-content-between mb-4">
                                         <div class="form-check">
                                             <input class="form-check-input primary" type="checkbox" value="" id="flexCheckChecked" checked>
