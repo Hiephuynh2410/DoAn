@@ -1,0 +1,46 @@
+.wrapper-Uicreate {
+  padding: 2rem 7rem;
+}
+.wrapper-Uicreate .uiCreate-container form {
+  max-width: 50rem;
+}
+.wrapper-Uicreate .uiCreate-container form .box-input {
+  border: 0.1rem solid #dbdbdb;
+  border-radius: 0.5rem;
+  margin: 2.5rem 0;
+  max-width: 100%;
+  position: relative;
+  padding: 0.7rem 1.5rem;
+}
+.wrapper-Uicreate .uiCreate-container form .box-input:nth-child(3), .wrapper-Uicreate .uiCreate-container form .box-input:nth-child(6) {
+  width: 22rem;
+}
+.wrapper-Uicreate .uiCreate-container form .box-input span,
+.wrapper-Uicreate .uiCreate-container form .box-input Label {
+  position: absolute;
+  top: -1.5rem;
+  left: 0.7rem;
+  padding: 0 1rem;
+  background: #fff;
+  display: block;
+  text-transform: capitalize;
+  font-weight: 450;
+  font-size: 1.5rem;
+}
+.wrapper-Uicreate .uiCreate-container form .box-input input {
+  width: 100%;
+  font-size: 16px;
+}
+.wrapper-Uicreate .uiCreate-container form .box-input input::-moz-placeholder {
+  font-size: 1.4rem;
+}
+.wrapper-Uicreate .uiCreate-container form .box-input input::placeholder {
+  font-size: 1.4rem;
+}
+.wrapper-Uicreate .uiCreate-container form .box-input select {
+  width: 100%;
+}
+.wrapper-Uicreate .uiCreate-container form .box-input textarea {
+  width: 100%;
+  height: 8rem;
+}/*# sourceMappingURL=layout_UiCreate.css.map */

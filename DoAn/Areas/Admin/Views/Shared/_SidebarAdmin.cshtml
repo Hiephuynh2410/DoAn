@@ -13,34 +13,30 @@
                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                     <span class="hide-menu">Home</span>
                 </li>
+              
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="" aria-expanded="false">
-                        <span>
-                            <i class="ti ti-layout-dashboard"></i>
-                        </span>
-                        <span class="hide-menu">Dashboard</span>
+                    <a class="sidebar-link" href="">
+                        <i class="fa-solid fa-house"></i>
+                        <span class="hide-menu">Home</span>
                     </a>
                 </li>
+
                 <li class="nav-small-cap">
                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                     <span class="hide-menu">UI COMPONENTS</span>
                 </li>
-                
-                    @if (Context.Session.GetString("Role") == "1")
-                    {
-                        <li class="sidebar-item">
-                            <a class="sidebar-link" href="@Url.Action("Index", "Staff")">
-                                <i class="ti ti-bolt"></i>
-                                <span class="hide-menu">Staff</span>
-                            </a>
-                        </li>
-                   
-                    }
                 @if (Context.Session.GetString("Role") == "1")
                 {
                     <li class="sidebar-item">
+                        <a class="sidebar-link" href="@Url.Action("Index", "Staff")">
+                            <i class="fa-solid fa-user"></i>
+                            <span class="hide-menu">Staff</span>
+                        </a>
+                    </li>
+                   
+                    <li class="sidebar-item">
                         <a class="sidebar-link" href="@Url.Action("Index", "Role")">
-                            <i class="ti ti-bolt"></i>
+                            <i class="fa-regular fa-address-book"></i>
                             <span class="hide-menu">Role</span>
                         </a>
                     </li>
@@ -48,7 +44,7 @@
                
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="@Url.Action("Index", "Provider")">
-                        <i class="ti ti-cards"></i>
+                        <i class="fa-solid fa-person"></i>
                         <span class="hide-menu">Provider</span>
                     </a>
                 </li>
@@ -56,14 +52,14 @@
 
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="@Url.Action("Index", "Branch")">
-                        <i class="ti ti-file-description"></i>
+                        <i class="fa-solid fa-code-branch"></i>
                         <span class="hide-menu">Branch</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="@Url.Action("Index", "Combo")">
                         <span>
-                            <i class="ti ti-typography"></i>
+                            <i class="fa-solid fa-c"></i>
                         </span>
                         <span class="hide-menu">Combo</span>
                     </a>
@@ -71,7 +67,7 @@
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="@Url.Action("Index", "Product")">
                         <span>
-                            <i class="ti ti-typography"></i>
+                            <i class="fa-brands fa-product-hunt"></i>
                         </span>
                         <span class="hide-menu">Product</span>
                     </a>
@@ -79,14 +75,21 @@
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="@Url.Action("Index", "ProductType")">
                         <span>
-                            <i class="ti ti-typography"></i>
+                            <i class="fa-solid fa-t"></i>
                         </span>
                         <span class="hide-menu">Product Type</span>
                     </a>
                 </li>
                 <li class="nav-small-cap">
                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                    <span class="hide-menu">AUTH</span>
+                    @if (Context.Session.GetString("Role") == null)
+                    {
+                        <span class="hide-menu">LogIn</span>
+                    }
+                    else
+                    {
+                        <span class="hide-menu">LogOut</span>
+                    }
                 </li>
                 <li class="sidebar-item">
                     @if (Context.Session.GetString("Role") == null)
