@@ -34,8 +34,8 @@
 .wrapper-ui .wrapperUi-containerTitle .box-uiInfo .avatar-user .border-image .avatar {
   width: 100%;
   border-radius: 50%;
-  width: 125px;
-  height: 125px;
+  width: 125px !important;
+  height: 125px !important;
   -o-object-fit: cover;
   object-fit: cover;
   margin: auto;
@@ -46,8 +46,8 @@
   top: -5px;
   left: -5px;
   width: 108px;
-  height: 109px;
-  overflow: hidden;
+  height: 109px !important;
+  overflow: hidden !important;
   border: 3.8px solid #007bff;
   border-radius: 50%;
   padding: 1rem;
@@ -117,6 +117,7 @@
 .wrapper-ui .box-container .wrapperUi-containerList .list-detailItem .box input {
   margin-left: 3rem;
   width: 100%;
+  font-size: 16px;
 }
 .wrapper-ui .box-container .wrapperUi-containerList .list-detailItem .box label {
   color: #888;

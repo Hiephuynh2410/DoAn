@@ -57,63 +57,6 @@
         </form>
     </div>
 </div>
-@*<h1>Create</h1>
-
-<h4>Product</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Quantity" class="control-label"></label>
-                <input asp-for="Quantity" class="form-control" />
-                <span asp-validation-for="Quantity" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label for="product_type">product_type:</label>
-                @Html.DropDownList("ProductTypeId", (SelectList)ViewBag.ProductType, "Select a Type", new { @class = "form-control" })
-            </div>
-            <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
-                <div class="img-wrap" style="align-items:center">
-                    <input type="file" name="fileUpload" id="fileUpload" accept="image/*" style="display:none;" />
-                    <input type="button" id="btnUpload" value="Chọn ảnh" class="btn btn-danger" />
-                    <img style="width:44%" class="wrapper-img" src="" id="pictureUpload" />
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="providers">providers:</label>
-                @Html.DropDownList("ProviderId", (SelectList)ViewBag.providers, "Select a Type", new { @class = "form-control" })
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>*@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 @section upload {
     <script>

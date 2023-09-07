@@ -4,54 +4,142 @@
     ViewData["Title"] = "Detail";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
-<div class="wrapper-box" style="padding:7rem">
-    <div class="table-infoStaff">
-        <table class="table-List">
-            <tr class="title-infoList">
-                <th>Staff ID</th>
-                <th>Name</th>
-                <th>UserName</th>
-                <th>Phone</th>
-                <th>Avatar</th>
-                <th>Email</th>
-                <th>Address</th>
-                <th>Status</th>
-                <th>Created At</th>
-                <th>Updated At</th>
-                <th>Created By</th>
-                <th>Updated By</th>
-                <th>Branch</th>
-                <th>Role</th>
-            </tr>
-            <tbody class="box-tbody">
-                <tr class="item-infoList">
-                    <td>@Model.StaffId</td>
-                    <td>@Model.Name</td>
-                    <td>@Model.Username</td>
-                    <td>@Model.Phone</td>
-                    <td>
-                        <img src="@Model.Avatar" alt="">
-                    </td>
-                    <td>@Model.Email</td>
-                    <td>@Model.Address</td>
-                    <td>
-                        @if (Model.Status == true)
-                        {
-                            <p style="color: green">Active</p>
-                        }
-                        else
-                        {
-                            <p style="color: red">Non-Active</p>
-                        }
-                    </td>
-                    <td>@Model.CreatedAt</td>
-                    <td>@Model.UpdatedAt</td>
-                    <td>@Model.CreatedBy</td>
-                    <td>@Model.UpdatedBy</td>
-                    <td>@Model.Branch.Address</td>
-                    <td>@Model.Role.Name</td>
-                </tr>
-            </tbody>
-        </table>
+
+<div class="wrapper-ui">
+    <div class="wrapperUi-containerTitle">
+        <div class="box-uiInfo">
+            <div class="avatar-user">
+                <div class="border-image">
+                    <img src="@Model.Avatar" alt="" class="avatar">
+                </div>
+            </div>
+
+            <div class="info-user">
+                <p class="name">@Model.Name</p>
+                <p class="staffId">@Model.StaffId</p>
+            </div>
+        </div>
+
+        
     </div>
-</div>
+
+    <div class="box-container">
+        <div class="wrapperUi-containerList">
+            <div class="control-button">
+                <Button class="btn-edit" onclick="window.location.href='/Admin/Staff/Index'">
+                    Trở lại
+                </Button>
+
+                <Button class="btn-edit" onclick="navigateTo('Edit', @Model.StaffId)">
+                    Edit Staff
+                </Button>
+
+
+            </div>
+
+            <div class="list-detailItem">
+                <form  asp-action="Edit">
+                    <div class="wrapper-box" style="display:flex; flex-wrap:wrap; gap:1.5rem">
+                    <div style="flex:1 1 18rem" class="box">
+                        <span>* Role: </span>
+                        <input asp-for="@Model.Role.Name" type="text" class="userName"  />
+                    </div>
+                    <div style="flex:1 1 18rem" class="box">
+                        <span>* Username: </span>
+                        <input asp-for="@Model.Username" type="text" class="userName"  />
+
+                    </div>
+                    <div style="flex:1 1 18rem" class="box">
+                        <span>* Phonenumber:</span>
+                        <input asp-for="@Model.Phone" type="number" class="userName"  />
+                    </div>
+                    <div style="flex:1 1 18rem" class="box">
+                        <span>* address: </span>
+                        <input asp-for="@Model.Address" type="text" class="userName"  />
+                    </div>
+                    <div style="flex:1 1 18rem" class="box">
+                        <span>* email: </span>
+                        <input asp-for="@Model.Email" type="email" class="userName"  />
+                    </div>
+                    <div style="flex:1 1 18rem" class="box">
+                        <span>* Created At: </span>
+                        <input asp-for="@Model.CreatedAt" type="email" class="userName" />
+                    </div>
+                    <div style="flex:1 1 18rem" class="box">
+                        <span>* Update At: </span>
+                        <input asp-for="@Model.UpdatedAt" type="email" class="userName" />
+                    </div>
+                    <div style="flex:1 1 18rem" class="box">
+                        <span>* Created By: </span>
+                        <input asp-for="@Model.CreatedBy" type="email" class="userName" />
+                    </div>
+                    <div style="flex:1 1 18rem" class="box">
+                        <span>* Updated By: </span>
+                        <input asp-for="@Model.UpdatedBy" type="email" class="userName" />
+                </div>
+                    </div>
+                    <div style="flex:1 1 18rem" class="box">
+                        <span>* Status: </span>
+                        <div class="radio-buttons">
+                            <label class="form-check-label" style="color:green">
+                                <input type="radio" asp-for="Status" value="true" /> Active
+                            </label>
+                            <label class="form-check-label" style="color:red">
+                                <input type="radio" asp-for="Status" value="false" /> Non-Active
+                            </label>
+                            <span class="error-indicator"></span>
+                        </div>
+                    </div>
+                    <div class="wrappercalendar-containerList">
+                        <label for="select-title" class="select-title">Select a day:</label>
+                        <div>
+                            <select id="select-title" name="select-title">
+                                <option value="">Ngày 28/8/2023</option>
+                                <option value="">Ngày 29/8/2023</option>
+                                <option value="">Ngày 30/8/2023</option>
+                                <option value="">Ngày 31/8/2023</option>
+                                <option value="">Ngày 01/09/2023</option>
+                                <option value="">Ngày 02/09/2023</option>
+                                <option value="">Ngày 03/09/2023</option>
+                            </select>
+                        </div>
+
+                        <div class="container-timeClock">
+                            <span>7:00</span>
+                            <span>7:30</span>
+                            <span>8:00</span>
+                            <span>8:30</span>
+                            <span>9:00</span>
+                            <span>9:30</span>
+                            <span>10:00</span>
+                            <span>10:30</span>
+                            <span>11:00</span>
+                            <span>11:30</span>
+                            <span>13:30</span>
+                            <span>14:00</span>
+                            <span>14:30</span>
+                            <span>15:00</span>
+                            <span>15:30</span>
+                            <span>16:00</span>
+                            <span>16:30</span>
+                            <span>17:00</span>
+                            <span>17:30</span>
+                            <span>18:00</span>
+                            <span>18:30</span>
+                            <span>19:00</span>
+                            <span>19:30</span>
+                            <span>20:00</span>
+                            <span>20:30</span>
+                        </div>
+
+                        <input type="submit" value="Save" class="btn btn-primary"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        function navigateTo(action, staffId) {
+            window.location.href = `/Admin/Staff/${action}?StaffId=${staffId}`;
+        }
+    </script>

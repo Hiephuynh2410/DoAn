@@ -24,19 +24,19 @@ namespace DoAn.Areas.Admin.Controllers
 
             return View();
         }
-
         [HttpPost]
         public IActionResult showPassword(string username)
         {
             var staff = db.Staff.FirstOrDefault(s => s.Username == username);
             if (staff != null)
             {
-                TempData["Password"] = staff.Password; // Đây là mật khẩu trước khi mã hóa
+                TempData["Password"] = staff.Password;
                 return RedirectToAction("showPassword");
             }
             ModelState.AddModelError("", "Username not found.");
             return View();
         }
+
         //button choose image
         [HttpPost]
         public IActionResult ProcessUpload(IFormFile file)
@@ -62,14 +62,14 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 var responseContent = await apiResponse.Content.ReadAsStringAsync();
                 var staff = JsonConvert.DeserializeObject<List<Staff>>(responseContent);
-                return View(staff);
+                return View( staff);
             }
             else
             {
                 var staffList = await db.Staff
-                   .Include(s => s.Branch)
-                   .Include(s => s.RoleId)
-                   .ToListAsync();
+                    .Include(s => s.Branch)
+                    .Include(s => s.RoleId)
+                    .ToListAsync();
                 return View(staffList);
             }
         }
@@ -213,7 +213,6 @@ namespace DoAn.Areas.Admin.Controllers
             }
         }
 
-
         //Delete
         public async Task<IActionResult> Delete(int staffId)
         {
@@ -324,15 +323,12 @@ namespace DoAn.Areas.Admin.Controllers
         //logout
         public IActionResult Logout()
         {
-            // Remove session keys related to user data
             HttpContext.Session.Remove("Username");
             HttpContext.Session.Remove("Avatar");
             HttpContext.Session.Remove("Role");
 
-            // Invalidate the whole session
             HttpContext.Session.Clear();
 
-            // Redirect to the login page or another suitable page
             return RedirectToAction("Index", "Staff");
         }
     }

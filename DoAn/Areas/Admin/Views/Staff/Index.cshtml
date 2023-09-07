@@ -5,89 +5,88 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 <div class="wrapper-box" style="padding:7rem">
-        <div class="toolBar-control">
-        <button class="btn-create" onclick="window.location.href='/Admin/Staff/Register'">
-            Create new
-        </button>
+    <div class="toolBar-control">
+    <button class="btn-create" onclick="window.location.href='/Admin/Staff/Register'">
+        Create new
+    </button>
     
-            <div class="wrap-search">
-                <div class="search-staff">
-                    <div class="box-search">
-                        <input type="text" value="" name="" id="" placeholder="Search Employee ... ">
-                        <button class="btnSearch-staff"> Search</button>
-                    </div>
+        <div class="wrap-search">
+            <div class="search-staff">
+                <div class="box-search">
+                    <input type="text" value="" name="" id="" placeholder="Search Employee ... ">
+                    <button class="btnSearch-staff"> Search</button>
                 </div>
             </div>
-
-            <div></div>
         </div>
-        <div class="table-infoStaff">
-            <table class="table-List">
-                <tr class="title-infoList">
-                    <th>Staff ID</th>
-                    <th>Name</th>
-                    <th>UserName</th>
-                    <th>Phone</th>
-                    <th>Avatar</th>
-                    <th>Email</th>
-                    <th>Address</th>
-                    <th>Status</th>
-                    <th>Created At</th>
-                    <th>Updated At</th>
-                    <th>Created By</th>
-                    <th>Updated By</th>
-                    <th>Branch</th>
-                    <th>Role</th>
-                    <th>Action</th>
-                </tr>
 
-                <!-- render 1 -->
-                <tbody  class="box-tbody">
-                     @foreach (var item in Model)
-                    {
-                        <tr class="item-infoList">
-                            <td>@item.StaffId</td>
-                            <td>@item.Name</td>
-                            <td>@item.Username</td>
-                            <td>@item.Phone</td>
-                            <td>
-                                <img src="@item.Avatar" alt="">
-                            </td>
-                            <td>@item.Email</td>
-                            <td>@item.Address</td>
-                            <td>
-                                @if (item.Status == true)
-                                {
-                                    <p style="color: green">Active</p>
-                                }
-                                else
-                                {
-                                    <p style="color: red">Non-Active</p>
-                                }
-                            </td>
-                            <td>@item.CreatedAt</td>
-                            <td>@item.UpdatedAt</td>
-                            <td>@item.CreatedBy</td>
-                            <td>@item.UpdatedBy</td>
-                            <td>@item.Branch.Address</td>
-                            <td>@item.Role.Name</td>
-                            <td>
-                                <button class="btn-edit" onclick="navigateTo('Edit', @item.StaffId)">
-                                    Edit
-                                </button>
-                                <button class="btn-detail" onclick="navigateTo('Detail', @item.StaffId)">
-                                    Detail
-                                </button>
-                                <button class="btn-delete" onclick="deleteStaff(@item.StaffId)">
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+        <div></div>
     </div>
+    <div class="table-infoStaff">
+        <table class="table-List">
+            <tr class="title-infoList">
+                <th>Staff ID</th>
+                <th>Name</th>
+                <th>UserName</th>
+                <th>Phone</th>
+                <th>Avatar</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+                <th>Created By</th>
+                <th>Updated By</th>
+                <th>Branch</th>
+                <th>Role</th>
+                <th>Action</th>
+            </tr>
+
+            <tbody  class="box-tbody">
+                @foreach (var item in Model)
+                {
+                    <tr class="item-infoList">
+                        <td>@item.StaffId</td>
+                        <td>@item.Name</td>
+                        <td>@item.Username</td>
+                        <td>@item.Phone</td>
+                        <td>
+                            <img src="@item.Avatar" alt="">
+                        </td>
+                        <td>@item.Email</td>
+                        <td>@item.Address</td>
+                        <td>
+                            @if (item.Status == true)
+                            {
+                                <p style="color: green">Active</p>
+                            }
+                            else
+                            {
+                                <p style="color: red">Non-Active</p>
+                            }
+                        </td>
+                        <td>@item.CreatedAt</td>
+                        <td>@item.UpdatedAt</td>
+                        <td>@item.CreatedBy</td>
+                        <td>@item.UpdatedBy</td>
+                        <td>@item.Branch.Address</td>
+                        <td>@item.Role.Name</td>
+                        <td>
+                            <button class="btn-edit" onclick="navigateTo('Edit', @item.StaffId)">
+                                Edit
+                            </button>
+                            <button class="btn-detail" onclick="navigateTo('Detail', @item.StaffId)">
+                                Detail
+                            </button>
+                            <button class="btn-delete" onclick="deleteStaff(@item.StaffId)">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 <script>
     function navigateTo(action, staffId) {
         window.location.href = `/Admin/Staff/${action}?StaffId=${staffId}`;
