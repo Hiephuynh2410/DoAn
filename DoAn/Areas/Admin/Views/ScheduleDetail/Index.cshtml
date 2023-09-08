@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<DoAn.Models.Scheduledetail>
+@using Microsoft.AspNetCore.Http
 
 @{
     ViewData["Title"] = "Index";
@@ -27,32 +28,41 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @item.Date
-            </td>
-            <td>
-                    @item.SchehuleId
-            </td>
-            <td>
-                @item.Staff.Name
-            </td>
-                <td>
-                    @if (item.Status == true)
-                    {
-                        <p style="color: green">Haha</p>
-                    }
-                    else
-                    {
-                        <p style="color: red">hhuhu</p>
-                    }
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
+        @if (!string.IsNullOrEmpty(ViewBag.LoginMessage))
+        {
+            <p style="color:red">@ViewBag.LoginMessage</p>
+        } else
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.Date
+                    </td>
+                    <td>
+                        @item.SchehuleId
+                    </td>
+                    <td>
+                        @item.Staff.Name
+                    </td>
+                    <td>
+                        @if (item.Status == true)
+                        {
+                            <p style="color: green">Haha</p>
+                        }
+                        else
+                        {
+                            <p style="color: red">hhuhu</p>
+                        }
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    </td>
+                </tr>
+            }
+        }
+       
     </tbody>
 </table>
