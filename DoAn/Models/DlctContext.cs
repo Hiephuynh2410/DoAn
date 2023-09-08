@@ -297,6 +297,7 @@ public partial class DlctContext : DbContext
 
             entity.HasOne(d => d.Provider).WithMany(p => p.Products)
                 .HasForeignKey(d => d.ProviderId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_PRODUCT_PROVIDER");
 
             entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.ProductUpdatedByNavigations)
@@ -355,12 +356,10 @@ public partial class DlctContext : DbContext
 
             entity.HasOne(d => d.Schehule).WithMany(p => p.Scheduledetails)
                 .HasForeignKey(d => d.SchehuleId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_SCHEDULEDETAIL_SCHEDULE");
 
             entity.HasOne(d => d.Staff).WithMany(p => p.Scheduledetails)
                 .HasForeignKey(d => d.StaffId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_SCHEDULEDETAIL_STAFF1");
         });
 

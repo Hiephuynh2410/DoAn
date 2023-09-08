@@ -11,6 +11,8 @@ public partial class Scheduledetail
 
     public DateTime? Date { get; set; }
 
+    public bool? Status { get; set; }
+
     public virtual Schedule Schehule { get; set; } = null!;
 
     public virtual Staff Staff { get; set; } = null!;

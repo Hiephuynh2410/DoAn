@@ -1,0 +1,67 @@
+﻿@model IEnumerable<DoAn.Models.Schedule>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<div class="wrapper-box" style="padding:7rem">
+    <div class="toolBar-control">
+        <button class="btn-create" onclick="window.location.href='/Admin/Schedule/Create'">
+            Create new
+        </button>
+        <div class="wrap-search">
+            <div class="search-staff">
+                <div class="box-search">
+                    <input type="text" value="" name="" id="" placeholder="Search Schedule ... ">
+                    <button class="btnSearch-staff">Search</button>
+                </div>
+            </div>
+        </div>
+        <div></div>
+    </div>
+    <div class="table-infoStaff">
+        <table class="table-List">
+            <tr class="title-infoList">
+                <th>Schedule ID</th>
+                <th>Time</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+            <tbody class="box-tbody">
+                @foreach (var item in Model)
+                {
+                    <tr class="item-infoList">
+                        <td>@item.ScheduleId</td>
+                        <td>@item.Time</td>
+                        <td>
+                            <button class="btn-edit" onclick="navigateTo('Edit', @item.ScheduleId)">
+                                Edit
+                            </button>
+                            <button class="btn-detail" onclick="navigateTo('Detail', @item.ScheduleId)">
+                                Detail
+                            </button>
+                            <button class="btn-delete" onclick="deleteStaff(@item.ScheduleId)">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                   
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    function navigateTo(action, ScheduleId) {
+        window.location.href = `/Admin/Schedule/${action}?ScheduleId=${ScheduleId}`;
+    }
+
+    function deleteStaff(ScheduleId) {
+        if (confirm('Are you sure you want to delete this Schedule?')) {
+            navigateTo('Delete', ScheduleId);
+        }
+    }
+</script>
+

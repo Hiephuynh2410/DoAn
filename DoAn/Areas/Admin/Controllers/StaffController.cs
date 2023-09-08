@@ -79,6 +79,7 @@ namespace DoAn.Areas.Admin.Controllers
         public ActionResult Login()
         {
             return View();
+
         }
 
         [HttpPost]

@@ -82,6 +82,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
             var staffs = await _dbContext.Staff
                 .Include(s => s.Branch)
                 .Include(s => s.Role)
+                .Include(s => s.Scheduledetails)
                 .ToListAsync();
 
             var staffsWithFullInfo = staffs.Select(s => new
@@ -108,6 +109,11 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     s.Role.Name,
                     s.Role.RoleId
                 },
+                //Scheduledetails = s.Scheduledetails.Select(sd => new
+                //{
+                //    sd.SchehuleId,
+                //    sd.Date
+                //}).ToList(),
                 s.UpdatedAt,
                 s.CreatedBy,
                 s.UpdatedBy,

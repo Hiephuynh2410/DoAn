@@ -37,8 +37,20 @@
                             <span class="hide-menu">Role</span>
                         </a>
                     </li>
+
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="@Url.Action("Index", "Schedule")">
+                          <i class="fa-regular fa-calendar-days"></i>
+                            <span class="hide-menu">Schedule</span>
+                        </a>
+                    </li>
                 }
-               
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="@Url.Action("Index", "ScheduleDetail")">
+                        <i class="fa-solid fa-person"></i>
+                        <span class="hide-menu">ScheduleDetail</span>
+                    </a>
+                </li>
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="@Url.Action("Index", "Provider")">
                         <i class="fa-solid fa-person"></i>

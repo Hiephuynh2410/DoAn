@@ -1,0 +1,58 @@
+﻿@model IEnumerable<DoAn.Models.Scheduledetail>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Date
+            </th>
+            <th>
+                Schehule
+            </th>
+            <th>
+                Staff
+            </th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @item.Date
+            </td>
+            <td>
+                    @item.SchehuleId
+            </td>
+            <td>
+                @item.Staff.Name
+            </td>
+                <td>
+                    @if (item.Status == true)
+                    {
+                        <p style="color: green">Haha</p>
+                    }
+                    else
+                    {
+                        <p style="color: red">hhuhu</p>
+                    }
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
