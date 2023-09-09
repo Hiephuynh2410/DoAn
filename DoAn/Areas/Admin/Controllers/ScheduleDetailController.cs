@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Diagnostics;
 using System.Text;
 
 namespace DoAn.Areas.Admin.Controllers
@@ -116,56 +117,59 @@ namespace DoAn.Areas.Admin.Controllers
             ViewBag.LoginMessage = "Please login to view the schedule.";
             return View();
         }
-
-
         public IActionResult Create()
         {
-            if (HttpContext.Session != null && HttpContext.Session.GetString("UserId") == null)
-            {
-                return RedirectToAction("Login", "Staff");
-            }
-
-            // Populate the dropdown lists
             var staffList = db.Staff.ToList();
-
             var scheduleList = db.Schedules.ToList();
 
-            ViewBag.Staffs = new SelectList(staffList, "StaffId", "StaffId");
-            ViewBag.ScheduleId = new SelectList(scheduleList, "ScheduleId", "ScheduleId");
+            // Create select lists for dropdowns
+            ViewBag.StaffId = new SelectList(staffList, "StaffId", "StaffId"); // Change "Name" to the actual property you want to display
+            ViewBag.ScheduleId = new SelectList(scheduleList, "ScheduleId", "ScheduleId"); // Change "Time" to the actual property you want to display
 
             return View();
         }
 
+        // POST: /ScheduleDetail/Create
         [HttpPost]
-        public async Task<IActionResult> Create(Scheduledetail registrationModel)
+        public async Task<IActionResult> Create(Scheduledetail viewModel)
         {
-            var apiUrl = "https://localhost:7109/api/ScheduleDetailApi/create";
-            var json = JsonConvert.SerializeObject(registrationModel);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PostAsync(apiUrl, content);
-
-            if (response.IsSuccessStatusCode)
+            if (!ModelState.IsValid)
             {
+                var staffList = db.Staff.ToList();
+                var scheduleList = db.Schedules.ToList();
+                ViewBag.StaffId = new SelectList(staffList, "StaffId", "StaffId");
+                ViewBag.ScheduleId = new SelectList(scheduleList, "ScheduleId", "ScheduleId");
+
+                return View(viewModel);
+            }
+
+            // Prepare data to send to the API
+            var createModel = new Scheduledetail
+            {
+                StaffId = viewModel.StaffId,
+                ScheduleId = viewModel.ScheduleId,
+                Date = viewModel.Date,
+                Status = viewModel.Status
+            };
+
+            // Serialize and send data to the API
+            var serializedData = JsonConvert.SerializeObject(createModel);
+            var content = new StringContent(serializedData, Encoding.UTF8, "application/json");
+
+            var apiResponse = await _httpClient.PostAsync("https://localhost:7109/api/ScheduleDetailApi/Create", content);
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                // Handle success
                 return RedirectToAction("Index");
             }
             else
             {
-                var responseContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine("API Response Content: " + responseContent);
-
-                // Repopulate the dropdown lists
-                var staffList = db.Staff.ToList();
-                var scheduleList = db.Schedules.ToList();
-                ViewBag.Staffs = new SelectList(staffList, "StaffId", "StaffId");
-                ViewBag.ScheduleId = new SelectList(scheduleList, "ScheduleId", "ScheduleId");
-
-                var errorResponse = JsonConvert.DeserializeObject<object>(responseContent);
-
-                ModelState.AddModelError("", errorResponse.ToString());
-                return View(registrationModel);
+                // Handle error
+                ModelState.AddModelError(string.Empty, "An error occurred while creating the schedule detail.");
+                return View(viewModel);
             }
         }
-      
+
     }
 }

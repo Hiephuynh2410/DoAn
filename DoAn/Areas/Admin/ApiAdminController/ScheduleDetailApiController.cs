@@ -9,15 +9,15 @@ namespace DoAn.Areas.Admin.ApiAdminController
     [Route("api/[controller]")]
     public class ScheduleDetailApiController : Controller
     {
-        private readonly DlctContext _dbContext;
+        private readonly DlctContext db;
         public ScheduleDetailApiController(DlctContext dbContext)
         {
-            _dbContext = dbContext;
+            db = dbContext;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllScheduleDetails()
         {
-            var Schedules = await _dbContext.Scheduledetails
+            var Schedules = await db.Scheduledetails
                  .Include(s => s.Staff)
                  .Include(s => s.Schedule)
                 .ToListAsync();
@@ -42,7 +42,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateScheduleDetail(Scheduledetail createModel)
+        public async Task<IActionResult> CreateScheduleDetail(Scheduledetail inputModel)
         {
             try
             {
@@ -58,43 +58,44 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     });
                 }
 
-                if (!createModel.Date.HasValue)
-                {
-                    return BadRequest(new { Message = "Date is required." });
-                }
+                // Set the staff and schedule properties based on the inputModel
+                var staff = await db.Staff.FindAsync(inputModel.StaffId);
+                var schedule = await db.Schedules.FindAsync(inputModel.ScheduleId);
 
-                if (!IsValidDateFormat(createModel.Date.Value, "MM/dd/yyyy"))
+                var createModel = new Scheduledetail
                 {
-                    return BadRequest(new { Message = "Invalid date format. Use MM/dd/yyyy." });
-                }
-
-                if (await ScheduleDetailExists(createModel.Date.Value))
-                {
-                    return BadRequest(new { Message = "Schedule Detail already exists for the given date." });
-                }
-
-                var newScheduleDetail = new Scheduledetail
-                {
-                    StaffId = createModel.StaffId,
-                    ScheduleId = createModel.ScheduleId,
-                    Date = createModel.Date,
-                    Status = createModel.Status,
+                    StaffId = inputModel.StaffId,
+                    ScheduleId = inputModel.ScheduleId,
+                    Date = inputModel.Date,
+                    Status = inputModel.Status,
+                    Staff = staff,
+                    Schedule = schedule
                 };
 
-                _dbContext.Scheduledetails.Add(newScheduleDetail);
-                await _dbContext.SaveChangesAsync();
+                db.Scheduledetails.Add(createModel);
+                await db.SaveChangesAsync();
 
+                // Return the response as before
                 var registrationSuccessResponse = new
                 {
                     Message = "Schedule Detail registration successful",
-                    ScheduleDetailId = newScheduleDetail.ScheduleId
+                    ScheduleDetailId = createModel.ScheduleId,
+                    Staff = new
+                    {
+                        StaffId = createModel.Staff?.StaffId,
+                        // Include other staff properties as needed
+                    },
+                    Schedule = new
+                    {
+                        Time = createModel.Schedule?.Time,
+                        // Include other schedule properties as needed
+                    }
                 };
 
                 return Ok(registrationSuccessResponse);
             }
             catch (Exception ex)
             {
-
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     Message = "An unexpected error occurred. Please try again later."
@@ -102,15 +103,5 @@ namespace DoAn.Areas.Admin.ApiAdminController
             }
         }
 
-        private bool IsValidDateFormat(DateTime date, string format)
-        {
-            return DateTime.TryParseExact(date.ToString(format), format, CultureInfo.InvariantCulture, DateTimeStyles.None, out _);
         }
-
-        private async Task<bool> ScheduleDetailExists(DateTime date)
-        {
-            return await _dbContext.Scheduledetails.AnyAsync(b => b.Date == date);
-        }
-
-    }
 }

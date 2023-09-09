@@ -31,10 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="wwwroot\css\icons\tabler-icons\fonts\tabler-icons.eot" />
     <None Include="wwwroot\css\icons\tabler-icons\fonts\tabler-icons.svg" />
     <None Include="wwwroot\css\icons\tabler-icons\fonts\tabler-icons.ttf" />
