@@ -4,65 +4,91 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    string userRole = Context.Session.GetString("Role");
+    bool isAdmin = userRole == "1";
 }
 
-<h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Date
-            </th>
-            <th>
-                Schehule
-            </th>
-            <th>
-                Staff
-            </th>
-            <th>Status</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (!string.IsNullOrEmpty(ViewBag.LoginMessage))
+<div class="wrapper-box" style="padding:7rem">
+    <div class="toolBar-control">
+         @if (Context.Session.GetString("Role") == "1")
         {
-            <p style="color:red">@ViewBag.LoginMessage</p>
+            <button class="btn-create" onclick="window.location.href='/Admin/ScheduleDetail/Create'">
+                Create new
+            </button>
         } else
         {
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @item.Date
-                    </td>
-                    <td>
-                        @item.SchehuleId
-                    </td>
-                    <td>
-                        @item.Staff.Name
-                    </td>
-                    <td>
-                        @if (item.Status == true)
-                        {
-                            <p style="color: green">Haha</p>
-                        }
-                        else
-                        {
-                            <p style="color: red">hhuhu</p>
-                        }
-                    </td>
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-                    </td>
-                </tr>
-            }
+            <button onclick="showMessage();" title="This action is only available to admins" class="btn-create">
+                Create new
+            </button>
         }
-       
-    </tbody>
-</table>
+        <div class="wrap-search">
+            <div class="search-staff">
+                <div class="box-search">
+                    <input type="text" value="" name="" id="" placeholder="Search Schedule ... ">
+                    <button class="btnSearch-staff">Search</button>
+                </div>
+            </div>
+        </div>
+        <div></div>
+    </div>
+    <div class="table-infoStaff">
+        <table class="table-List">
+            <tr class="title-infoList">
+                <th>
+                    Date
+                </th>
+                <th>
+                    Schehule
+                </th>
+                <th>
+                    Staff
+                </th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            <tbody class="box-tbody">
+                @if (!string.IsNullOrEmpty(ViewBag.LoginMessage))
+                {
+                    <p style="color:red;text-align: center; font-size: 1.5rem;">@ViewBag.LoginMessage</p>
+                } else
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr class="item-infoList">
+                            <td>
+                                @item.Date
+                            </td>
+                            <td>
+                                @item.ScheduleId
+                            </td>
+                            <td>
+                                @item.Staff.Name
+                            </td>
+                            <td>
+                                @if (item.Status == true)
+                                {
+                                    <p style="color: green">Haha</p>
+                                }
+                                else
+                                {
+                                    <p style="color: red">hhuhu</p>
+                                }
+                            </td>
+                            <td>
+                                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    function showMessage() {
+        alert("This action is only available to admins");
+    }
+</script>

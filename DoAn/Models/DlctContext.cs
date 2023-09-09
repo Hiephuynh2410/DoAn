@@ -346,16 +346,16 @@ public partial class DlctContext : DbContext
 
         modelBuilder.Entity<Scheduledetail>(entity =>
         {
-            entity.HasKey(e => new { e.SchehuleId, e.StaffId }).HasName("PK_SCHEDULE DETAIL");
+            entity.HasKey(e => new { e.ScheduleId, e.StaffId }).HasName("PK_SCHEDULE DETAIL");
 
             entity.ToTable("SCHEDULEDETAIL");
 
-            entity.Property(e => e.SchehuleId).HasColumnName("Schehule_id");
+            entity.Property(e => e.ScheduleId).HasColumnName("Schedule_id");
             entity.Property(e => e.StaffId).HasColumnName("Staff_id");
             entity.Property(e => e.Date).HasColumnType("date");
 
-            entity.HasOne(d => d.Schehule).WithMany(p => p.Scheduledetails)
-                .HasForeignKey(d => d.SchehuleId)
+            entity.HasOne(d => d.Schedule).WithMany(p => p.Scheduledetails)
+                .HasForeignKey(d => d.ScheduleId)
                 .HasConstraintName("FK_SCHEDULEDETAIL_SCHEDULE");
 
             entity.HasOne(d => d.Staff).WithMany(p => p.Scheduledetails)

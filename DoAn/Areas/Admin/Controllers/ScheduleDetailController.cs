@@ -1,6 +1,7 @@
 ﻿using DoAn.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Text;
@@ -112,9 +113,59 @@ namespace DoAn.Areas.Admin.Controllers
                 }
             }
 
-            ViewBag.LoginMessage = "Please log in to view the schedule.";
+            ViewBag.LoginMessage = "Please login to view the schedule.";
             return View();
         }
 
+
+        public IActionResult Create()
+        {
+            if (HttpContext.Session != null && HttpContext.Session.GetString("UserId") == null)
+            {
+                return RedirectToAction("Login", "Staff");
+            }
+
+            // Populate the dropdown lists
+            var staffList = db.Staff.ToList();
+
+            var scheduleList = db.Schedules.ToList();
+
+            ViewBag.Staffs = new SelectList(staffList, "StaffId", "StaffId");
+            ViewBag.ScheduleId = new SelectList(scheduleList, "ScheduleId", "ScheduleId");
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(Scheduledetail registrationModel)
+        {
+            var apiUrl = "https://localhost:7109/api/ScheduleDetailApi/create";
+            var json = JsonConvert.SerializeObject(registrationModel);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync(apiUrl, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("API Response Content: " + responseContent);
+
+                // Repopulate the dropdown lists
+                var staffList = db.Staff.ToList();
+                var scheduleList = db.Schedules.ToList();
+                ViewBag.Staffs = new SelectList(staffList, "StaffId", "StaffId");
+                ViewBag.ScheduleId = new SelectList(scheduleList, "ScheduleId", "ScheduleId");
+
+                var errorResponse = JsonConvert.DeserializeObject<object>(responseContent);
+
+                ModelState.AddModelError("", errorResponse.ToString());
+                return View(registrationModel);
+            }
+        }
+      
     }
 }
