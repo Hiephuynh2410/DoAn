@@ -67,7 +67,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     StaffId = inputModel.StaffId,
                     ScheduleId = inputModel.ScheduleId,
                     Date = inputModel.Date,
-                    Status = inputModel.Status,
+                    Status = true,
                     Staff = staff,
                     Schedule = schedule
                 };
@@ -103,5 +103,5 @@ namespace DoAn.Areas.Admin.ApiAdminController
             }
         }
 
-        }
+    }
 }

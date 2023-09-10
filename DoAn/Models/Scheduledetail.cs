@@ -7,12 +7,8 @@ namespace DoAn.Models;
 
 public partial class Scheduledetail
 {
-    [Required]
     public int ScheduleId { get; set; }
-    [Required]
-
     public int StaffId { get; set; }
-
     public DateTime? Date { get; set; }
 
     public bool? Status { get; set; }

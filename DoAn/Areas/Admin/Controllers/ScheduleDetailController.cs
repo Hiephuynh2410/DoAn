@@ -119,55 +119,66 @@ namespace DoAn.Areas.Admin.Controllers
         }
         public IActionResult Create()
         {
+            // Fetch the list of staff and schedules from your database
             var staffList = db.Staff.ToList();
             var scheduleList = db.Schedules.ToList();
 
-            // Create select lists for dropdowns
-            ViewBag.StaffId = new SelectList(staffList, "StaffId", "StaffId"); // Change "Name" to the actual property you want to display
-            ViewBag.ScheduleId = new SelectList(scheduleList, "ScheduleId", "ScheduleId"); // Change "Time" to the actual property you want to display
+            // Create SelectList items for the dropdowns
+            ViewBag.StaffId = new SelectList(staffList, "StaffId", "Name"); // Change "StaffName" to the actual property you want to display for staff
+            ViewBag.ScheduleId = new SelectList(scheduleList, "ScheduleId", "Time"); // Change "ScheduleTime" to the actual property you want to display for schedules
 
             return View();
         }
 
-        // POST: /ScheduleDetail/Create
         [HttpPost]
-        public async Task<IActionResult> Create(Scheduledetail viewModel)
+        public async Task<IActionResult> Create(Scheduledetail inputModel)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                var staffList = db.Staff.ToList();
-                var scheduleList = db.Schedules.ToList();
-                ViewBag.StaffId = new SelectList(staffList, "StaffId", "StaffId");
-                ViewBag.ScheduleId = new SelectList(scheduleList, "ScheduleId", "ScheduleId");
+                if (inputModel.StaffId == 0 || inputModel.ScheduleId == 0)
+                {
+                    ModelState.AddModelError("", "Please select a Staff and a Schedule.");
+                    var staffList = await db.Staff.ToListAsync();
+                    var scheduleList = await db.Schedules.ToListAsync();
+                    ViewBag.StaffId = new SelectList(staffList, "StaffId", "Name");
+                    ViewBag.ScheduleId = new SelectList(scheduleList, "ScheduleId", "Time"); 
+                    return View(inputModel);
+                }
 
-                return View(viewModel);
+                var selectedStaff = await db.Staff.FindAsync(inputModel.StaffId);
+                var selectedSchedule = await db.Schedules.FindAsync(inputModel.ScheduleId);
+
+                inputModel.Staff = selectedStaff;
+                inputModel.Schedule = selectedSchedule;
+
+                var serializedModel = JsonConvert.SerializeObject(inputModel);
+                var content = new StringContent(serializedModel, Encoding.UTF8, "application/json");
+
+                var apiResponse = await _httpClient.PostAsync("https://localhost:7109/api/ScheduleDetailApi/create", content);
+
+                if (apiResponse.IsSuccessStatusCode)
+                {
+                    var responseContent = await apiResponse.Content.ReadAsStringAsync();
+                    var responseData = JsonConvert.DeserializeObject<Scheduledetail>(responseContent);
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    var errorResponse = await apiResponse.Content.ReadAsStringAsync();
+                    ModelState.AddModelError("", "Failed to create Scheduledetail: " + errorResponse);
+                    var staffList = await db.Staff.ToListAsync();
+                    var scheduleList = await db.Schedules.ToListAsync();
+                    ViewBag.StaffId = new SelectList(staffList, "StaffId", "StaffName");
+                    ViewBag.ScheduleId = new SelectList(scheduleList, "ScheduleId", "ScheduleTime");
+                    return View(inputModel);
+                }
             }
-
-            // Prepare data to send to the API
-            var createModel = new Scheduledetail
+            catch (Exception ex)
             {
-                StaffId = viewModel.StaffId,
-                ScheduleId = viewModel.ScheduleId,
-                Date = viewModel.Date,
-                Status = viewModel.Status
-            };
-
-            // Serialize and send data to the API
-            var serializedData = JsonConvert.SerializeObject(createModel);
-            var content = new StringContent(serializedData, Encoding.UTF8, "application/json");
-
-            var apiResponse = await _httpClient.PostAsync("https://localhost:7109/api/ScheduleDetailApi/Create", content);
-
-            if (apiResponse.IsSuccessStatusCode)
-            {
-                // Handle success
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                // Handle error
-                ModelState.AddModelError(string.Empty, "An error occurred while creating the schedule detail.");
-                return View(viewModel);
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    Message = "An unexpected error occurred. Please try again later."
+                });
             }
         }
 
