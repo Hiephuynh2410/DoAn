@@ -8,20 +8,20 @@
 <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
     <div class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
         <div class="d-flex align-items-center justify-content-center w-100">
-                <div class="row justify-content-center w-100">
-                <div class="col-md-8 col-lg-6" >
-                    <div class="card mb-0">    
+            <div class="row justify-content-center w-100">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card mb-0">
                         <div class="card-body d-flex flex-column align-items-center">
                             <a href="" class="text-nowrap logo-img text-center d-block py-3 w-100">
                                 <img src="~/images/logos/dark-logo.svg" width="180" alt="">
                             </a>
                             <p class="text-center">Your Social Campaigns</p>
-                                    <div class="img-wrap" style="align-items: center;display: flex;justify-content: center;">
-                                        <input type="file" name="fileUpload" id="fileUpload" accept="image/*" style="display:none;" />
-                                        <img style="width: 100px; border-radius: 50%; height: 100px; object-fit:cover" class="wrapper-img" src="~/images/img.jpg" id="pictureUpload" />
-                                        <span asp-validation-for="Avatar" class="text-danger"></span>
-                                    </div>
-                            <form asp-action="Register" >
+                            <div class="img-wrap" style="align-items: center;display: flex;justify-content: center;">
+                                <input type="file" name="fileUpload" id="fileUpload" accept="image/*" style="display:none;" />
+                                <img style="width: 100px; border-radius: 50%; height: 100px; object-fit:cover" class="wrapper-img" src="~/images/img.jpg" id="pictureUpload" />
+                                <span asp-validation-for="Avatar" class="text-danger"></span>
+                            </div>
+                            <form asp-action="Register">
                                 <div style="display:flex">
 
                                     <div style="flex:1; margin:0 2rem">
@@ -56,17 +56,17 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div style="flex:1; margin:0 2rem">
-                                            <div class="mb-4">
-                                                <label for="Address" class="form-label">Address</label>
-                                                <input asp-for="Address" class="form-control" />
+                                        <div class="mb-4">
+                                            <label for="Address" class="form-label">Address</label>
+                                            <input asp-for="Address" class="form-control" />
                                             <span asp-validation-for="Name" class="text-danger"></span>
                                         </div>
-                                            <div class="mb-4">
-                                                <label for="Email" class="form-label">Email</label>
-                                                <input asp-for="Email" class="form-control" />
-                                                <span asp-validation-for="Name" class="text-danger"></span>
+                                        <div class="mb-4">
+                                            <label for="Email" class="form-label">Email</label>
+                                            <input asp-for="Email" class="form-control" />
+                                            <span asp-validation-for="Name" class="text-danger"></span>
                                         </div>
                                         <div class="mb-4">
                                             <label for="Status" class="form-label">Status</label>
@@ -85,14 +85,14 @@
                                             @Html.DropDownList("RoleId", (SelectList)ViewBag.Roles, "Select a role", new { @class = "form-control" })
                                             <span asp-validation-for="RoleId" class="text-danger"></span>
                                         </div>
-                                            <div class="mb-4">
-                                                <label for="BranchId" class="form-label">Branch</label>
-                                                @Html.DropDownList("BranchId", (SelectList)ViewBag.Branches, "Select a branch", new { @class = "form-control" })
+                                        <div class="mb-4">
+                                            <label for="BranchId" class="form-label">Branch</label>
+                                            @Html.DropDownList("BranchId", (SelectList)ViewBag.Branches, "Select a branch", new { @class = "form-control" })
                                             <span asp-validation-for="BranchId" class="text-danger"></span>
                                         </div>
                                     </div>
                                 </div>
-                                    <input type="submit" value="Create" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2" />
+                                <input type="submit" value="Create" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2" />
                             </form>
                         </div>
                     </div>
@@ -160,11 +160,12 @@
     .wrapper-img {
         border-radius: 50%;
     }
+
     .error-indicator::after {
-        content: "•"; 
+        content: "•";
         color: red;
         font-weight: bold;
-        margin-left: 5px; 
+        margin-left: 5px;
     }
 
     .indicator-hidden {

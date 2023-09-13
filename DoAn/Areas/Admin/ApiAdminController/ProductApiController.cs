@@ -60,7 +60,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 var productType = await _dbContext.Producttypes.FindAsync(registrationModel.ProductTypeId);
                 var provider = await _dbContext.Providers.FindAsync(registrationModel.ProviderId);
 
-                var newProducts = new Product   
+                var newProduct = new Product
                 {
                     Name = registrationModel.Name,
                     Description = registrationModel.Description,
@@ -73,28 +73,31 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     Provider = provider,
                 };
 
-                _dbContext.Products.Add(newProducts);
+                _dbContext.Products.Add(newProduct);
                 await _dbContext.SaveChangesAsync();
-                _dbContext.Entry(newProducts).Reference(s => s.ProductType).Load();
-                _dbContext.Entry(newProducts).Reference(s => s.Provider).Load();
+                _dbContext.Entry(newProduct).Reference(s => s.ProductType).Load();
+                _dbContext.Entry(newProduct).Reference(s => s.Provider).Load();
+
                 var registrationSuccessResponse = new
                 {
                     Message = "Product created successfully",
-                    ProductId = newProducts.ProductId,
+                    ProductId = newProduct.ProductId,
                     ProductType = new
                     {
-                        Address = newProducts.ProductType?.Name
+                        Address = newProduct.ProductType?.Name
                     },
                     Provider = new
                     {
-                        Name = newProducts.Provider?.Name,
-                        Address = newProducts.Provider?.Address,
-                        Phone = newProducts.Provider?.Phone,
-                        Email = newProducts.Provider?.Email
+                        Name = newProduct.Provider?.Name,
+                        Address = newProduct.Provider?.Address,
+                        Phone = newProduct.Provider?.Phone,
+                        Email = newProduct.Provider?.Email
                     }
                 };
+
                 return Ok(registrationSuccessResponse);
             }
+
             var invalidDataErrorResponse = new
             {
                 Message = "Invalid create data",
@@ -102,11 +105,10 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     .SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage)
                     .ToList()
-
             };
+
             return BadRequest(invalidDataErrorResponse);
         }
-
         [HttpPut("update/{productId}")]
         public async Task<IActionResult> UpdateProducts(int productId, Product updateModel)
         {

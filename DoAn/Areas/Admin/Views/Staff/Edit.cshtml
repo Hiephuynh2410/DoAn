@@ -5,12 +5,12 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="wrapper-ui">
+<div class="wrapper-ui" style="margin-top:3rem">
     <div class="wrapperUi-containerTitle">
         <div class="box-uiInfo">
             <div class="avatar-user">
-                <div class="border-image">
-                    <img class="" src="@Model.Avatar" id="pictureUpload" />
+                <div class="border-image" style="">
+                    <img class="" src="@Model.Avatar"/>
                 </div>
             </div>
             <div class="info-user">
@@ -25,10 +25,6 @@
             <div class="control-button">
                 <Button class="btn-edit" onclick="window.location.href='/Admin/Staff/Index'">
                     Trở lại
-                </Button>
-
-                <Button class="btn-edit" onclick="navigateTo('Edit', StaffId)">
-                    Edit Staff
                 </Button>
             </div>
 
@@ -54,47 +50,42 @@
                 <form asp-action="Edit">
                     <input type="hidden" asp-for="StaffId" />
                     <div class="wrapper-box" style="display:flex; flex-wrap:wrap; gap:1.5rem">
-                    <div style="flex:1 1 18rem" class="box">
-                            <span><strong style="color:red">*</strong>name: </span>
-                        <input asp-for="Name" type="text" class="userName" />
-                    </div>
-                    <div style="flex:1 1 18rem" class="box">
-                        <span> <strong style="color:red">*</strong> Role: </span>
-                            @Html.DropDownList("RoleId", (SelectList)ViewBag.Roles, "Select a role", new { @class = "userName" })
-                    </div>
-                    <div style="flex:1 1 18rem" class="box">
-                            <span><strong style="color:red">*</strong> Username: </span>
-                        <input asp-for="Username" type="text" class="userName"  />
+                        <div style="flex:1 1 18rem" class="box">
+                                <span><strong style="color:red">*</strong>name: </span>
+                            <input asp-for="Name" type="text" class="userName" />
+                        </div>
+                        <div style="flex:1 1 18rem" class="box">
+                            <span> <strong style="color:red">*</strong> Role: </span>
+                                @Html.DropDownList("RoleId", (SelectList)ViewBag.Roles, "Select a role", new { @class = "userName" })
+                        </div>
+                        <div style="flex:1 1 18rem" class="box">
+                                <span><strong style="color:red">*</strong> Username: </span>
+                            <input asp-for="Username" type="text" class="userName"  />
 
-                    </div>
-                    <div style="flex:1 1 18rem" class="box">
-                            <span><strong style="color:red">*</strong>Phonenumber:</span>
-                        <input asp-for="Phone" type="number" class="userName"  />
-                    </div>
-                    @*Xử lí không cho người dùng nhập chữ vào số đt*@
-                    @section scripts {
-                        <script>
-                            $(document).ready(function () {
-                                $('#Phone').on('input', function () {
-                                    var phoneValue = $(this).val();
-                                    var numericValue = phoneValue.replace(/[^0-9]/g, '');
-                                    $(this).val(numericValue);
-                                });
-                            });
-                        </script>
-                    }
-                    <div style="flex:1 1 18rem" class="box">
-                            <span><strong style="color:red">*</strong>address: </span>
-                        <input asp-for="Address" type="text" class="userName"  />
-                    </div>
-                    <div style="flex:1 1 18rem" class="box">
-                        <span><strong style="color:red">*</strong> email: </span>
-                        <input asp-for="Email" type="email" class="userName"  />
-                    </div>
-                    <div style="flex:1 1 18rem" class="box">
-                        <input type="file" name="fileUpload" id="fileUpload" accept="image/*" style="display:none;" />
-                        <input type="button" id="btnUpload" value="Chọn ảnh" class="btn btn-danger" />
-                    </div>
+                        </div>
+                        <div style="flex:1 1 18rem" class="box">
+                                <span><strong style="color:red">*</strong>Phonenumber:</span>
+                            <input asp-for="Phone" type="number" class="userName"  />
+                        </div>
+                            <div hidden style="flex:1 1 18rem" class="box">
+                                <span><strong style="color:red">*</strong>Avatar: </span>
+                                <input asp-for="Avatar" type="text" class="userName" />
+                            </div>
+
+                        <div style="flex:1 1 18rem" class="box">
+                                <span><strong style="color:red">*</strong>address: </span>
+                            <input asp-for="Address" type="text" class="userName"  />
+                        </div>
+                        <div class="img-wrap" style="align-items:center">
+                            <input type="file" name="fileUpload" id="fileUpload" hidden accept="image/*" style="display:none;" />
+                            <input type="button" id="btnUpload" value="Chọn ảnh" class="btn btn-danger" />
+                            <img style="width:44%" class="wrapper-img" hidden src="" id="pictureUpload" />
+                        </div>
+
+                        <div style="flex:1 1 18rem" class="box">
+                            <span><strong style="color:red">*</strong> email: </span>
+                            <input asp-for="Email" type="email" class="userName"  />
+                        </div>
                     </div>
                     <div style="flex:1 1 18rem" class="box">
                         <span>* Status: </span>
@@ -109,44 +100,18 @@
                         </div>
                     </div>
                     <div class="wrappercalendar-containerList">
-                       @* <label for="select-title" class="select-title">select a day:</label>
-                        <div>
-                        @*    <select id="select-title" name="select-title">
-                                <option value="">ngày 28/8/2023</option>
-                                <option value="">ngày 29/8/2023</option>
-                                <option value="">ngày 30/8/2023</option>
-                                <option value="">ngày 31/8/2023</option>
-                                <option value="">ngày 01/09/2023</option>
-                                <option value="">ngày 02/09/2023</option>
-                                <option value="">ngày 03/09/2023</option>
-                            </select>
-                        </div>*@
                         <div class="container-timeClock">
-                            <span>7:00</span>
-                            <span>7:30</span>
-                            <span>8:00</span>
-                            <span>8:30</span>
-                            <span>9:00</span>
-                            <span>9:30</span>
-                            <span>10:00</span>
-                            <span>10:30</span>
-                            <span>11:00</span>
-                            <span>11:30</span>
-                            <span>13:30</span>
-                            <span>14:00</span>
-                            <span>14:30</span>
-                            <span>15:00</span>
-                            <span>15:30</span>
-                            <span>16:00</span>
-                            <span>16:30</span>
-                            <span>17:00</span>
-                            <span>17:30</span>
-                            <span>18:00</span>
-                            <span>18:30</span>
-                            <span>19:00</span>
-                            <span>19:30</span>
-                            <span>20:00</span>
-                            <span>20:30</span>
+                            <h4 style="font-size:3rem">Schedule</h4>
+                            <ul>
+                                @foreach (var schedule in Model.Scheduledetails)
+                                {
+                                    <li style="font-size:2rem">Date: @schedule.Date </li>
+                                }
+                                @foreach (var scheduleDetail in Model.Scheduledetails)
+                                {
+                                    <li style="font-size:2rem">Time: @scheduleDetail.Schedule.Time</li>
+                                }
+                            </ul>
                         </div>
                         <input type="submit" value="Save" class="btn btn-primary"/>
                     </div>
@@ -193,4 +158,20 @@
                 }
             });
         </script>
-    }
+    }<style>
+         .border-image {
+             width: 150px; 
+             height: 150px; 
+             text-align: center;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+         }
+
+             .border-image img {
+                 max-width: 100%;
+                 max-height: 100%; 
+                 height: auto;
+                 width: auto; 
+             }
+    </style>

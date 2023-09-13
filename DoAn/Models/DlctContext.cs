@@ -236,14 +236,6 @@ public partial class DlctContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("Updated_at");
             entity.Property(e => e.UpdatedBy).HasColumnName("Updated_by");
-
-            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ComboCreatedByNavigations)
-                .HasForeignKey(d => d.CreatedBy)
-                .HasConstraintName("FK_COMBO_STAFF");
-
-            entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.ComboUpdatedByNavigations)
-                .HasForeignKey(d => d.UpdatedBy)
-                .HasConstraintName("FK_COMBO_STAFF1");
         });
 
         modelBuilder.Entity<Combodetail>(entity =>
@@ -287,10 +279,6 @@ public partial class DlctContext : DbContext
                 .HasColumnName("Updated_at");
             entity.Property(e => e.UpdatedBy).HasColumnName("Updated_by");
 
-            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ProductCreatedByNavigations)
-                .HasForeignKey(d => d.CreatedBy)
-                .HasConstraintName("FK_PRODUCT_STAFF");
-
             entity.HasOne(d => d.ProductType).WithMany(p => p.Products)
                 .HasForeignKey(d => d.ProductTypeId)
                 .HasConstraintName("FK_PRODUCT_PRODUCTTYPE");
@@ -299,10 +287,6 @@ public partial class DlctContext : DbContext
                 .HasForeignKey(d => d.ProviderId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_PRODUCT_PROVIDER");
-
-            entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.ProductUpdatedByNavigations)
-                .HasForeignKey(d => d.UpdatedBy)
-                .HasConstraintName("FK_PRODUCT_STAFF2");
         });
 
         modelBuilder.Entity<Producttype>(entity =>
@@ -379,17 +363,9 @@ public partial class DlctContext : DbContext
                 .HasColumnName("Updated_at");
             entity.Property(e => e.UpdatedBy).HasColumnName("Updated_by");
 
-            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ServiceCreatedByNavigations)
-                .HasForeignKey(d => d.CreatedBy)
-                .HasConstraintName("FK_SERVICE_STAFF");
-
             entity.HasOne(d => d.ServiceType).WithMany(p => p.Services)
                 .HasForeignKey(d => d.ServiceTypeId)
                 .HasConstraintName("FK_SERVICE_ServiceType");
-
-            entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.ServiceUpdatedByNavigations)
-                .HasForeignKey(d => d.UpdatedBy)
-                .HasConstraintName("FK_SERVICE_STAFF1");
         });
 
         modelBuilder.Entity<Servicetype>(entity =>

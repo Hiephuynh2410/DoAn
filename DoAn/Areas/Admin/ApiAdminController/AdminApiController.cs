@@ -196,7 +196,6 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 return NotFound();
             }
 
-            // Update other properties...
             staff.Name = updateModel.Name;
             staff.Username = updateModel.Username;
             staff.Phone = updateModel.Phone;
@@ -205,7 +204,6 @@ namespace DoAn.Areas.Admin.ApiAdminController
             staff.Status = updateModel.Status;
             staff.UpdatedAt = DateTime.Now;
             staff.UpdatedBy = updateModel.UpdatedBy;
-            // Update related branch and role properties
             if (updateModel.BranchId != staff.BranchId)
             {
                 var newBranch = await _dbContext.Branches.FindAsync(updateModel.BranchId);

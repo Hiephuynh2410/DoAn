@@ -33,11 +33,7 @@ public partial class Product
 
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
-    public virtual Staff? CreatedByNavigation { get; set; }
-
     public virtual Producttype? ProductType { get; set; }
 
     public virtual Provider? Provider { get; set; }
-
-    public virtual Staff? UpdatedByNavigation { get; set; }
 }

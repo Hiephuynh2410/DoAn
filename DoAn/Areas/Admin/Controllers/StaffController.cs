@@ -53,7 +53,7 @@ namespace DoAn.Areas.Admin.Controllers
             }
             return Json("/images/" + fileName);
         }
-      
+
         //View List
         public async Task<IActionResult> Index()
         {
@@ -62,7 +62,7 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 var responseContent = await apiResponse.Content.ReadAsStringAsync();
                 var staff = JsonConvert.DeserializeObject<List<Staff>>(responseContent);
-                return View( staff);
+                return View(staff);
             }
             else
             {
@@ -91,7 +91,7 @@ namespace DoAn.Areas.Admin.Controllers
             Staff nv = db.Staff.FirstOrDefault(x => x.Username == UserName);
             if (nv != null)
             {
-                if (nv.Status == true) 
+                if (nv.Status == true)
                 {
                     var passwordHasher = new PasswordHasher<Staff>();
                     var passwordVerificationResult = passwordHasher.VerifyHashedPassword(nv, nv.Password, Password);
@@ -124,7 +124,7 @@ namespace DoAn.Areas.Admin.Controllers
         //register
         public IActionResult Register()
         {
-            var roles = db.Roles.ToList(); 
+            var roles = db.Roles.ToList();
             var branches = db.Branches.ToList();
             ViewBag.Roles = new SelectList(roles, "RoleId", "Name");
             ViewBag.Branches = new SelectList(branches, "BranchId", "Address");
@@ -135,7 +135,7 @@ namespace DoAn.Areas.Admin.Controllers
         public async Task<IActionResult> Register(Staff registrationModel)
         {
             var apiUrl = "https://localhost:7109/api/AdminApi/register";
-            if (string.IsNullOrEmpty(registrationModel.Name) && string.IsNullOrEmpty(registrationModel.Username) 
+            if (string.IsNullOrEmpty(registrationModel.Name) && string.IsNullOrEmpty(registrationModel.Username)
                 && string.IsNullOrEmpty(registrationModel.Password) && string.IsNullOrEmpty(registrationModel.Phone)
                 && string.IsNullOrEmpty(registrationModel.Avatar) && string.IsNullOrEmpty(registrationModel.Address)
                 && string.IsNullOrEmpty(registrationModel.Email) && string.IsNullOrEmpty(registrationModel.Phone))
@@ -169,7 +169,7 @@ namespace DoAn.Areas.Admin.Controllers
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await _httpClient.PostAsync(apiUrl, content);
-           
+
                 if (response.IsSuccessStatusCode)
                 {
                     return RedirectToAction("Index");
@@ -223,7 +223,7 @@ namespace DoAn.Areas.Admin.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index"); 
+                return RedirectToAction("Index");
             }
             else
             {
@@ -241,16 +241,22 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(int staffId)
         {
-            var staff = db.Staff.Find(staffId);
+            var staff = db.Staff
+              .Include(s => s.Scheduledetails)
+              .ThenInclude(s => s.Schedule)
+              .FirstOrDefault(s => s.StaffId == staffId);
+
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
             var roles = db.Roles.ToList();
             var branches = db.Branches.ToList();
 
             ViewBag.Roles = new SelectList(roles, "RoleId", "Name");
             ViewBag.Branches = new SelectList(branches, "BranchId", "Address");
-            if (staff == null)
-            {
-                return NotFound();
-            }
+
             return View(staff);
         }
         [HttpPost]
@@ -317,7 +323,7 @@ namespace DoAn.Areas.Admin.Controllers
             }
             else
             {
-                return RedirectToAction("Index"); 
+                return RedirectToAction("Index");
             }
         }
 

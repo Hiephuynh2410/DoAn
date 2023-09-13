@@ -4,59 +4,66 @@
     ViewData["Title"] = "Create";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
-<div class="wrapper-Uicreate">
 
-    <div class="uiCreate-container">
-         <div class="wrap-title">
-             <div class="title"> </div>
-             <span>Create Product</span>
-         </div>
+<h1>Create</h1>
 
-         <h2 class="title-big" style="font-family: 'Playfair Display', serif;">Add new products</h2> 
-
+<h4>Product</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
         <form asp-action="Create">
-            <div class="box-input">
-                <input disabled asp-for="Image" name="imageChoose" id="imageChoose" placeholder="Enter product imageChoose..." />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" type="number" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Quantity" class="control-label"></label>
+                <input asp-for="Quantity" type="number" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductTypeId" class="control-label"></label>
+                @Html.DropDownList("ProductTypeId", (SelectList)ViewBag.ProductType, "Select a Type", new { @id="select-productType"})
+            </div>
+            <div class="form-group">
+                <label asp-for="Image" class="control-label"></label>
+                <input asp-for="Image" class="form-control" />
+                <span asp-validation-for="Image" class="text-danger"></span>
                 <div class="img-wrap" style="align-items:center">
                     <input type="file" name="fileUpload" id="fileUpload" accept="image/*" style="display:none;" />
                     <input type="button" id="btnUpload" value="Chọn ảnh" class="btn btn-danger" />
                     <img style="width:44%" class="wrapper-img" src="" id="pictureUpload" />
                 </div>
             </div>
+            <div class="form-group">
+                <label asp-for="ProviderId" class="control-label"></label>
+                @Html.DropDownList("ProviderId", (SelectList)ViewBag.providers, "Select a Type", new {@id="select-provider" })
 
-            <div class="box-input">
-                <span>product name</span>
-                <input asp-for="Name" type="text" placeholder="Enter product name..." />
-            </div>
-            <div class="box-input">
-                <span>product Description</span>
-                <textarea asp-for="Description" type="text" placeholder="Enter product Description..." id="" cols="30" rows="10"></textarea>
-            </div>
-            <div class="box-input">
-                <span>Price</span>
-                <input asp-for="Price" type="number" name="" id="" placeholder="Enter product price..." />
-            </div>
-            <div class="box-input">
-                <span>Quantity</span>
-                <input asp-for="Quantity" type="number" name="" id="" placeholder="Enter product price..." />
-            </div>
-            <div class="box-input">
-                <label for="select-provider" class="select-provider">Select provider:</label>
-                    @Html.DropDownList("ProviderId", (SelectList)ViewBag.providers, "Select a Type", new {@id="select-provider" })
-            </div>
-            <div class="box-input">
-                <label for="select-productType" class="select-productType">Select product type:</label>
-                    @Html.DropDownList("ProductTypeId", (SelectList)ViewBag.ProductType, "Select a Type", new { @id="select-productType"})
             </div>
            
-
-            <div class="control-button">
-                <a asp-action="Index" class="btn-return">Back to List</a>
-                <input type="submit" value="Save" class="btn-create" />
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 @section upload {
     <script>
@@ -80,7 +87,7 @@
                     data: formData,
                     success: function (urlImage) {
                         $('#pictureUpload').attr('src', urlImage);
-                        $('#Image').val(urlImage); 
+                        $('#Image').val(urlImage);
                     },
                     error: function (err) {
                         alert('Error: ' + err.statusText);

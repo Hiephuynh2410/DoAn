@@ -20,68 +20,6 @@ namespace DoAn.Areas.Admin.Controllers
             _httpClient = new HttpClient();
         }
 
-        //public async Task<IActionResult> Index()
-        //{
-        //    // kiểm tra session 
-        //    if (HttpContext.Session.TryGetValue("UserId", out byte[] userIdBytes))
-        //    {
-        //        if (int.TryParse(Encoding.UTF8.GetString(userIdBytes), out int staffId))
-        //        {
-        //            var apiResponse = await _httpClient.GetAsync("https://localhost:7109/api/ScheduleDetailApi/");
-        //            if (apiResponse.IsSuccessStatusCode)
-        //            {
-        //                var responseContent = await apiResponse.Content.ReadAsStringAsync();
-        //                var schedules = JsonConvert.DeserializeObject<List<Scheduledetail>>(responseContent);
-
-        //                //lọc lịch làm việc dựa theo StaffId
-        //                var filteredSchedules = schedules.Where(s => s.Staff.StaffId == staffId).ToList();
-
-        //                return View(filteredSchedules);
-        //            }
-        //            else
-        //            {
-        //                var schedules = await db.Scheduledetails
-        //                    .Where(s => s.Staff.StaffId == staffId)
-        //                    .ToListAsync();
-
-        //                return View(schedules);
-        //            }
-        //        }
-        //    }
-
-        //    //nếu nhân viên không có lịch làm việc thì thôi không hiện
-        //    return View(new List<Scheduledetail>());
-        //}
-        //public async Task<IActionResult> Index()
-        //{
-        //    if (HttpContext.Session.TryGetValue("UserId", out byte[] userIdBytes))
-        //    {
-        //        if (int.TryParse(Encoding.UTF8.GetString(userIdBytes), out int staffId))
-        //        {
-        //            var apiResponse = await _httpClient.GetAsync("https://localhost:7109/api/ScheduleDetailApi/");
-        //            if (apiResponse.IsSuccessStatusCode)
-        //            {
-        //                var responseContent = await apiResponse.Content.ReadAsStringAsync();
-        //                var schedules = JsonConvert.DeserializeObject<List<Scheduledetail>>(responseContent);
-
-        //                var filteredSchedules = schedules.Where(s => s.Staff.StaffId == staffId).ToList();
-
-        //                return View(filteredSchedules);
-        //            }
-        //            else
-        //            {
-        //                var schedules = await db.Scheduledetails
-        //                    .Where(s => s.Staff.StaffId == staffId)
-        //                    .ToListAsync();
-
-        //                return View(schedules);
-        //            }
-        //        }
-        //    }
-
-        //    ViewBag.LoginMessage = "Please log in to view the schedule.";
-        //    return View(); 
-        //}
         public async Task<IActionResult> Index()
         {
             if (HttpContext.Session.TryGetValue("UserId", out byte[] userIdBytes))
@@ -94,18 +32,15 @@ namespace DoAn.Areas.Admin.Controllers
                         var responseContent = await apiResponse.Content.ReadAsStringAsync();
                         var schedules = JsonConvert.DeserializeObject<List<Scheduledetail>>(responseContent);
 
-                        // Check UserRole nếu role = 1 là admin thì được quản lí 
                         var staff = await db.Staff.FirstOrDefaultAsync(s => s.StaffId == staffId);
                         if (staff != null)
                         {
                             if (staff.RoleId == 1)
                             {
-                                // Display all schedules for UserRole 1
                                 return View(schedules);
                             }
                             else
                             {
-                                //lọc lịch làm việc dựa theo StaffId
                                 var filteredSchedules = schedules.Where(s => s.Staff.StaffId == staffId).ToList();
                                 return View(filteredSchedules);
                             }
@@ -114,18 +49,17 @@ namespace DoAn.Areas.Admin.Controllers
                 }
             }
 
-            ViewBag.LoginMessage = "Please login to view the schedule.";
+            ViewBag.LoginMessage = "Please log in to view the schedule.";
             return View();
         }
+
         public IActionResult Create()
         {
-            // Fetch the list of staff and schedules from your database
             var staffList = db.Staff.ToList();
             var scheduleList = db.Schedules.ToList();
 
-            // Create SelectList items for the dropdowns
-            ViewBag.StaffId = new SelectList(staffList, "StaffId", "Name"); // Change "StaffName" to the actual property you want to display for staff
-            ViewBag.ScheduleId = new SelectList(scheduleList, "ScheduleId", "Time"); // Change "ScheduleTime" to the actual property you want to display for schedules
+            ViewBag.StaffId = new SelectList(staffList, "StaffId", "Name");
+            ViewBag.ScheduleId = new SelectList(scheduleList, "ScheduleId", "Time"); 
 
             return View();
         }
@@ -141,7 +75,7 @@ namespace DoAn.Areas.Admin.Controllers
                     var staffList = await db.Staff.ToListAsync();
                     var scheduleList = await db.Schedules.ToListAsync();
                     ViewBag.StaffId = new SelectList(staffList, "StaffId", "Name");
-                    ViewBag.ScheduleId = new SelectList(scheduleList, "ScheduleId", "Time"); 
+                    ViewBag.ScheduleId = new SelectList(scheduleList, "ScheduleId", "Time");
                     return View(inputModel);
                 }
 

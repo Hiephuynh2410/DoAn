@@ -7,7 +7,7 @@
     string userRole = Context.Session.GetString("Role");
     bool isAdmin = userRole == "1";
 }
-
+>
 
 <div class="wrapper-box" style="padding:7rem">
     <div class="toolBar-control">
@@ -45,7 +45,10 @@
                     Staff
                 </th>
                 <th>Status</th>
-                <th>Action</th>
+                 @if (isAdmin)
+                {
+                    <th>Action</th>
+                }
             </tr>
             <tbody class="box-tbody">
                 @if (!string.IsNullOrEmpty(ViewBag.LoginMessage))
@@ -60,7 +63,7 @@
                                 @item.Date
                             </td>
                             <td>
-                                @item.ScheduleId
+                                @item.Schedule.Time
                             </td>
                             <td>
                                 @item.Staff.Name
@@ -76,9 +79,12 @@
                                 }
                             </td>
                             <td>
-                                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                                @if (isAdmin)
+                                {
+                                    @Html.ActionLink("Edit", "Edit", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId })
+                                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) 
+                                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                                }
                             </td>
                         </tr>
                     }
