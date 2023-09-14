@@ -102,6 +102,53 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 });
             }
         }
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateScheduleDetail([FromQuery] int scheduleId, [FromQuery] int staffId, Scheduledetail updatedModel)
+        {
+            try
+            {
+                var existingScheduleDetail = await db.Scheduledetails
+                    .FirstOrDefaultAsync(s => s.ScheduleId == scheduleId && s.StaffId == staffId);
+
+                if (existingScheduleDetail == null)
+                {
+                    return NotFound(new
+                    {
+                        Message = "Schedule Detail not found."
+                    });
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new
+                    {
+                        Message = "Invalid Schedule Detail data",
+                        Errors = ModelState.Values
+                            .SelectMany(v => v.Errors)
+                            .Select(e => e.ErrorMessage)
+                            .ToList()
+                    });
+                }
+
+                existingScheduleDetail.Date = updatedModel.Date;
+                existingScheduleDetail.Status = updatedModel.Status;
+
+                await db.SaveChangesAsync();
+
+                var scheduleDetailIds = await db.Scheduledetails
+                    .Select(sd => new { sd.ScheduleId, sd.StaffId })
+                    .ToListAsync();
+
+                return Ok(scheduleDetailIds);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    Message = "An unexpected error occurred. Please try again later."
+                });
+            }
+        }
 
     }
 }

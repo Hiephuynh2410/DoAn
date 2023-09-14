@@ -82,8 +82,8 @@
                                 @if (isAdmin)
                                 {
                                     @Html.ActionLink("Edit", "Edit", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId })
-                                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) 
-                                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                                    @Html.ActionLink("Details", "Details", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId  })
+                                    @Html.ActionLink("Delete", "Delete", new {ScheduleId = item.ScheduleId, StaffId = item.StaffId  })
                                 }
                             </td>
                         </tr>

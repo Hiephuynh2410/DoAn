@@ -116,5 +116,73 @@ namespace DoAn.Areas.Admin.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult edit(int scheduleId, int staffId)
+        {
+            var staffList = db.Staff.ToList();
+            var scheduleList = db.Schedules.ToList();
+            ViewBag.StaffId = new SelectList(staffList, "StaffId", "Name");
+            ViewBag.ScheduleId = new SelectList(scheduleList, "ScheduleId", "Time");
+            var scheduleDetail = db.Scheduledetails.Find(scheduleId, staffId);
+            if (scheduleDetail == null)
+            {
+                return NotFound();
+            }
+            return View(scheduleDetail);
+        }
+        [HttpPost]
+        public async Task<IActionResult> edit(int scheduleId, int staffId, Scheduledetail updatedModel)
+        {
+            try
+            {
+                updatedModel.StaffId = staffId;
+                updatedModel.ScheduleId = scheduleId;
+
+                var apiUrl = $"https://localhost:7109/api/ScheduleDetailApi/update?scheduleId={scheduleId}&staffId={staffId}";
+
+                var serializedModel = JsonConvert.SerializeObject(updatedModel);
+                var content = new StringContent(serializedModel, Encoding.UTF8, "application/json");
+
+                var apiResponse = await _httpClient.PutAsync(apiUrl, content);
+
+                if (apiResponse.IsSuccessStatusCode)
+                {
+                    var updatedScheduleDetail = await db.Scheduledetails.FindAsync(scheduleId, staffId);
+
+                    if (updatedScheduleDetail != null)
+                    {
+                        var staffList = db.Staff.ToList();
+                        var scheduleList = db.Schedules.ToList();
+                        ViewBag.StaffId = new SelectList(staffList, "StaffId", "Name");
+                        ViewBag.ScheduleId = new SelectList(scheduleList, "ScheduleId", "Time");
+
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        return NotFound(); 
+                    }
+                }
+                else
+                {
+                    var errorResponse = await apiResponse.Content.ReadAsStringAsync();
+                    ModelState.AddModelError("", "Failed to update Scheduledetail: " + errorResponse);
+
+                    var staffList = db.Staff.ToList();
+                    var scheduleList = db.Schedules.ToList();
+                    ViewBag.StaffId = new SelectList(staffList, "StaffId", "Name");
+                    ViewBag.ScheduleId = new SelectList(scheduleList, "ScheduleId", "Time");
+
+                    return View(updatedModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    Message = "An unexpected error occurred. Please try again later."
+                });
+            }
+        }
     }
 }
