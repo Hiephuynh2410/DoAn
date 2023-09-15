@@ -1,0 +1,68 @@
+﻿@model IEnumerable<DoAn.Models.Servicetype>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<div class="wrapper-box" style="padding:7rem">
+    <div class="toolBar-control">
+        <button class="btn-create" onclick="window.location.href='/Admin/ServiceType/Create'">
+            Create new
+        </button>
+        <div class="wrap-search">
+            <div class="search-staff">
+                <div class="box-search">
+                    <input type="text" value="" name="" id="" placeholder="Search ServiceType ... ">
+                    <button class="btnSearch-staff">Search</button>
+                </div>
+            </div>
+        </div>
+        <div></div>
+    </div>
+    <div class="table-infoStaff">
+        <table class="table-List">
+            <tr class="title-infoList">
+                <th>Combo ID</th>
+                <th>Name</th>
+             
+                <th>Action</th>
+            </tr>
+            <tbody class="box-tbody">
+                @foreach (var item in Model)
+                {
+                    <tr class="item-infoList">
+                        <td>@item.ServiceTypeId</td>
+                        <td>@item.Name</td>
+                       
+                        <td>
+                            <button class="btn-edit" onclick="navigateTo('Edit', @item.ServiceTypeId)">
+                                Edit
+                            </button>
+                            <button class="btn-detail" onclick="navigateTo('Detail', @item.ServiceTypeId)">
+                                Detail
+                            </button>
+                            <button class="btn-delete" onclick="deleteStaff(@item.ServiceTypeId)">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    function navigateTo(action, ServiceTypeId) {
+        window.location.href = `/Admin/ServiceType/${action}?ServiceTypeId=${ServiceTypeId}`;
+    }
+
+    function deleteStaff(ServiceTypeId) {
+        if (confirm('Are you sure you want to delete this Combo?')) {
+            navigateTo('Delete', ServiceTypeId);
+        }
+    }
+</script>
+
+
