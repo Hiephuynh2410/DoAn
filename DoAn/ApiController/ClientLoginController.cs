@@ -71,6 +71,27 @@ namespace DoAn.ApiController
         [HttpPost("register")]
         public async Task<IActionResult> RegisterClient(Client registrationModel)
         {
+            if (registrationModel == null)
+            {
+                return BadRequest("Registration data is empty.");
+            }
+
+            if (string.IsNullOrWhiteSpace(registrationModel.Username) ||
+                string.IsNullOrWhiteSpace(registrationModel.Password) ||
+                string.IsNullOrWhiteSpace(registrationModel.Name) ||
+                string.IsNullOrWhiteSpace(registrationModel.Phone) ||
+                string.IsNullOrWhiteSpace(registrationModel.Email))
+            {
+                var emptyFieldsErrorResponse = new
+                {
+                    Message = "Empty fields in registration data.",
+                    Errors = new List<string>
+            {
+                "Username, Password, Name, Phone, and Email are required fields."
+            }
+                };
+                return BadRequest(emptyFieldsErrorResponse);
+            }
             if (ModelState.IsValid)
             {
                 var passwordHasher = new PasswordHasher<Client>();
@@ -121,7 +142,5 @@ namespace DoAn.ApiController
             };
             return BadRequest(invalidDataErrorResponse);
         }
-
-
     }
 }

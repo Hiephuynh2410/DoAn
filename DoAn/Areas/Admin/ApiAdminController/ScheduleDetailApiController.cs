@@ -83,12 +83,10 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     Staff = new
                     {
                         StaffId = createModel.Staff?.StaffId,
-                        // Include other staff properties as needed
                     },
                     Schedule = new
                     {
                         Time = createModel.Schedule?.Time,
-                        // Include other schedule properties as needed
                     }
                 };
 
@@ -102,6 +100,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 });
             }
         }
+
         [HttpPut("update")]
         public async Task<IActionResult> UpdateScheduleDetail([FromQuery] int scheduleId, [FromQuery] int staffId, Scheduledetail updatedModel)
         {
@@ -140,6 +139,40 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     .ToListAsync();
 
                 return Ok(scheduleDetailIds);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    Message = "An unexpected error occurred. Please try again later."
+                });
+            }
+        }
+
+        [HttpDelete("delete")]
+        public async Task<IActionResult> DeleteScheduleDetail([FromQuery] int staffId, [FromQuery] int scheduleId)
+        {
+            try
+            {
+                var matchingScheduledetails = await db.Scheduledetails
+                    .Where(s => s.StaffId == staffId && s.ScheduleId == scheduleId)
+                    .ToListAsync();
+
+                if (matchingScheduledetails == null || !matchingScheduledetails.Any())
+                {
+                    return NotFound(new
+                    {
+                        Message = "Scheduledetail not found."
+                    });
+                }
+
+                db.Scheduledetails.RemoveRange(matchingScheduledetails);
+                await db.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    Message = "Scheduledetail deleted successfully."
+                });
             }
             catch (Exception ex)
             {
