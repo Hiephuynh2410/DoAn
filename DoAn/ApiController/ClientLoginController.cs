@@ -67,7 +67,6 @@ namespace DoAn.ApiController
             return BadRequest(invalidLoginErrorResponse);
         }
 
-
         [HttpPost("register")]
         public async Task<IActionResult> RegisterClient(Client registrationModel)
         {
@@ -92,13 +91,32 @@ namespace DoAn.ApiController
                 };
                 return BadRequest(emptyFieldsErrorResponse);
             }
+            var vietnamesePhoneNumberPattern = @"^(0[0-9]{9,10})$"; 
+            if (!Regex.IsMatch(registrationModel.Phone, vietnamesePhoneNumberPattern))
+            {
+                var phoneFormatErrorResponse = new
+                {
+                    Message = "Invalid phone number format",
+                    Errors = new List<string>
+            {
+                "Phone number must be in the format 0XXXXXXXXX or 0XXXXXXXXXX (10 or 11 digits)."
+            }
+                };
+                return BadRequest(phoneFormatErrorResponse);
+            }
             if (ModelState.IsValid)
             {
                 var passwordHasher = new PasswordHasher<Client>();
                 var hashedPassword = passwordHasher.HashPassword(null, registrationModel.Password);
 
-                var role = await _dbContext.Roles.FindAsync(registrationModel.RoleId);
+                int defaultRoleId = 3; 
 
+                var role = await _dbContext.Roles.FindAsync(defaultRoleId);
+
+                if (role == null)
+                {
+                    return BadRequest("Default role not found.");
+                }
                 var newClient = new Client
                 {
                     Name = registrationModel.Name,
@@ -142,5 +160,18 @@ namespace DoAn.ApiController
             };
             return BadRequest(invalidDataErrorResponse);
         }
+        [HttpGet("user/{id}")]
+        public async Task<IActionResult> GetUserById(int id)
+        {
+            var user = await _dbContext.Clients.FindAsync(id);
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            return Ok(user);
+        }
+
     }
 }

@@ -108,15 +108,10 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     s.Role.Name,
                     s.Role.RoleId
                 },
-                //Scheduledetails = s.Scheduledetails.Select(sd => new
-                //{
-                //    sd.SchehuleId,
-                //    sd.Date
-                //}).ToList(),
+               
                 s.UpdatedAt,
                 s.CreatedBy,
                 s.UpdatedBy,
-                //s.Bookings,
             }).ToList();
 
             return Ok(staffsWithFullInfo);

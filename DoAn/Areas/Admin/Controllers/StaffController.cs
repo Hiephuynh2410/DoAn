@@ -102,7 +102,7 @@ namespace DoAn.Areas.Admin.Controllers
                         HttpContext.Session.SetString("UserId", nv.StaffId.ToString());
                         HttpContext.Session.SetString("Role", nv.RoleId.ToString());
                         HttpContext.Session.SetString("Name", nv.Name);
-                        return RedirectToAction("Index", "Combo");
+                        return RedirectToAction("Index", "Home");
                     }
                     else
                     {

@@ -62,7 +62,7 @@ app.UseEndpoints(endpoints =>
     );
     endpoints.MapGet("/", async context =>
     {
-        context.Response.Redirect("/Admin/Staff/Index");
+        context.Response.Redirect("/Admin/Home/Index");
     });
 });
 app.Run();
