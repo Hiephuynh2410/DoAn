@@ -19,7 +19,6 @@ namespace DoAn.Areas.Admin.ApiAdminController
         public AdminApiController(DlctContext dbContext, IConfiguration configuration)
         {
             _dbContext = dbContext;
-            _configuration = configuration;
         }
 
 

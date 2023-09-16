@@ -217,6 +217,10 @@ namespace DoAn.Areas.Admin.Controllers
         //Delete
         public async Task<IActionResult> Delete(int staffId)
         {
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                return RedirectToAction("Login", "Staff");
+            }
             var apiUrl = $"https://localhost:7109/api/AdminApi/delete/{staffId}";
 
             var response = await _httpClient.DeleteAsync(apiUrl);
@@ -241,6 +245,10 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(int staffId)
         {
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                return RedirectToAction("Login", "Staff");
+            }
             var staff = db.Staff
               .Include(s => s.Scheduledetails)
               .ThenInclude(s => s.Schedule)
@@ -311,6 +319,10 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Detail(int staffId)
         {
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                return RedirectToAction("Login", "Staff");
+            }
             var apiUrl = $"https://localhost:7109/api/AdminApi/detail/{staffId}";
 
             var apiResponse = await _httpClient.GetAsync(apiUrl);
