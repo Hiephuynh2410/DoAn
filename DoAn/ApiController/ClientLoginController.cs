@@ -161,10 +161,13 @@ namespace DoAn.ApiController
             };
             return BadRequest(invalidDataErrorResponse);
         }
-
         [HttpGet("user/{id}")]
-        public async Task<IActionResult> GetUserById(int id)
+        public async Task<IActionResult> GetUserById(int? id)
         {
+            if (id == null)
+            {
+                return Ok(null);
+            }
             var user = await _dbContext.Clients.FindAsync(id);
 
             if (user == null)
