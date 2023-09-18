@@ -21,8 +21,6 @@ public partial class Client
 
     public string? Email { get; set; }
 
-    public bool? Status { get; set; }
-
     public int? RoleId { get; set; }
 
     public DateTime? CreatedAt { get; set; }
@@ -32,6 +30,8 @@ public partial class Client
     public string? CreatedBy { get; set; }
 
     public string? UpdatedBy { get; set; }
+
+    public bool? Status { get; set; }
 
     public virtual ICollection<Bill> Bills { get; set; } = new List<Bill>();
 

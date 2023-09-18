@@ -1,78 +1,133 @@
-﻿//using DoAn.Models;
-//using Microsoft.AspNetCore.Identity;
-//using Microsoft.AspNetCore.Mvc;
+﻿using DoAn.Data;
+using DoAn.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-//namespace DoAn.ApiController
-//{
-//    [ApiController]
-//    [Route("api/v1/[controller]")]
-//    public class BookingController : Controller
-//    {
-//        private readonly DlctContext _dbContext;
-//        public BookingController(DlctContext dbContext)
-//        {
-//            _dbContext = dbContext;
+namespace DoAn.ApiController
+{
+    [ApiController]
+    [Route("api/v1/[controller]")]
+    public class BookingController : Controller
+    {
+        private readonly DlctContext _dbContext;
+        public BookingController(DlctContext dbContext)
+        {
+            _dbContext = dbContext;
 
-//        }
+        }
 
-//        public async Task<IActionResult> RegisterStaff(Booking registrationModel)
-//        {
-//            if (ModelState.IsValid)
-//            {
-                
-//                var Client = await _dbContext.Clients.FindAsync(registrationModel.Client);
-//                var Staff = await _dbContext.Staff.FindAsync(registrationModel.Staff);
-//                var combo = await _dbContext.Combos.FindAsync(registrationModel.Combo);
+        [HttpGet]
+        public async Task<IActionResult> GetAllBooking()
+        {
+            var Booking = await _dbContext.Bookings
+                .Include(s => s.Staff)
+                .Include(s => s.Client)
+                .Include(s => s.Combo)
+                .ToListAsync();
 
-//                var newStaff = new Staff
-//                {
-//                    Name = registrationModel.Name,
-//                    Username = registrationModel.Username,
-//                    Password = hashedPassword,
-//                    Phone = registrationModel.Phone,
-//                    Address = registrationModel.Address,
-//                    Avatar = registrationModel.Avatar,
-//                    Email = registrationModel.Email,
-//                    Status = registrationModel.Status,
-//                    CreatedAt = DateTime.Now,
-//                    CreatedBy = registrationModel.CreatedBy,
-//                    Branch = branch,
-//                    Role = role,
-//                };
+            var BookingWithFullInfo = Booking.Select(s => new
+            {
+                s.BookingId,
+                s.Name,
+                s.Phone,
+                s.DateTime,
+                s.Note,
+                s.Status,
+                s.CreatedAt,
+                s.ComboId,
+                s.StaffId,
+                s.ClientId,
+                Staff = new
+                {
+                    s.Staff.StaffId,
+                    s.Staff.Name
+                },
+                Client = new
+                {
+                    s.Client.ClientId,
+                    s.Client.Name
+                },
+                Combo = new 
+                {
+                    s.Combo.ComboId,
+                    s.Combo.Name
+                },
+            }).ToList();
 
-//                _dbContext.Staff.Add(newStaff);
-//                await _dbContext.SaveChangesAsync();
+            return Ok(BookingWithFullInfo);
+        }
 
-//                _dbContext.Entry(newStaff).Reference(s => s.Branch).Load();
-//                _dbContext.Entry(newStaff).Reference(s => s.Role).Load();
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateBooking([FromBody] Booking registrationModel)
+        {
+            try
+            {
 
-//                var registrationSuccessResponse = new
-//                {
-//                    Message = "Registration successful",
-//                    ClientId = newStaff.StaffId,
-//                    Branch = new
-//                    {
-//                        Address = newStaff.Branch?.Address,
-//                        Hotline = newStaff.Branch?.Hotline
-//                    },
-//                    Role = new
-//                    {
-//                        Name = newStaff.Role?.Name,
-//                        RoleId = newStaff.Role?.RoleId
-//                    }
-//                };
-//                return Ok(registrationSuccessResponse);
-//            }
+                if (string.IsNullOrWhiteSpace(registrationModel.Phone) || string.IsNullOrWhiteSpace(registrationModel.Name))
+                {
+                    var errorResponse = new
+                    {
+                        Message = "info cannot be empty"
+                    };
+                    return BadRequest(errorResponse);
+                }
 
-//            var invalidDataErrorResponse = new
-//            {
-//                Message = "Invalid registration data",
-//                Errors = ModelState.Values
-//                    .SelectMany(v => v.Errors)
-//                    .Select(e => e.ErrorMessage)
-//                    .ToList()
-//            };
-//            return BadRequest(invalidDataErrorResponse);
-//        }
-//    }
-//}
+                if (ModelState.IsValid)
+                {
+                    var client = await _dbContext.Clients.FindAsync(registrationModel.ClientId);
+                    var staff = await _dbContext.Staff.FindAsync(registrationModel.StaffId);
+                    var combo = await _dbContext.Combos.FindAsync(registrationModel.ComboId);
+
+                    if (client == null || staff == null || combo == null)
+                    {
+                        return NotFound("Client, Staff, or Combo not found.");
+                    }
+
+                    var newBooking = new Booking
+                    {
+                        Client = client,
+                        Staff = staff,
+                        Combo = combo,
+                        Name =registrationModel.Name,
+                        Phone = registrationModel.Phone,
+                        DateTime = registrationModel.DateTime,
+                        Note = registrationModel.Note,
+                        Status = registrationModel.Status,
+                        CreatedAt = DateTime.Now 
+                    };
+
+                    _dbContext.Bookings.Add(newBooking);
+                    await _dbContext.SaveChangesAsync();
+
+                    var registrationSuccessResponse = new
+                    {
+                        Message = "Registration successful",
+                        BookingId = newBooking.BookingId,
+                        ClientId = newBooking.ClientId,
+                        StaffId = newBooking.StaffId,
+                        ComboId = newBooking.ComboId,
+                        CreatedAt = newBooking.CreatedAt,
+                    };
+
+                    return Ok(registrationSuccessResponse);
+                }
+
+                var invalidDataErrorResponse = new
+                {
+                    Message = "Invalid registration data",
+                    Errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList()
+                };
+
+                return BadRequest(invalidDataErrorResponse);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+    }
+}
