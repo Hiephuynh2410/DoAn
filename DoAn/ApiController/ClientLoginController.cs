@@ -50,6 +50,7 @@ namespace DoAn.ApiController
             {
                 var loginSuccessResponse = new
                 {
+                    userID = client.ClientId,
                     Message = "Login successful"
                 };
                 return Ok(loginSuccessResponse);
@@ -160,6 +161,7 @@ namespace DoAn.ApiController
             };
             return BadRequest(invalidDataErrorResponse);
         }
+
         [HttpGet("user/{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
