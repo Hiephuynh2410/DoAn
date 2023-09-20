@@ -25,7 +25,11 @@ public partial class Booking
 
     public DateTime? CreatedAt { get; set; }
 
+    public int? BranchId { get; set; }
+
     public virtual ICollection<Bookingdetail> Bookingdetails { get; set; } = new List<Bookingdetail>();
+
+    public virtual Branch? Branch { get; set; }
 
     public virtual Client? Client { get; set; }
 

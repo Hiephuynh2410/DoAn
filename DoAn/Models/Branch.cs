@@ -11,5 +11,7 @@ public partial class Branch
 
     public string? Hotline { get; set; }
 
+    public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+
     public virtual ICollection<Staff> Staff { get; set; } = new List<Staff>();
 }

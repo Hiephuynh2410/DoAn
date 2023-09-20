@@ -101,6 +101,7 @@ public partial class DlctContext : DbContext
             entity.ToTable("BOOKING");
 
             entity.Property(e => e.BookingId).HasColumnName("Booking_id");
+            entity.Property(e => e.BranchId).HasColumnName("Branch_id");
             entity.Property(e => e.ClientId).HasColumnName("Client_id");
             entity.Property(e => e.ComboId).HasColumnName("Combo_id");
             entity.Property(e => e.CreatedAt)
@@ -115,6 +116,10 @@ public partial class DlctContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false);
             entity.Property(e => e.StaffId).HasColumnName("Staff_id");
+
+            entity.HasOne(d => d.Branch).WithMany(p => p.Bookings)
+                .HasForeignKey(d => d.BranchId)
+                .HasConstraintName("FK_BOOKING_BRANCH");
 
             entity.HasOne(d => d.Client).WithMany(p => p.Bookings)
                 .HasForeignKey(d => d.ClientId)

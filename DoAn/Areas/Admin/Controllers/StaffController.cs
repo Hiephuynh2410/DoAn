@@ -142,6 +142,16 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("Name", "cannot be empty.");
             }
+            var usernameRegex = new Regex(@"^[a-zA-Z0-9_]+$");
+
+            if (string.IsNullOrEmpty(registrationModel.Username))
+            {
+                ModelState.AddModelError("Username", "Username is required.");
+            }
+            else if (!usernameRegex.IsMatch(registrationModel.Username))
+            {
+                ModelState.AddModelError("Username", "Invalid username format. Username must consist of letters, numbers, and underscores only.");
+            }
             else
             {
                 var phoneRegex = new Regex(@"^(03|05|07|08|09|01[2|6|8|9])(?!84)[0-9]{8}$");
@@ -348,7 +358,7 @@ namespace DoAn.Areas.Admin.Controllers
 
             HttpContext.Session.Clear();
 
-            return RedirectToAction("Index", "Staff");
+            return RedirectToAction("Index", "Home");
         }
     }
 }
