@@ -19,6 +19,10 @@ public partial class DlctContext : DbContext
 
     public virtual DbSet<Billdetail> Billdetails { get; set; }
 
+    public virtual DbSet<BlogCategory> BlogCategories { get; set; }
+
+    public virtual DbSet<BlogPost> BlogPosts { get; set; }
+
     public virtual DbSet<Booking> Bookings { get; set; }
 
     public virtual DbSet<Bookingdetail> Bookingdetails { get; set; }
@@ -94,6 +98,38 @@ public partial class DlctContext : DbContext
                 .HasForeignKey(d => d.ProductId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_BILLDETAIL_PRODUCT1");
+        });
+
+        modelBuilder.Entity<BlogCategory>(entity =>
+        {
+            entity.ToTable("BLOG_CATEGORIES");
+
+            entity.Property(e => e.BlogCategoryId).HasColumnName("Blog_category_id");
+            entity.Property(e => e.Description).HasColumnType("text");
+            entity.Property(e => e.Title).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<BlogPost>(entity =>
+        {
+            entity.ToTable("BLOG_POSTS");
+
+            entity.Property(e => e.BlogPostId).HasColumnName("Blog_post_id");
+            entity.Property(e => e.BlogCategoryId).HasColumnName("Blog_category_id");
+            entity.Property(e => e.Body).HasColumnType("text");
+            entity.Property(e => e.DateTime)
+                .HasColumnType("datetime")
+                .HasColumnName("Date_time");
+            entity.Property(e => e.StaffId).HasColumnName("Staff_id");
+            entity.Property(e => e.Thumbnail).HasColumnType("text");
+            entity.Property(e => e.Titile).HasMaxLength(100);
+
+            entity.HasOne(d => d.BlogCategory).WithMany(p => p.BlogPosts)
+                .HasForeignKey(d => d.BlogCategoryId)
+                .HasConstraintName("FK_BLOG_POSTS_BLOG_CATEGORIES");
+
+            entity.HasOne(d => d.Staff).WithMany(p => p.BlogPosts)
+                .HasForeignKey(d => d.StaffId)
+                .HasConstraintName("FK_BLOG_POSTS_STAFF");
         });
 
         modelBuilder.Entity<Booking>(entity =>

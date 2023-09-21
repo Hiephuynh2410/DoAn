@@ -116,6 +116,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
 
             return Ok(staffsWithFullInfo);
         }
+
         [HttpPost("register")]
         public async Task<IActionResult> RegisterStaff(Staff registrationModel)
         {

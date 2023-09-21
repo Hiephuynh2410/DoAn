@@ -47,12 +47,15 @@
                         <input asp-for="UpdatedBy" readonly type="email" class="userName" />
                     </div>
                 </div>
+                <hr />
                 <form asp-action="Edit">
                     <input type="hidden" asp-for="StaffId" />
                     <div class="wrapper-box" style="display:flex; flex-wrap:wrap; gap:1.5rem">
                         <div style="flex:1 1 18rem" class="box">
                                 <span><strong style="color:red">*</strong>name: </span>
                             <input asp-for="Name" type="text" class="userName" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+
                         </div>
                         <div style="flex:1 1 18rem" class="box">
                             <span> <strong style="color:red">*</strong> Role: </span>
@@ -61,11 +64,14 @@
                         <div style="flex:1 1 18rem" class="box">
                                 <span><strong style="color:red">*</strong> Username: </span>
                             <input asp-for="Username" type="text" class="userName"  />
+                            <span asp-validation-for="Username" class="text-danger"></span>
 
                         </div>
                         <div style="flex:1 1 18rem" class="box">
                                 <span><strong style="color:red">*</strong>Phonenumber:</span>
                             <input asp-for="Phone" type="number" class="userName"  />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+
                         </div>
                             <div hidden style="flex:1 1 18rem" class="box">
                                 <span><strong style="color:red">*</strong>Avatar: </span>

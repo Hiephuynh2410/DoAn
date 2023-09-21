@@ -135,6 +135,7 @@ namespace DoAn.Areas.Admin.Controllers
         public async Task<IActionResult> Register(Staff registrationModel)
         {
             var apiUrl = "https://localhost:7109/api/AdminApi/register";
+           
             if (string.IsNullOrEmpty(registrationModel.Name) && string.IsNullOrEmpty(registrationModel.Username)
                 && string.IsNullOrEmpty(registrationModel.Password) && string.IsNullOrEmpty(registrationModel.Phone)
                 && string.IsNullOrEmpty(registrationModel.Avatar) && string.IsNullOrEmpty(registrationModel.Address)
@@ -142,23 +143,20 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("Name", "cannot be empty.");
             }
-            var usernameRegex = new Regex(@"^[a-zA-Z0-9_]+$");
-
-            if (string.IsNullOrEmpty(registrationModel.Username))
-            {
-                ModelState.AddModelError("Username", "Username is required.");
-            }
-            else if (!usernameRegex.IsMatch(registrationModel.Username))
-            {
-                ModelState.AddModelError("Username", "Invalid username format. Username must consist of letters, numbers, and underscores only.");
-            }
+           
             else
             {
+                var eRegex = new Regex(@"^(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!])(?!.*\s).{8,32}$");
                 var phoneRegex = new Regex(@"^(03|05|07|08|09|01[2|6|8|9])(?!84)[0-9]{8}$");
                 if (!phoneRegex.IsMatch(registrationModel.Phone) || registrationModel.Phone.Length > 10)
                 {
                     ModelState.AddModelError("Phone", "Invalid Vietnamese phone number");
                 }
+                if (!eRegex.IsMatch(registrationModel.Username) && !eRegex.IsMatch(registrationModel.Password))
+                {
+                    ModelState.AddModelError("Username", "Invalid username format.");
+                }
+
             }
             if (string.IsNullOrEmpty(Request.Form["BranchId"]))
             {
@@ -282,6 +280,19 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
+                var roles = db.Roles.ToList();
+                var branches = db.Branches.ToList();
+
+                ViewBag.Roles = new SelectList(roles, "RoleId", "Name");
+                ViewBag.Branches = new SelectList(branches, "BranchId", "Address");
+
+                return View(updateModel);
+            }
+
+            var phoneRegex = new Regex(@"^(03|05|07|08|09|01[2|6|8|9])(?!84)[0-9]{8}$");
+            if (!phoneRegex.IsMatch(updateModel.Phone) || updateModel.Phone.Length > 10)
+            {
+                ModelState.AddModelError("Phone", "Số điện thoại không hợp lệ");
                 return View(updateModel);
             }
             updateModel.Status = Request.Form["Status"] == "true";
@@ -319,6 +330,11 @@ namespace DoAn.Areas.Admin.Controllers
                 Console.WriteLine("API Response Content: " + responseContent);
 
                 var errorResponse = JsonConvert.DeserializeObject<object>(responseContent);
+                var roles = db.Roles.ToList();
+                var branches = db.Branches.ToList();
+
+                ViewBag.Roles = new SelectList(roles, "RoleId", "Name");
+                ViewBag.Branches = new SelectList(branches, "BranchId", "Address");
 
                 ModelState.AddModelError("", errorResponse.ToString());
                 return View(updateModel);

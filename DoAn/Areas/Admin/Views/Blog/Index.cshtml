@@ -1,0 +1,91 @@
+﻿@model IEnumerable<DoAn.Models.BlogPost>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="wrapper-box" style="padding:7rem">
+    <div class="toolBar-control">
+        <button class="btn-create" onclick="window.location.href='/Admin/Blog/create'">
+            Create new
+        </button>
+
+        <div class="wrap-search">
+            <div class="search-staff">
+                <div class="box-search">
+                    <input type="text" value="" name="" id="" placeholder="Search Blog ... ">
+                    <button class="btnSearch-staff"> Search</button>
+                </div>
+            </div>
+        </div>
+
+        <div></div>
+    </div>
+    <div class="table-infoStaff">
+        <table class="table-List">
+            <tr class="title-infoList">
+                <th>
+                    ID
+                </th>
+                <th>
+                    Title
+                </th>
+                <th>
+                    Body
+                </th>
+                <th>
+                    Thumbnail
+                </th>
+                <th>
+                    Datetime
+                </th>
+                <th>
+                    BlogCategory
+                </th>
+                <th>
+                    Staff
+                </th>
+                <th>Action</th>
+            </tr>
+
+            <tbody class="box-tbody">
+                @foreach (var item in Model)
+                {
+                    <tr class="item-infoList">
+                        <td>@item.BlogPostId</td>
+
+                        <td>@item.Titile</td>
+                        <td>@item.Body</td>
+                        <td>@item.Thumbnail</td>
+                        <td>@item.DateTime</td>
+                        <td>@item.BlogCategory.BlogCategoryId</td>
+                        <td>@item.Staff.Name</td>
+                        <td>
+                            <button class="btn-edit" onclick="navigateTo('Edit', @item.BlogPostId)">
+                                Edit
+                            </button>
+                            <button class="btn-detail" onclick="navigateTo('Detail', @item.BlogPostId)">
+                                Detail
+                            </button>
+                            <button class="btn-delete" onclick="deleteStaff(@item.BlogPostId)">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    function navigateTo(action, BlogPostId) {
+        window.location.href = `/Admin/Blog/${action}?BlogPostId=${BlogPostId}`;
+    }
+
+    function deleteStaff(BlogPostId) {
+        if (confirm('Are you sure you want to delete this BlogPost?')) {
+            navigateTo('Delete', BlogPostId);
+        }
+    }
+</script>
