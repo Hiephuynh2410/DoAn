@@ -90,7 +90,7 @@ namespace DoAn.ApiController
                     var combo = await _dbContext.Combos.FindAsync(registrationModel.ComboId);
                     var branch = await _dbContext.Branches.FindAsync(registrationModel.BranchId);
 
-                    if (client == null || staff == null || combo == null || branch == null)
+                    if (staff == null || combo == null || branch == null)
                     {
                         return NotFound("Client, Staff, booking, or Combo not found.");
                     }
@@ -202,6 +202,7 @@ namespace DoAn.ApiController
             }
 
             _dbContext.Entry(booking).State = EntityState.Modified;
+
             await _dbContext.SaveChangesAsync();
 
             var updateSuccessResponse = new
