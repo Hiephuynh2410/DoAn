@@ -14,7 +14,6 @@ namespace DoAn.ApiController
         public ClientLoginController(DlctContext dbContext)
         {
             _dbContext = dbContext;
-
         }
 
         [HttpPost("login")]

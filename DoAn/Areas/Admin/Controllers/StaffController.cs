@@ -6,6 +6,9 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Identity;
+using MimeKit;
+using MailKit.Net.Smtp;
+
 namespace DoAn.Areas.Admin.Controllers
 {
     [Area("Admin")]
@@ -17,6 +20,76 @@ namespace DoAn.Areas.Admin.Controllers
         {
             _httpClient = new HttpClient();
         }
+        [HttpGet]
+        public IActionResult Sendmail(int staffId)
+        {
+            ViewBag.StaffId = staffId; // Pass the staffId to the view
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Sendmail(Mails model)
+        {
+            int staffId = int.Parse(Request.Form["staffId"]); // Retrieve the staffId from the form
+
+            // Retrieve the selected staff member from the database based on the staffId
+            var staffMember = db.Staff.FirstOrDefault(s => s.StaffId == staffId);
+
+            if (staffMember != null)
+            {
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress("Admin", "huynhhiepvan1998@gmail.com"));
+                message.Subject = model.Subject; // Use the subject provided by the sender
+                message.Body = new TextPart("plain")
+                {
+                    Text = model.Content // Use the content provided by the sender
+                };
+
+                using (var client = new SmtpClient())
+                {
+                    client.Connect("smtp.gmail.com", 587, false);
+                    client.Authenticate("huynhhiepvan1998@gmail.com", "nmqt ljyf skbz xcrs"); // Replace with the actual password
+
+                    message.To.Add(new MailboxAddress(staffMember.Name, staffMember.Email));
+
+                    client.Send(message);
+
+                    client.Disconnect(true);
+                }
+            }
+
+            return View();
+        }
+
+        //public IActionResult Sendmail(int staffId)
+        //{
+        //    var staffMember = db.Staff.FirstOrDefault(s => s.StaffId == staffId);
+
+        //    if (staffMember != null)
+        //    {
+        //        var message = new MimeMessage();
+        //        message.From.Add(new MailboxAddress("Admin", "huynhhiepvan1998@gmail.com"));
+        //        message.Subject = "Test Email";
+        //        message.Body = new TextPart("plain")
+        //        {
+        //            Text = "This is a test email from the admin."
+        //        };
+
+        //        using (var client = new SmtpClient())
+        //        {
+        //            client.Connect("smtp.gmail.com", 587, false);
+        //            client.Authenticate("huynhhiepvan1998@gmail.com", "nmqt ljyf skbz xcrs");
+
+        //            message.To.Add(new MailboxAddress(staffMember.Name, staffMember.Email));
+
+        //            client.Send(message);
+
+        //            client.Disconnect(true);
+        //        }
+        //    }
+
+        //    return View();
+        //}
 
         [HttpGet]
         public IActionResult showPassword()

@@ -1,7 +1,6 @@
 using AspNetCoreHero.ToastNotification;
 using DoAn.Models;
 using Microsoft.EntityFrameworkCore;
-
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
@@ -16,6 +15,8 @@ builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
 {
     builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
 }));
+//signalr
+builder.Services.AddSignalR();
 
 builder.Services.AddNotyf(config =>
 {
@@ -45,6 +46,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseCors("corsapp");
 
+
+
 app.UseRouting();
 app.UseSession();
 app.UseAuthentication();
@@ -65,4 +68,5 @@ app.UseEndpoints(endpoints =>
         context.Response.Redirect("/Admin/Home/Index");
     });
 });
+
 app.Run();

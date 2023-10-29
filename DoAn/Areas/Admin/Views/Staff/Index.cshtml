@@ -72,6 +72,9 @@
                         <td>@item.Branch.Address</td>
                         <td>@item.Role.Name</td>
                         <td>
+                            <button class="btn-sendmail" onclick="navigateTo('Sendmail', @item.StaffId)">
+                                sendMail
+                            </button>
                             <button class="btn-edit" onclick="navigateTo('Edit', @item.StaffId)">
                                 Edit
                             </button>
