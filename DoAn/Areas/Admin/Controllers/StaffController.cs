@@ -30,25 +30,23 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult Sendmail(Mails model)
         {
-            int staffId = int.Parse(Request.Form["staffId"]); // Retrieve the staffId from the form
-
-            // Retrieve the selected staff member from the database based on the staffId
+            int staffId = int.Parse(Request.Form["staffId"]); 
             var staffMember = db.Staff.FirstOrDefault(s => s.StaffId == staffId);
 
             if (staffMember != null)
             {
                 var message = new MimeMessage();
                 message.From.Add(new MailboxAddress("Admin", "huynhhiepvan1998@gmail.com"));
-                message.Subject = model.Subject; // Use the subject provided by the sender
+                message.Subject = model.Subject; 
                 message.Body = new TextPart("plain")
                 {
-                    Text = model.Content // Use the content provided by the sender
+                    Text = model.Content 
                 };
 
                 using (var client = new SmtpClient())
                 {
                     client.Connect("smtp.gmail.com", 587, false);
-                    client.Authenticate("huynhhiepvan1998@gmail.com", "nmqt ljyf skbz xcrs"); // Replace with the actual password
+                    client.Authenticate("huynhhiepvan1998@gmail.com", "nmqt ljyf skbz xcrs");
 
                     message.To.Add(new MailboxAddress(staffMember.Name, staffMember.Email));
 
