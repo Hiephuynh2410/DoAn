@@ -99,7 +99,9 @@ namespace DoAn.Areas.Admin.ApiAdminController
 
             var updateSuccessResponse = new
             {
-                Message = "Combo updated successfully"
+                Message = "Combo updated successfully",
+                Name = combo.Name,
+                Price = combo.Price
             };
 
             return Ok(updateSuccessResponse);

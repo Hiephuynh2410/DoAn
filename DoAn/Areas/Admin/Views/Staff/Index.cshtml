@@ -72,15 +72,15 @@
                         <td>@item.Branch.Address</td>
                         <td>@item.Role.Name</td>
                         <td>
-                            <button class="btn-sendmail" onclick="navigateTo('Sendmail', @item.StaffId)">
+                            <button class="button-38" role="button" onclick="navigateTo('Sendmail', @item.StaffId)">
                                 sendMail
                             </button>
                             <button class="btn-edit" onclick="navigateTo('Edit', @item.StaffId)">
                                 Edit
                             </button>
-                            <button class="btn-detail" onclick="navigateTo('Detail', @item.StaffId)">
+                         @*   <button class="btn-detail" onclick="navigateTo('Detail', @item.StaffId)">
                                 Detail
-                            </button>
+                            </button>*@
                             <button class="btn-delete" onclick="deleteStaff(@item.StaffId)">
                                 Delete
                             </button>
@@ -102,4 +102,41 @@
         }
     }
 </script>
+
+<style>
+    .button-38 {
+        background-color: #FFFFFF;
+        border: 0;
+        border-radius: .5rem;
+        box-sizing: border-box;
+        color: #111827;
+        font-family: "Inter var",ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+        font-size: .875rem;
+        font-weight: 600;
+        line-height: 1.25rem;
+        padding: .8rem 1rem;
+        border-radius: 8px;
+        text-align: center;
+        text-decoration: none #D1D5DB solid;
+        text-decoration-thickness: auto;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        cursor: pointer;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+    }
+
+    .button-38:hover {
+        background-color: rgb(249,250,251);
+    }
+
+    .button-38:focus {
+        outline: 2px solid transparent;
+        outline-offset: 2px;
+    }
+
+    .button-38:focus-visible {
+        box-shadow: none;
+    }
+</style>
     

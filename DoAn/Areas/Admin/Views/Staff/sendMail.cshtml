@@ -9,6 +9,7 @@
         <label for="Content">Email Content:</label>
         <textarea class="form-control" id="Content" name="Content" rows="4" required></textarea>
     </div>
-    <input type="hidden" name="staffId" value="@ViewBag.StaffId" /> <!-- Add this hidden input field -->
+    <input type="hidden" name="staffId" value="@ViewBag.StaffId" />
     <button type="submit" class="btn btn-primary">Send Email</button>
+    <button type="button" onclick="window.location.href='@Url.Action("Index", "Staff")'" class="btn btn-secondary">Back</button>
 </form>
