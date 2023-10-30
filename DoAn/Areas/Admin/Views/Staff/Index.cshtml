@@ -44,54 +44,125 @@
             <tbody  class="box-tbody">
                 @foreach (var item in Model)
                 {
-                    <tr class="item-infoList">
-                        <td>@item.StaffId</td>
+                    @if(item.IsDisabled == false)
+                    {
+                        <tr class="item-infoList">
+                            <td>@item.StaffId</td>
 
-                        <td>@item.Name</td>
-                        <td>@item.Username</td>
-                        <td>@item.Phone</td>
-                        <td>
-                            <img src="@item.Avatar" alt="">
-                        </td>
-                        <td>@item.Email</td>
-                        <td>@item.Address</td>
-                        <td>
-                            @if (item.Status == true)
-                            {
-                                <p style="color: green">Active</p>
-                            }
-                            else
-                            {
-                                <p style="color: red">Non-Active</p>
-                            }
-                        </td>
-                        <td>@item.CreatedAt</td>
-                        <td>@item.UpdatedAt</td>
-                        <td>@item.CreatedBy</td>
-                        <td>@item.UpdatedBy</td>
-                        <td>@item.Branch.Address</td>
-                        <td>@item.Role.Name</td>
-                        <td>
-                            <button class="button-38" role="button" onclick="navigateTo('Sendmail', @item.StaffId)">
-                                sendMail
-                            </button>
-                            <button class="btn-edit" onclick="navigateTo('Edit', @item.StaffId)">
-                                Edit
-                            </button>
-                         @*   <button class="btn-detail" onclick="navigateTo('Detail', @item.StaffId)">
-                                Detail
-                            </button>*@
-                            <button class="btn-delete" onclick="deleteStaff(@item.StaffId)">
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
+                            <td>@item.Name</td>
+                            <td>@item.Username</td>
+                            <td>@item.Phone</td>
+                            <td>
+                                <img src="@item.Avatar" alt="">
+                            </td>
+                            <td>@item.Email</td>
+                            <td>@item.Address</td>
+                            <td>
+                                @if (item.Status == true)
+                                {
+                                    <p style="color: green">Active</p>
+                                }
+                                else
+                                {
+                                    <p style="color: red">Non-Active</p>
+                                }
+                            </td>
+                            <td>@item.CreatedAt</td>
+                            <td>@item.UpdatedAt</td>
+                            <td>@item.CreatedBy</td>
+                            <td>@item.UpdatedBy</td>
+                            <td>@item.Branch.Address</td>
+                            <td>@item.Role.Name</td>
+                            <td>
+                                <button class="button-38" role="button" onclick="navigateTo('Sendmail', @item.StaffId)">
+                                    sendMail
+                                </button>
+                                <button class="btn-edit" onclick="navigateTo('Edit', @item.StaffId)">
+                                    Edit
+                                </button>
+
+                                <button class="btn-delete" onclick="deleteStaff(@item.StaffId)">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                    
+                }
+            </tbody>
+        </table>   
+    </div>
+    <h1 style="text-align:center; margin:1rem 0">Employee Is Deleted</h1>
+    <div class="table-infoStaff">
+        <table class="table-List">
+            <tr class="title-infoList">
+                <th>Staff ID</th>
+                <th>Name</th>
+                <th>UserName</th>
+                <th>Phone</th>
+                <th>Avatar</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+                <th>Created By</th>
+                <th>Updated By</th>
+                <th>Branch</th>
+                <th>Role</th>
+                <th>Action</th>
+            </tr>
+
+            <tbody class="box-tbody">
+                @foreach (var item in Model)
+                {
+                    @if (item.IsDisabled == true)
+                    {
+                        <tr class="item-infoList">
+                            <td>@item.StaffId</td>
+
+                            <td>@item.Name</td>
+                            <td>@item.Username</td>
+                            <td>@item.Phone</td>
+                            <td>
+                                <img src="@item.Avatar" alt="">
+                            </td>
+                            <td>@item.Email</td>
+                            <td>@item.Address</td>
+                            <td>
+                                @if (item.Status == true)
+                                {
+                                    <p style="color: green">Active</p>
+                                }
+                                else
+                                {
+                                    <p style="color: red">Non-Active</p>
+                                }
+                            </td>
+                            <td>@item.CreatedAt</td>
+                            <td>@item.UpdatedAt</td>
+                            <td>@item.CreatedBy</td>
+                            <td>@item.UpdatedBy</td>
+                            <td>@item.Branch.Address</td>
+                            <td>@item.Role.Name</td>
+                            <td>
+                                <button class="btn-add" onclick="addStaff(@item.StaffId)">
+                                    Add
+                                </button>
+
+                            </td>
+                        </tr>
+                    }
+
                 }
             </tbody>
         </table>
     </div>
 </div>
 <script>
+    function addStaff(staffId) {
+        window.location.href = `/Admin/Staff/ReloadEmployee?staffId=${staffId}`;
+    }
     function navigateTo(action, staffId) {
         window.location.href = `/Admin/Staff/${action}?StaffId=${staffId}`;
     }

@@ -265,16 +265,50 @@ namespace DoAn.Areas.Admin.Controllers
             }
         }
 
-        //Delete
+        ////Delete
         public async Task<IActionResult> Delete(int staffId)
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
                 return RedirectToAction("Login", "Staff");
             }
-            var apiUrl = $"https://localhost:7109/api/AdminApi/delete/{staffId}";
 
+            var staff = await db.Staff.FirstOrDefaultAsync(s => s.StaffId == staffId);
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
+            var apiUrl = $"https://localhost:7109/api/AdminApi/delete/{staffId}";
             var response = await _httpClient.DeleteAsync(apiUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                staff.IsDisabled = true;
+                staff.Status = false;
+                db.Entry(staff).State = EntityState.Modified;
+                await db.SaveChangesAsync();
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("API Response Content: " + responseContent);
+
+                var errorResponse = JsonConvert.DeserializeObject<object>(responseContent);
+
+                ModelState.AddModelError("", errorResponse.ToString());
+                return RedirectToAction("Index");
+            }
+        }
+
+        //reloadEmlpoyeee
+        [HttpGet]
+        public async Task<IActionResult> ReloadEmployee(int staffId)
+        {
+            var apiUrl = $"https://localhost:7109/api/AdminApi/reload/{staffId}";
+            var response = await _httpClient.PutAsync(apiUrl, null);
 
             if (response.IsSuccessStatusCode)
             {
@@ -292,7 +326,6 @@ namespace DoAn.Areas.Admin.Controllers
             }
         }
 
-        //edit
         [HttpGet]
         public IActionResult Edit(int staffId)
         {

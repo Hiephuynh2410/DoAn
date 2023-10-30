@@ -23,6 +23,8 @@ public partial class Staff
 
     public bool? Status { get; set; }
 
+    public bool? IsDisabled { get; set; }
+
     public int? RoleId { get; set; }
 
     public DateTime? CreatedAt { get; set; }

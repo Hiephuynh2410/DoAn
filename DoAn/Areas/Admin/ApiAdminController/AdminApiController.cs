@@ -95,6 +95,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 s.Address,
                 s.Email,
                 s.Status,
+                s.IsDisabled,
                 s.CreatedAt,
                 s.RoleId,
                 s.BranchId,
@@ -228,7 +229,6 @@ namespace DoAn.Areas.Admin.ApiAdminController
             return Ok(updateSuccessResponse);
         }
 
-
         [HttpDelete("delete/{staffId}")]
         public async Task<IActionResult> DeleteStaff(int staffId)
         {
@@ -239,16 +239,43 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 return NotFound();
             }
 
-            _dbContext.Staff.Remove(staff);
+            staff.IsDisabled = true;
+            staff.Status = false;
+            _dbContext.Entry(staff).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
 
             var deleteSuccessResponse = new
             {
-                Message = "staff deleted successfully"
+                Message = "Staff disabled successfully"
             };
 
             return Ok(deleteSuccessResponse);
         }
+
+        [HttpPut("reload/{staffId}")]
+        public async Task<IActionResult> ReloadStaff(int staffId)
+        {
+            var staff = await _dbContext.Staff
+                .FirstOrDefaultAsync(p => p.StaffId == staffId);
+
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
+            staff.IsDisabled = false;
+            staff.Status = true;
+            _dbContext.Entry(staff).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+
+            var reloadSuccessResponse = new
+            {
+                Message = "Staff reloaded successfully"
+            };
+
+            return Ok(reloadSuccessResponse);
+        }
+
 
         [HttpGet("detail/{staffId}")]
         public async Task<IActionResult> GetClientDetail(int staffId)
@@ -273,6 +300,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 staff.Avatar,
                 staff.Email,
                 staff.Status,
+                staff.IsDisabled,
                 staff.CreatedAt,
                 staff.UpdatedAt,
                 staff.CreatedBy,
