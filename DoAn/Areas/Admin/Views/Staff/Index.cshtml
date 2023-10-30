@@ -4,6 +4,7 @@
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
+
 <div class="wrapper-box" style="padding:7rem">
     <div class="toolBar-control">
     <button class="btn-create" onclick="window.location.href='/Admin/Staff/Register'">
@@ -11,13 +12,15 @@
     </button>
     
         <div class="wrap-search">
-            <div class="search-staff">
+            <form method="get" action="/Admin/Staff/SearchStaff">
                 <div class="box-search">
-                    <input type="text" value="" name="" id="" placeholder="Search Employee ... ">
-                    <button class="btnSearch-staff"> Search</button>
+                    <input type="text" name="keyword" id="searchInput" placeholder="Search Employee ...">
+                    <button type="submit" class="btnSearch-staff" id="searchButton">Search</button>
+
                 </div>
-            </div>
+            </form>
         </div>
+
 
         <div></div>
     </div>
@@ -71,8 +74,8 @@
                             <td>@item.UpdatedAt</td>
                             <td>@item.CreatedBy</td>
                             <td>@item.UpdatedBy</td>
-                            <td>@item.Branch.Address</td>
-                            <td>@item.Role.Name</td>
+                            <td>@item.Branch?.Address</td>
+                            <td>@item.Role?.Name</td>
                             <td>
                                 <button class="button-38" role="button" onclick="navigateTo('Sendmail', @item.StaffId)">
                                     sendMail
@@ -143,8 +146,8 @@
                             <td>@item.UpdatedAt</td>
                             <td>@item.CreatedBy</td>
                             <td>@item.UpdatedBy</td>
-                            <td>@item.Branch.Address</td>
-                            <td>@item.Role.Name</td>
+                            <td>@item.Branch?.Address</td>
+                            <td>@item.Role?.Name</td>
                             <td>
                                 <button class="btn-add" onclick="addStaff(@item.StaffId)">
                                     Add
@@ -160,6 +163,20 @@
     </div>
 </div>
 <script>
+    const searchInput = document.getElementById("searchInput");
+    const searchButton = document.getElementById("searchButton");
+
+    searchInput.addEventListener("input", function () {
+        if (searchInput.value.trim() === "") {
+            searchButton.disabled = true;
+        } else {
+            searchButton.disabled = false;
+        }
+    });
+</script>
+<script>
+    
+
     function addStaff(staffId) {
         window.location.href = `/Admin/Staff/ReloadEmployee?staffId=${staffId}`;
     }

@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Identity;
 using MimeKit;
 using MailKit.Net.Smtp;
+using PagedList;
 
 namespace DoAn.Areas.Admin.Controllers
 {
@@ -98,6 +99,7 @@ namespace DoAn.Areas.Admin.Controllers
         }
 
         //View List
+
         public async Task<IActionResult> Index()
         {
             var apiResponse = await _httpClient.GetAsync("https://localhost:7109/api/AdminApi/");
@@ -325,6 +327,45 @@ namespace DoAn.Areas.Admin.Controllers
                 return RedirectToAction("Index");
             }
         }
+
+
+        // Search
+        public async Task<IActionResult> SearchStaff(string keyword)
+        {
+            List<Staff> staffList;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:7109/");
+                if (string.IsNullOrWhiteSpace(keyword))
+                {
+                    var response = await client.GetAsync("api/AdminApi/getAllEmployees"); // Change the URL to your API endpoint.
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        staffList = JsonConvert.DeserializeObject<List<Staff>>(responseContent);
+                    }
+                    else
+                    {
+                        return View("Index");
+                    }
+                }
+                else
+                {
+                    var response = await client.GetAsync($"api/AdminApi/search?keyword={keyword}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        staffList = JsonConvert.DeserializeObject<List<Staff>>(responseContent);
+                    }
+                    else
+                    {
+                        return View("Index");
+                    }
+                }
+            }
+            return View("Index", staffList);
+        }
+
 
         [HttpGet]
         public IActionResult Edit(int staffId)

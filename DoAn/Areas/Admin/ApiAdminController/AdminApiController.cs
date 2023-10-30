@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
@@ -109,7 +110,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     s.Role.Name,
                     s.Role.RoleId
                 },
-               
+
                 s.UpdatedAt,
                 s.CreatedBy,
                 s.UpdatedBy,
@@ -117,6 +118,8 @@ namespace DoAn.Areas.Admin.ApiAdminController
 
             return Ok(staffsWithFullInfo);
         }
+
+
 
         [HttpPost("register")]
         public async Task<IActionResult> RegisterStaff(Staff registrationModel)
@@ -276,6 +279,48 @@ namespace DoAn.Areas.Admin.ApiAdminController
             return Ok(reloadSuccessResponse);
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchStaff(string keyword)
+        {
+            var staffs = await _dbContext.Staff
+                .Include(s => s.Branch)
+                .Include(s => s.Role)
+                .Where(s =>
+                    s.Name.Contains(keyword) || s.StaffId.ToString() == keyword
+                )
+                .ToListAsync();
+
+            var staffsWithFullInfo = staffs.Select(s => new
+            {
+                s.StaffId,
+                s.Name,
+                s.Username,
+                s.Phone,
+                s.Address,
+                s.Avatar,
+                s.Email,
+                s.Status,
+                s.IsDisabled,
+                s.CreatedAt,
+                s.UpdatedAt,
+                s.CreatedBy,
+                s.UpdatedBy,
+                Branch = new
+                {
+                    Address = s.Branch?.Address,
+                    Hotline = s.Branch?.Hotline
+                },
+                Role = new
+                {
+                    Name = s.Role?.Name,
+                    RoleId = s.Role?.RoleId
+                }
+            }).ToList();
+
+            return Ok(staffsWithFullInfo);
+        }
+
+
 
         [HttpGet("detail/{staffId}")]
         public async Task<IActionResult> GetClientDetail(int staffId)
@@ -321,4 +366,5 @@ namespace DoAn.Areas.Admin.ApiAdminController
         }
 
     }
+
 }
