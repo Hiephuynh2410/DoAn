@@ -89,6 +89,43 @@ namespace DoAn.Areas.Admin.Controllers
             }
         }
 
+        //search
+        public async Task<IActionResult> SearchResult(string keyword)
+        {
+            List<Product> productList;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:7109/");
+                if (string.IsNullOrEmpty(keyword))
+                {
+                    var response = await client.GetAsync("api/ProductApi");
+                    if(response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        productList = JsonConvert.DeserializeObject<List<Product>>(responseContent);
+                    } 
+                    else
+                    {
+                        return View("Index");
+                    }
+                }
+                else
+                {
+                    var response = await client.GetAsync($"api/ProductApi/search?keyword={keyword}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        productList = JsonConvert.DeserializeObject<List<Product>>(responseContent);
+                    }
+                    else
+                    {
+                        return View("Index");
+                    }
+                }
+            }
+            return View("Index", productList);
+        }
+
         //edit
         [HttpGet]
         public IActionResult Edit(int productId)

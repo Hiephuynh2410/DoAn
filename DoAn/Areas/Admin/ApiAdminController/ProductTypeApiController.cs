@@ -30,6 +30,20 @@ namespace DoAn.Areas.Admin.ApiAdminController
             return Ok(productTypesWithFullInfo);
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> searchProductType(string keyword)
+        {
+            var productTypes = await _dbContext.Producttypes
+                .Where(p => p.Name.Contains(keyword) || p.ProductTypeId.ToString() == keyword)
+                .ToListAsync();
+            var productTypesWithFullInfo = productTypes.Select(s => new
+            {
+                s.ProductTypeId,
+                s.Name,
+            }).ToList();
+            return Ok(productTypesWithFullInfo);
+        }
+
         [HttpPost("create")]
         public async Task<IActionResult> CreateProductType(Producttype createModel)
         {

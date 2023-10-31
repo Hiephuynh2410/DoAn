@@ -11,14 +11,16 @@
         <button class="btn-create" onclick="window.location.href='/Admin/ProductType/Create'">
             Create new
         </button>
+
         <div class="wrap-search">
-            <div class="search-staff">
+            <form method="get" action="/Admin/ProductType/SearchResult" class="search-staff" onsubmit="return validateSearch()">
                 <div class="box-search">
-                    <input type="text" value="" name="" id="" placeholder="Search ProductType ... ">
-                    <button class="btnSearch-staff">Search</button>
+                    <input type="text" name="keyword" id="searchInput" placeholder="Search Producttype ...">
+                    <button type="submit" class="btnSearch-staff" id="searchButton">Search</button>
                 </div>
-            </div>
+            </form>
         </div>
+
         <div></div>
     </div>
     <div class="table-infoStaff">
@@ -52,6 +54,17 @@
     </div>
 </div>
 <script>
+    const searchInput = document.getElementById("searchInput");
+    const searchButton = document.getElementById("searchButton");
+
+    searchInput.addEventListener("input", function () {
+        if (searchInput.value.trim() === "") {
+            searchButton.disabled = true;
+        } else {
+            searchButton.disabled = false;
+        }
+    });
+
     function navigateTo(action, ProductTypeId) {
         window.location.href = `/Admin/ProductType/${action}?ProductTypeId=${ProductTypeId}`;
     }

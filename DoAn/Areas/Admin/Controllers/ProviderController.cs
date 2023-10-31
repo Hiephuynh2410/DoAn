@@ -53,6 +53,43 @@ namespace DoAn.Areas.Admin.Controllers
             }
         }
 
+        //search
+        public async Task<IActionResult> SearchResult(string keyword)
+        {
+            List<Provider> providersList;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:7109/");
+                if (string.IsNullOrEmpty(keyword))
+                {
+                    var response = await client.GetAsync("api/ProviderApi");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        providersList = JsonConvert.DeserializeObject<List<Provider>>(responseContent);
+                    }
+                    else
+                    {
+                        return View("Index");
+                    }
+                }
+                else
+                {
+                    var response = await client.GetAsync($"api/ProviderApi/search?keyword={keyword}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        providersList = JsonConvert.DeserializeObject<List<Provider>>(responseContent);
+                    }
+                    else
+                    {
+                        return View("Index");
+                    }
+                }
+                return View("Index", providersList);
+            }
+        }
+
         //Delete
         public async Task<IActionResult> Delete(int providerId)
         {

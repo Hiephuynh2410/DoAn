@@ -338,7 +338,7 @@ namespace DoAn.Areas.Admin.Controllers
                 client.BaseAddress = new Uri("https://localhost:7109/");
                 if (string.IsNullOrWhiteSpace(keyword))
                 {
-                    var response = await client.GetAsync("api/AdminApi/getAllEmployees"); // Change the URL to your API endpoint.
+                    var response = await client.GetAsync("api/AdminApi"); 
                     if (response.IsSuccessStatusCode)
                     {
                         var responseContent = await response.Content.ReadAsStringAsync();

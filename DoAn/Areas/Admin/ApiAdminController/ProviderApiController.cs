@@ -32,6 +32,24 @@ namespace DoAn.Areas.Admin.ApiAdminController
             return Ok(providersWithFullInfo);
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> searchProvider(string keyword)
+        {
+            var provider = await _dbContext.Providers
+                .Where(p => p.Name.Contains(keyword) || p.ProviderId.ToString() == keyword).ToListAsync();
+           
+            var providersWithFullInfo = provider.Select(s => new
+            {
+                s.ProviderId,
+                s.Name,
+                s.Address,
+                s.Email,
+                s.Phone
+            }).ToList();
+
+            return Ok(providersWithFullInfo);
+        }
+
         [HttpPost("create")]
         public async Task<IActionResult> CreateProvider(Provider createModel)
         {

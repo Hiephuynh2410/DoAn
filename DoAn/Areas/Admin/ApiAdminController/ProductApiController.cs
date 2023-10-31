@@ -33,8 +33,10 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 s.Image,
                 s.ProductTypeId,
                 s.ProviderId,
-                s.CreatedAt, s.UpdatedAt,
-                s.CreatedBy, s.UpdatedBy,
+                s.CreatedAt,
+                s.UpdatedAt,
+                s.CreatedBy,
+                s.UpdatedBy,
                 ProductType = new
                 {
                     Name = s.ProductType?.Name
@@ -51,6 +53,45 @@ namespace DoAn.Areas.Admin.ApiAdminController
             return Ok(productsWithFullInfo);
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> searchProduct(string keyword)
+        {
+            var products = await _dbContext.Products
+                .Include(p => p.ProductType)
+                .Include(p => p.Provider)
+                .Where(p => 
+                        p.Name.Contains(keyword) || p.ProductId.ToString() == keyword
+                )
+                .ToListAsync();
+
+            var productWithFullInfo = products.Select(p => new
+            {
+                p.ProductId,
+                p.Name,
+                p.Description,
+                p.Price,
+                p.Quantity,
+                p.Image,
+                p.ProductTypeId,
+                p.ProviderId,
+                p.CreatedAt,
+                p.UpdatedAt,
+                p.CreatedBy,
+                p.UpdatedBy,
+                ProductType = new
+                {
+                    Name = p.ProductType?.Name
+                },
+                Provider = new
+                {
+                    p.Provider?.Name,
+                    p.Provider?.Address,
+                    p.Provider?.Email,
+                    p.Provider?.Phone
+                }
+            }).ToList();
+            return Ok(productWithFullInfo);
+        }
 
         [HttpPost("create")]
         public async Task<IActionResult> CreateProducts(Product registrationModel)

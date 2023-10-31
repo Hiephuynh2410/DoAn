@@ -12,12 +12,12 @@
         </button>
 
         <div class="wrap-search">
-            <div class="search-staff">
+            <form method="get" action="/Admin/Product/SearchResult" class="search-staff" onsubmit="return validateSearch()">
                 <div class="box-search">
-                    <input type="text" value="" name="" id="" placeholder="Search products ... ">
-                    <button class="btnSearch-staff"> Search</button>
+                    <input type="text" name="keyword" id="searchInput" placeholder="Search Product ...">
+                    <button type="submit" class="btnSearch-staff" id="searchButton">Search</button>
                 </div>
-            </div>
+            </form>
         </div>
 
         <div></div>
@@ -88,6 +88,17 @@
     </div>
 </div>
 <script>
+    const searchInput = document.getElementById("searchInput");
+    const searchButton = document.getElementById("searchButton");
+
+    searchInput.addEventListener("input", function () {
+        if (searchInput.value.trim() === "") {
+            searchButton.disabled = true;
+        } else {
+            searchButton.disabled = false;
+        }
+    });
+
     function navigateTo(action, ProductId) {
         window.location.href = `/Admin/Product/${action}?ProductId=${ProductId}`;
     }

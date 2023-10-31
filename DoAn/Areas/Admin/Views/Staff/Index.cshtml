@@ -12,15 +12,13 @@
     </button>
     
         <div class="wrap-search">
-            <form method="get" action="/Admin/Staff/SearchStaff">
+            <form method="get" action="/Admin/Staff/SearchStaff" class="search-staff" onsubmit="return validateSearch()">
                 <div class="box-search">
                     <input type="text" name="keyword" id="searchInput" placeholder="Search Employee ...">
                     <button type="submit" class="btnSearch-staff" id="searchButton">Search</button>
-
                 </div>
             </form>
         </div>
-
 
         <div></div>
     </div>
@@ -162,6 +160,8 @@
         </table>
     </div>
 </div>
+
+
 <script>
     const searchInput = document.getElementById("searchInput");
     const searchButton = document.getElementById("searchButton");
@@ -173,9 +173,20 @@
             searchButton.disabled = false;
         }
     });
-</script>
-<script>
-    
+
+    //function validateSearch() {
+    //    const searchInput = document.getElementById("searchInput");
+
+    //    const keyword = searchInput.value.trim();
+
+    //    if (keyword === "") {
+    //        alert("vui lòng nhập tên hoặc mã nhân viên cần tìm.");
+    //        return false;
+    //    }
+
+    //    return true; 
+    //}
+
 
     function addStaff(staffId) {
         window.location.href = `/Admin/Staff/ReloadEmployee?staffId=${staffId}`;
