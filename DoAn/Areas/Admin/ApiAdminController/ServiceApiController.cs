@@ -48,6 +48,35 @@ namespace DoAn.Areas.Admin.ApiAdminController
             return Json(servicesDetail);
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchServices(string keyword)
+        {
+            var service = await _dbContext.Services
+              .Include(s => s.ServiceType)
+              .Where(s => s.Name.Contains(keyword) || s.ServiceId.ToString() == keyword)
+              .ToListAsync();
+
+            var servicesWithFullInfo = service.Select(s => new
+            {
+                s.ServiceId,
+                s.Name,
+                s.Price,
+                s.Status,
+                s.CreatedAt,
+                s.CreatedBy,
+                s.UpdatedBy,
+                s.UpdatedAt,
+                Servicetype = new
+                {
+                    s.ServiceType.ServiceTypeId,
+                    s.ServiceType.Name
+                }
+            }).ToList();
+
+            return Ok(servicesWithFullInfo);
+
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAllService()
         {

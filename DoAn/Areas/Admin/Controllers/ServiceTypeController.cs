@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Net;
 using System.Text;
 
 namespace DoAn.Areas.Admin.Controllers
@@ -15,6 +16,43 @@ namespace DoAn.Areas.Admin.Controllers
         public ServiceTypeController()
         {
             _httpClient = new HttpClient();
+        }
+
+        //search
+        public async Task<IActionResult> SearchResult(string keyword)
+        {
+            List<Servicetype> servicetypesList;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:7109/");
+                if (string.IsNullOrEmpty(keyword))
+                {
+                    var response = await client.GetAsync("api/AdminApi");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        servicetypesList = JsonConvert.DeserializeObject<List<Servicetype>>(responseContent);
+                    }
+                    else
+                    {
+                        return View("Index");
+                    }
+                }
+                else
+                {
+                    var response = await client.GetAsync($"api/ServicesTypeApi/search?keyword={keyword}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        servicetypesList = JsonConvert.DeserializeObject<List<Servicetype>>(responseContent);
+                    }
+                    else
+                    {
+                        return View("Index");
+                    }
+                }
+            }
+            return View("Index", servicetypesList);
         }
 
         //Delete
@@ -44,7 +82,6 @@ namespace DoAn.Areas.Admin.Controllers
             }
         }
 
-
         //detail
         [HttpGet]
         public async Task<IActionResult> Detail(int Servicetypeid)
@@ -68,7 +105,6 @@ namespace DoAn.Areas.Admin.Controllers
                 return RedirectToAction("Index");
             }
         }
-
 
         //edit
         [HttpGet]

@@ -30,6 +30,19 @@ namespace DoAn.Areas.Admin.ApiAdminController
             return Ok(ServicesTypesWithFullInfo);
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchServiceType(string keyword)
+        {
+            var ServicesType = await _dbContext.Servicetypes
+                .Where(s => s.Name.Contains(keyword) || s.ServiceTypeId.ToString() == keyword).ToListAsync();
+            var servicesTypeWithFullInfo = ServicesType.Select(s => new
+            {
+                s.ServiceTypeId,
+                s.Name,
+            }).ToList();
+            return Ok(servicesTypeWithFullInfo);
+        }
+
         [HttpPost("create")]
         public async Task<IActionResult> CreateServicesType(Servicetype createModel)
         {

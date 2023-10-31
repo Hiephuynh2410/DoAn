@@ -13,7 +13,7 @@ namespace DoAn.Areas.Admin.Controllers
         private readonly HttpClient _httpClient;
 
         public ProviderController()
-        {
+        {   
             _httpClient = new HttpClient();
         }
 
