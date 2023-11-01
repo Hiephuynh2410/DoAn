@@ -27,11 +27,14 @@ public class ScheduledEmailService : BackgroundService
                     .Include(s => s.Scheduledetails)
                     .Where(s => s.Scheduledetails.Any(sd => sd.Date == targetDate))
                     .ToList();
+                
                 foreach (var staffMember in staffMembersWithUpcomingSchedules)
                 {
                     var message = new MimeMessage();
+                   
                     message.From.Add(new MailboxAddress("Admin", "huynhhiepvan1998@gmail.com"));
                     message.Subject = "Upcoming Work Schedule Notification";
+                   
                     message.Body = new TextPart("plain")
                     {
                         Text = "Đi làm đi bạn eiii bớt lười!!!!."

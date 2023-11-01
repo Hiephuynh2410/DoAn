@@ -12,6 +12,7 @@ namespace DoAn.ApiController
     public class BookingController : Controller
     {
         private readonly DlctContext _dbContext;
+
         public BookingController(DlctContext dbContext)
         {
             _dbContext = dbContext;
@@ -216,6 +217,7 @@ namespace DoAn.ApiController
 
             return Ok(updateSuccessResponse);
         }
+
         [HttpGet("branches")]
         public async Task<IActionResult> GetBranches()
         {
@@ -243,17 +245,19 @@ namespace DoAn.ApiController
             try
             {
                 var message = new MimeMessage();
-                message.From.Add(new MailboxAddress("System", "huynhhiepvan1998@gmail.com")); 
+
+                message.From.Add(new MailboxAddress("New Booking", "huynhhiepvan1998@gmail.com")); 
                 message.Subject = "New Booking Notification";
+                
                 message.Body = new TextPart("html")
                 {
                     Text = $"<html><body>" +
-                   $"<h2>New booking details:</h2>" +
-                   $"<p><strong>Name:</strong> {registrationModel.Name}</p>" +
-                   $"<p><strong>Phone:</strong> {registrationModel.Phone}</p>" +
-                   $"<p><strong>Date & Time:</strong> <span style='color: purple'>{registrationModel.DateTime}</span></p>" +
-                   $"<p><strong>Note:</strong> <span style='color: purple'>{registrationModel.Note}</span></p>" +
-                   $"</body></html>"
+                       $"<h2>New booking details:</h2>" +
+                       $"<p><strong>Client Name:</strong> {registrationModel.Name}</p>" +
+                       $"<p><strong>Client Phone:</strong> {registrationModel.Phone}</p>" +
+                       $"<p><strong>Booking Date:</strong> <span style='color: purple'>{registrationModel.DateTime}</span></p>" +
+                       $"<p><strong>Note:</strong> <span style='color: purple'>{registrationModel.Note}</span></p>" +
+                       $"</body></html>"
                 };
 
                 using (var client = new SmtpClient())
