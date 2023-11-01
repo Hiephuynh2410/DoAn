@@ -48,5 +48,32 @@ namespace DoAn.Areas.Admin.Controllers
             }
             return View();
         }
+
+        //delete
+        public async Task<IActionResult> Delete(int bookingId)
+        {
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                return RedirectToAction("Login", "Staff");
+            }
+            var apiUrl = $"https://localhost:7109/api/ClientBookingApi/delete/{bookingId}";
+
+            var response = await _httpClient.DeleteAsync(apiUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("API Response Content: " + responseContent);
+
+                var errorResponse = JsonConvert.DeserializeObject<object>(responseContent);
+
+                ModelState.AddModelError("", errorResponse.ToString());
+                return RedirectToAction("Index");
+            }
+        }
     }
 }

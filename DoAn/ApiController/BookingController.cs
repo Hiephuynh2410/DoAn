@@ -1,8 +1,9 @@
-﻿using DoAn.Data;
-using DoAn.Models;
-using Microsoft.AspNetCore.Identity;
+﻿using DoAn.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MimeKit;
+using MailKit.Net.Smtp;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace DoAn.ApiController
 {
@@ -95,6 +96,7 @@ namespace DoAn.ApiController
                         return NotFound("Client, Staff, booking, or Combo not found.");
                     }
 
+
                     var newBooking = new Booking
                     {
                         Client = client,
@@ -111,6 +113,8 @@ namespace DoAn.ApiController
 
                     _dbContext.Bookings.Add(newBooking);
                     await _dbContext.SaveChangesAsync();
+
+                    SendBookingNotificationEmail(staff.Email, registrationModel);
 
                     var registrationSuccessResponse = new
                     {
@@ -231,6 +235,42 @@ namespace DoAn.ApiController
             catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        private void SendBookingNotificationEmail(string staffEmail, Booking registrationModel)
+        {
+            try
+            {
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress("System", "huynhhiepvan1998@gmail.com")); 
+                message.Subject = "New Booking Notification";
+                message.Body = new TextPart("html")
+                {
+                    Text = $"<html><body>" +
+                   $"<h2>New booking details:</h2>" +
+                   $"<p><strong>Name:</strong> {registrationModel.Name}</p>" +
+                   $"<p><strong>Phone:</strong> {registrationModel.Phone}</p>" +
+                   $"<p><strong>Date & Time:</strong> <span style='color: purple'>{registrationModel.DateTime}</span></p>" +
+                   $"<p><strong>Note:</strong> <span style='color: purple'>{registrationModel.Note}</span></p>" +
+                   $"</body></html>"
+                };
+
+                using (var client = new SmtpClient())
+                {
+                    client.Connect("smtp.gmail.com", 587, false); 
+                    client.Authenticate("huynhhiepvan1998@gmail.com", "nmqt ljyf skbz xcrs");
+
+                    message.To.Add(new MailboxAddress(staffEmail, staffEmail));
+
+                    client.Send(message);
+
+                    client.Disconnect(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error sending email: " + ex.Message);
             }
         }
     }
