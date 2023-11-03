@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using MimeKit;
 using MailKit.Net.Smtp;
 using static System.Net.Mime.MediaTypeNames;
+using Org.BouncyCastle.Asn1.Cms;
 
 namespace DoAn.ApiController
 {
@@ -43,24 +44,24 @@ namespace DoAn.ApiController
                 s.ClientId,
                 Staff = new
                 {
-                    s.Staff.StaffId,
-                    s.Staff.Name
+                    s.Staff?.StaffId,
+                    s.Staff?.Name
                 },
                 Client = new
                 {
-                    s.Client.ClientId,
-                    s.Client.Name
+                    s.Client?.ClientId,
+                    s.Client?.Name
                 },
                 Combo = new 
                 {
-                    s.Combo.ComboId,
-                    s.Combo.Name
+                    s.Combo?.ComboId,
+                    s.Combo?.Name
                 },
                 Branch = new
                 {
-                    s.Branch.BranchId,
-                    s.Branch.Address,
-                    s.Branch.Hotline
+                    s.Branch?.BranchId,
+                    s.Branch?.Address,
+                    s.Branch?.Hotline
                 }
             }).ToList();
 
@@ -123,8 +124,22 @@ namespace DoAn.ApiController
                         BookingId = newBooking.BookingId,
                         ClientId = newBooking.ClientId,
                         StaffId = newBooking.StaffId,
+                        Staff = new 
+                        {
+                            Name = newBooking.Staff?.Name,
+                            Phone = newBooking.Staff?.Phone,
+                        },
                         ComboId = newBooking.ComboId,
+                        Combo = new
+                        {
+                            Address = newBooking.Combo?.Name
+                        },
                         BranchId = newBooking.BranchId,
+                        Branch = new
+                        {
+                            Address = newBooking.Branch?.Address,
+                            Hotline = newBooking.Branch?.Hotline
+                        },
                         Name = registrationModel.Name,
                         Phone = registrationModel.Phone,
                         DateTime = registrationModel.DateTime,
@@ -150,6 +165,51 @@ namespace DoAn.ApiController
             catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+
+        private void SendBookingNotificationEmail(string staffEmail, Booking registrationModel)
+        {
+            try
+            {
+                var message = new MimeMessage();
+
+                message.From.Add(new MailboxAddress("New Booking", "huynhhiepvan1998@gmail.com"));
+                message.Subject = "New Booking Notification";
+
+                var comboInfo = registrationModel.Combo != null ? registrationModel.Combo.Name : "N/A";
+                var branchInfo = registrationModel.Branch != null ? registrationModel.Branch.Address : "N/A";
+                var currentTime = DateTime.Now.ToString("HH:mm");
+                message.Body = new TextPart("html")
+                {
+                    Text = $"<html><body>" +
+                       $"<h2>You have a customer booking:</h2>" +
+                       $"<p><strong>Client Name:</strong> {registrationModel.Name}</p>" +
+                       $"<p><strong>Client Phone:</strong> {registrationModel.Phone}</p>" +
+                       $"<p><strong>Time Create:</strong> <span style='color: purple'>{currentTime}</span></p>" +
+                       $"<p><strong>Booking Date:</strong> <span style='color: purple'>{registrationModel.DateTime}</span></p>" +
+                       $"<p><strong>Note:</strong> <span style='color: purple'>{registrationModel.Note}</span></p>" +
+                        $"<p><strong>Branch:</strong> <span style='color: purple'>{branchInfo}</span></p>" +
+                        $"<p><strong>Combo:</strong> <span style='color: purple'>{comboInfo}</span></p>" +
+                       $"</body></html>"
+                };
+
+                using (var client = new SmtpClient())
+                {
+                    client.Connect("smtp.gmail.com", 587, false);
+                    client.Authenticate("huynhhiepvan1998@gmail.com", "nmqt ljyf skbz xcrs");
+
+                    message.To.Add(new MailboxAddress(staffEmail, staffEmail));
+
+                    client.Send(message);
+
+                    client.Disconnect(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error sending email: " + ex.Message);
             }
         }
 
@@ -240,42 +300,6 @@ namespace DoAn.ApiController
             }
         }
 
-        private void SendBookingNotificationEmail(string staffEmail, Booking registrationModel)
-        {
-            try
-            {
-                var message = new MimeMessage();
-
-                message.From.Add(new MailboxAddress("New Booking", "huynhhiepvan1998@gmail.com")); 
-                message.Subject = "New Booking Notification";
-                
-                message.Body = new TextPart("html")
-                {
-                    Text = $"<html><body>" +
-                       $"<h2>New booking details:</h2>" +
-                       $"<p><strong>Client Name:</strong> {registrationModel.Name}</p>" +
-                       $"<p><strong>Client Phone:</strong> {registrationModel.Phone}</p>" +
-                       $"<p><strong>Booking Date:</strong> <span style='color: purple'>{registrationModel.DateTime}</span></p>" +
-                       $"<p><strong>Note:</strong> <span style='color: purple'>{registrationModel.Note}</span></p>" +
-                       $"</body></html>"
-                };
-
-                using (var client = new SmtpClient())
-                {
-                    client.Connect("smtp.gmail.com", 587, false); 
-                    client.Authenticate("huynhhiepvan1998@gmail.com", "nmqt ljyf skbz xcrs");
-
-                    message.To.Add(new MailboxAddress(staffEmail, staffEmail));
-
-                    client.Send(message);
-
-                    client.Disconnect(true);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error sending email: " + ex.Message);
-            }
-        }
+       
     }
 }

@@ -8,22 +8,10 @@
 
 <div class="wrapper-box" style="padding:7rem">
     <div class="toolBar-control">
-        <button class="btn-create" onclick="window.location.href='/Admin/Staff/Register'">
-            Create new
-        </button>
 
-        <div class="wrap-search">
-            <form method="get" action="/Admin/Staff/SearchStaff" class="search-staff" onsubmit="return validateSearch()">
-                <div class="box-search">
-                    <input type="text" name="keyword" id="searchInput" placeholder="Search Employee ...">
-                    <button type="submit" class="btnSearch-staff" id="searchButton">Search</button>
-                </div>
-            </form>
-        </div>
-
-        <div></div>
     </div>
     <div class="table-infoStaff">
+        <h1 style="font-family:Cambria, Cochin, Georgia, Times, Times New Roman, serif">Customer Booking</h1>
         <table class="table-List">
             <tr class="title-infoList">
                 <th>Booking ID</th>
@@ -42,39 +30,67 @@
             <tbody class="box-tbody">
                 @foreach (var item in Model)
                 {
-                    <tr class="item-infoList">
-                        <td>@item.BookingId</td>
+                    @if(item.Status == true)
+                    {
+                        
+                        <tr class="item-infoList">
+                            <td>@item.BookingId</td>
+                            <td>@item.Name</td>
+                            <td>@item.Phone</td>
+                            <td>@item.DateTime</td>
+                            <td>@item.Note</td>
+                            <td>
+                                <p style="color: red">Watting...</p>
+                            </td>
+                            <td>@item.CreatedAt</td>
+                            <td>@item.Branch?.Address</td>
+                            <td>@item.Combo?.Name</td>
+                            <td>@item.Staff?.Name</td>
+                            <td>
+                                <button class="btn-delete" onclick="deleteBooking(@item.BookingId)">Confirm</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <div style="margin-top:2rem" class="table-infoStaff">
+        <h1 style="font-family:Cambria, Cochin, Georgia, Times, Times New Roman, serif">Customer Already Cut</h1>
+        <table class="table-List">
+            <tr class="title-infoList">
+                <th>Booking ID</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Date time</th>
+                <th>Note</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th>Branch</th>
+                <th>Combo</th>
+                <th>Staff</th>
+            </tr>
 
-                        <td>@item.Name</td>
-                        <td>@item.Phone</td>
-                        <td>@item.DateTime</td>
-                        <td>@item.Note</td>
-                        <td>
-                            @if (item.Status == true)
-                            {
-                                <p style="color: green">Booking Success</p>
-                            }
-                            else
-                            {
-                                <p style="color: red">Non-Booking</p>
-                            }
-                        </td>
-                        <td>@item.CreatedAt</td>
-                        <td>@item.Branch?.Address</td>
-                        <td>@item.Combo?.Name</td>
-                        <td>@item.Staff?.Name</td>
-                        <td>
-                            @if (Context.Session.GetString("Role") == "1")
-                            {
-                                <button class="btn-delete" onclick="deleteStaff(@item.StaffId)">
-                                    Delete
-                                </button>
-                            } else
-                            {
-                                <p style="color:red">Only Admin Can Delete</p>
-                            }
-                        </td>
-                    </tr>
+            <tbody class="box-tbody">
+                @foreach (var item in Model)
+                {
+                    @if (item.Status == false)
+                    {
+                        <tr class="item-infoList">
+                            <td>@item.BookingId</td>
+                            <td>@item.Name</td>
+                            <td>@item.Phone</td>
+                            <td>@item.DateTime</td>
+                            <td>@item.Note</td>
+                            <td>
+                                <p style="color: green">Done</p>
+                            </td>
+                            <td>@item.CreatedAt</td>
+                            <td>@item.Branch?.Address</td>
+                            <td>@item.Combo?.Name</td>
+                            <td>@item.Staff?.Name</td>
+                        </tr>
+                    }
                 }
             </tbody>
         </table>
@@ -83,28 +99,16 @@
 
 
 <script>
-    const searchInput = document.getElementById("searchInput");
-    const searchButton = document.getElementById("searchButton");
 
-    searchInput.addEventListener("input", function () {
-        if (searchInput.value.trim() === "") {
-            searchButton.disabled = true;
-        } else {
-            searchButton.disabled = false;
-        }
-    });
-
-
-    function addStaff(staffId) {
-        window.location.href = `/Admin/Staff/ReloadEmployee?staffId=${staffId}`;
-    }
-    function navigateTo(action, staffId) {
-        window.location.href = `/Admin/Staff/${action}?StaffId=${staffId}`;
+    function navigateTo(action, bookingId) {
+        window.location.href = `/Admin/BookingFromClient/${action}?BookingId=${bookingId}`;
     }
 
-    function deleteStaff(staffId) {
-        if (confirm('Are you sure you want to delete this staff?')) {
-            navigateTo('Delete', staffId);
+    function deleteBooking(bookingId) {
+        if (confirm('Are you sure you want to delete this booking?')) {
+            var url = `/Admin/BookingFromClient/Update?bookingId=${bookingId}`;
+
+            window.location.href = url;
         }
     }
 </script>
@@ -145,8 +149,3 @@
             box-shadow: none;
         }
 </style>
-@*
-<a asp-action="Edit" asp-route-id="@item.BookingId">Edit</a> |
-<a asp-action="Details" asp-route-id="@item.BookingId">Details</a> |
-<a asp-action="Delete" asp-route-id="@item.BookingId">Delete</a>
- *@

@@ -62,25 +62,27 @@ namespace DoAn.Areas.Admin.ApiAdminController
             return Ok(bookingFromClientsWithFullInfo);
         }
 
-        [HttpDelete("delete/{bookingId}")]
-        public async Task<IActionResult> DeleteBookingFromClient(int bookingId)
+        [HttpPut("update/{bookingId}")]
+        public async Task<IActionResult> UpdateBookingFromClient(int bookingId)
         {
-            var booking = await _dbContext.Bookings.FindAsync(bookingId); 
+            var booking = await _dbContext.Bookings.FindAsync(bookingId);
 
             if (booking == null)
             {
                 return NotFound();
             }
 
-            _dbContext.Entry(booking).State = EntityState.Deleted;
+            booking.Status = false;
+
+            _dbContext.Entry(booking).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
 
-            var deleteSuccessResponse = new
+            var updateSuccessResponse = new
             {
-                Message = "Booking disabled successfully"
+                Message = "Booking status updated successfully"
             };
 
-            return Ok(deleteSuccessResponse);
+            return Ok(updateSuccessResponse);
         }
 
     }

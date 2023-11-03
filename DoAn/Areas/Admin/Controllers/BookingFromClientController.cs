@@ -50,18 +50,28 @@ namespace DoAn.Areas.Admin.Controllers
         }
 
         //delete
-        public async Task<IActionResult> Delete(int bookingId)
+        public async Task<IActionResult> Update(int bookingId)
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
                 return RedirectToAction("Login", "Staff");
             }
-            var apiUrl = $"https://localhost:7109/api/ClientBookingApi/delete/{bookingId}";
 
-            var response = await _httpClient.DeleteAsync(apiUrl);
+            var booking = await db.Bookings.FirstOrDefaultAsync(s => s.BookingId == bookingId);
+            if (booking == null)
+            {
+                return NotFound();
+            }
+
+            var apiUrl = $"https://localhost:7109/api/ClientBookingApi/update/{bookingId}";
+            var response = await _httpClient.PutAsync(apiUrl, null); // Sử dụng phương thức PUT
 
             if (response.IsSuccessStatusCode)
             {
+                booking.Status = false;
+                db.Entry(booking).State = EntityState.Modified;
+                await db.SaveChangesAsync();
+
                 return RedirectToAction("Index");
             }
             else
@@ -75,5 +85,6 @@ namespace DoAn.Areas.Admin.Controllers
                 return RedirectToAction("Index");
             }
         }
+
     }
 }
