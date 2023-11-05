@@ -5,6 +5,7 @@ using MimeKit;
 using MailKit.Net.Smtp;
 using static System.Net.Mime.MediaTypeNames;
 using Org.BouncyCastle.Asn1.Cms;
+using System.Globalization;
 
 namespace DoAn.ApiController
 {
@@ -180,20 +181,23 @@ namespace DoAn.ApiController
 
                 var comboInfo = registrationModel.Combo != null ? registrationModel.Combo.Name : "N/A";
                 var branchInfo = registrationModel.Branch != null ? registrationModel.Branch.Address : "N/A";
+
+                var bookingDate = registrationModel.DateTime?.ToString("yyyy-MM-dd");
                 var currentTime = DateTime.Now.ToString("HH:mm");
+
                 message.Body = new TextPart("html")
                 {
                     Text = $"<html><body>" +
                        $"<h2>You have a customer booking:</h2>" +
                        $"<p><strong>Client Name:</strong> {registrationModel.Name}</p>" +
                        $"<p><strong>Client Phone:</strong> {registrationModel.Phone}</p>" +
-                       $"<p><strong>Time Create:</strong> <span style='color: purple'>{currentTime}</span></p>" +
-                       $"<p><strong>Booking Date:</strong> <span style='color: purple'>{registrationModel.DateTime}</span></p>" +
+                       $"<p><strong>Time Create:</strong> <span style='color: purple'>{bookingDate} : {currentTime}</span></p>" +
                        $"<p><strong>Note:</strong> <span style='color: purple'>{registrationModel.Note}</span></p>" +
                         $"<p><strong>Branch:</strong> <span style='color: purple'>{branchInfo}</span></p>" +
                         $"<p><strong>Combo:</strong> <span style='color: purple'>{comboInfo}</span></p>" +
                        $"</body></html>"
                 };
+
 
                 using (var client = new SmtpClient())
                 {
