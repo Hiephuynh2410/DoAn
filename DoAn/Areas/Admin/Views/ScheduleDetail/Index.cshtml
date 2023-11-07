@@ -36,9 +36,6 @@
         <table class="table-List">
             <tr class="title-infoList">
                 <th>
-                    Date
-                </th>
-                <th>
                     Schehule
                 </th>
                 <th>
@@ -58,35 +55,96 @@
                 {
                     foreach (var item in Model)
                     {
-                        <tr class="item-infoList">
-                            <td>
-                                @item.Date
-                            </td>
-                            <td>
-                                @item.Schedule.Time
-                            </td>
-                            <td>
-                                @item.Staff.Name
-                            </td>
-                            <td>
-                                @if (item.Status == true)
-                                {
-                                    <p style="color: green">Haha</p>
-                                }
-                                else
-                                {
-                                    <p style="color: red">hhuhu</p>
-                                }
-                            </td>
-                            <td>
-                                @if (isAdmin)
-                                {
-                                    @Html.ActionLink("Edit", "Edit", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId })
-                                    @Html.ActionLink("Details", "Details", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId  })
-                                    @Html.ActionLink("Delete", "Delete", new {ScheduleId = item.ScheduleId, StaffId = item.StaffId  })
-                                }
-                            </td>
-                        </tr>
+                        @if (item.Date > DateTime.Now)
+                        {
+                            <tr class="item-infoList">
+                             
+                                <td>
+                                    @(item.Date?.ToShortDateString()) -  @item.Schedule.Time
+                                </td>
+                                <td>
+                                    @item.Staff.Name
+                                </td>
+                                <td>
+                                    @if (item.Status == true)
+                                    {
+                                        <p style="color: green">active</p>
+                                    }
+                                    else
+                                    {
+                                        <p style="color: red">none</p>
+                                    }
+                                </td>
+                                <td>
+                                    @if (isAdmin)
+                                    {
+                                        @Html.ActionLink("Edit", "Edit", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId })
+                                        @Html.ActionLink("Details", "Details", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId  })
+                                        @Html.ActionLink("Delete", "Delete", new {ScheduleId = item.ScheduleId, StaffId = item.StaffId  })
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <h1 style="text-align:center; margin:1rem 0">outDated</h1>
+    <div class="table-infoStaff">
+        <table class="table-List">
+            <tr class="title-infoList">
+                <th>
+                    Schehule
+                </th>
+                <th>
+                    Staff
+                </th>
+                <th>Status</th>
+                @if (isAdmin)
+                {
+                    <th>Action</th>
+                }
+            </tr>
+            <tbody class="box-tbody">
+                @if (!string.IsNullOrEmpty(ViewBag.LoginMessage))
+                {
+                    <p style="color:red;text-align: center; font-size: 1.5rem;">@ViewBag.LoginMessage</p>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        @if(item.Date < DateTime.Now)
+                        {
+                            <tr class="item-infoList">
+                                <td>
+                                    @(item.Date?.ToShortDateString()) -  @item.Schedule.Time
+                                </td>
+                                <td>
+                                    @item.Staff.Name
+                                </td>
+                                <td>
+                                    @if (item.Status == true)
+                                    {
+                                        <p style="color: green">active</p>
+                                    }
+                                    else
+                                    {
+                                        <p style="color: red">none</p>
+                                    }
+                                </td>
+                                <td>
+                                    @if (isAdmin)
+                                    {
+                                        @Html.ActionLink("Edit", "Edit", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId })
+                                        @Html.ActionLink("Details", "Details", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId  })
+                                        @Html.ActionLink("Delete", "Delete", new {ScheduleId = item.ScheduleId, StaffId = item.StaffId  })
+                                    }
+                                </td>
+                            </tr>
+                        }
                     }
                 }
             </tbody>

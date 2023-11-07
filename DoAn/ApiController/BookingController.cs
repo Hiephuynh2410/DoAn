@@ -116,7 +116,7 @@ namespace DoAn.ApiController
 
                     _dbContext.Bookings.Add(newBooking);
                     await _dbContext.SaveChangesAsync();
-
+                    //nguo dung book thi gui mail
                     SendBookingNotificationEmail(staff.Email, registrationModel);
 
                     var registrationSuccessResponse = new

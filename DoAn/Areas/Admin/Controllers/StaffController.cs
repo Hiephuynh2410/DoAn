@@ -29,6 +29,7 @@ namespace DoAn.Areas.Admin.Controllers
             ViewBag.StaffId = staffId;
             return View();
         }
+        //admin thich thì gửi mail ko thì thôi
 
         [HttpPost]
         public IActionResult Sendmail(Mails model)

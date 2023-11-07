@@ -6,6 +6,8 @@ using MimeKit.Utils;
 
 public class ScheduledEmailService : BackgroundService
 {
+    //toi lich làm gửi gmail
+
     private readonly IServiceProvider _serviceProvider;
     DlctContext db = new DlctContext();
     public ScheduledEmailService(IServiceProvider serviceProvider)

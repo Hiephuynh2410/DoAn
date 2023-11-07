@@ -190,5 +190,34 @@ namespace DoAn.Areas.Admin.Controllers
             }
         }
 
+
+        public async Task<IActionResult> Delete(int staffId, int scheduleId)
+        {
+            try
+            {
+                var apiUrl = $"https://localhost:7109/api/ScheduleDetailApi/delete?staffId={staffId}&scheduleId={scheduleId}";
+
+                var apiResponse = await _httpClient.DeleteAsync(apiUrl);
+
+                if (apiResponse.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    var errorResponse = await apiResponse.Content.ReadAsStringAsync();
+                    ModelState.AddModelError("", "Failed to delete Scheduledetail: " + errorResponse);
+                    return RedirectToAction("Index"); // You can handle the error as needed
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    Message = "An unexpected error occurred. Please try again later."
+                });
+            }
+        }
+
     }
 }

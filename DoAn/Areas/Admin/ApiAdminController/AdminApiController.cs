@@ -320,8 +320,6 @@ namespace DoAn.Areas.Admin.ApiAdminController
             return Ok(staffsWithFullInfo);
         }
 
-
-
         [HttpGet("detail/{staffId}")]
         public async Task<IActionResult> GetClientDetail(int staffId)
         {
