@@ -7,7 +7,6 @@ using MimeKit.Utils;
 public class ScheduledEmailService : BackgroundService
 {
     //toi lich làm gửi gmail
-
     private readonly IServiceProvider _serviceProvider;
     DlctContext db = new DlctContext();
     public ScheduledEmailService(IServiceProvider serviceProvider)
@@ -37,9 +36,11 @@ public class ScheduledEmailService : BackgroundService
                     message.From.Add(new MailboxAddress("Admin", "huynhhiepvan1998@gmail.com"));
                     message.Subject = "Upcoming Work Schedule Notification";
                    
-                    message.Body = new TextPart("plain")
+                    message.Body = new TextPart("html")
                     {
-                        Text = "Đi làm đi bạn eiii bớt lười!!!!."
+                        Text = $"<html><body>" +
+                       $"<p><strong>Time To Work</strong> </p>" +
+                       $"</body></html>"
                     };
 
                     using (var client = new SmtpClient())

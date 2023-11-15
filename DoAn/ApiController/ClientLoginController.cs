@@ -160,6 +160,7 @@ namespace DoAn.ApiController
             };
             return BadRequest(invalidDataErrorResponse);
         }
+
         [HttpGet("user/{id}")]
         public async Task<IActionResult> GetUserById(int? id)
         {

@@ -108,16 +108,16 @@
                     <div class="wrappercalendar-containerList">
                         <div class="container-timeClock">
                             <h4 style="font-size:3rem">Schedule</h4>
-                            <ul>
+                            <ul style="display:flex">
                                 @foreach (var schedule in Model.Scheduledetails)
                                 {
-                                    <li style="font-size:2rem">Date: @schedule.Date </li>
+                                    <li style="font-size:2rem"><strong>Date:</strong>  @schedule.Date?.ToShortDateString() </li>
                                 }
                                 @foreach (var scheduleDetail in Model.Scheduledetails)
                                 {
-                                    <li style="font-size:2rem">Time: @scheduleDetail.Schedule.Time</li>
+                                    <li style="font-size:2rem"><strong>Time:</strong>  @scheduleDetail.Schedule.Time</li>
                                 }
-                            </ul>
+                            </u>
                         </div>
                         <input type="submit" value="Save" class="btn btn-primary"/>
                     </div>

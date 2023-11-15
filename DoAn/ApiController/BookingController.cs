@@ -31,6 +31,7 @@ namespace DoAn.ApiController
                 .Include(s => s.Branch)
                 .ToListAsync();
 
+
             var BookingWithFullInfo = Booking.Select(s => new
             {
                 s.BookingId,
@@ -106,12 +107,12 @@ namespace DoAn.ApiController
                         Staff = staff,
                         Combo = combo,
                         Branch = branch,
-                        Name =registrationModel.Name,
+                        Name = registrationModel.Name,
                         Phone = registrationModel.Phone,
                         DateTime = registrationModel.DateTime,
                         Note = registrationModel.Note,
                         Status = registrationModel.Status,
-                        CreatedAt = DateTime.Now 
+                        CreatedAt = DateTime.Now
                     };
 
                     _dbContext.Bookings.Add(newBooking);
@@ -170,7 +171,7 @@ namespace DoAn.ApiController
         }
 
 
-        private void SendBookingNotificationEmail(string staffEmail, Booking registrationModel)
+        private async Task SendBookingNotificationEmail(string staffEmail, Booking registrationModel)
         {
             try
             {
@@ -179,8 +180,9 @@ namespace DoAn.ApiController
                 message.From.Add(new MailboxAddress("New Booking", "huynhhiepvan1998@gmail.com"));
                 message.Subject = "New Booking Notification";
 
-                var comboInfo = registrationModel.Combo != null ? registrationModel.Combo.Name : "N/A";
-                var branchInfo = registrationModel.Branch != null ? registrationModel.Branch.Address : "N/A";
+                var staff = await _dbContext.Staff.FindAsync(registrationModel.StaffId);
+                var combo = await _dbContext.Combos.FindAsync(registrationModel.ComboId);
+                var branch = await _dbContext.Branches.FindAsync(registrationModel.BranchId);
 
                 var bookingDate = registrationModel.DateTime?.ToString("yyyy-MM-dd");
                 var currentTime = DateTime.Now.ToString("HH:mm");
@@ -188,16 +190,15 @@ namespace DoAn.ApiController
                 message.Body = new TextPart("html")
                 {
                     Text = $"<html><body>" +
-                       $"<h2>You have a customer booking:</h2>" +
-                       $"<p><strong>Client Name:</strong> {registrationModel.Name}</p>" +
-                       $"<p><strong>Client Phone:</strong> {registrationModel.Phone}</p>" +
-                       $"<p><strong>Time Create:</strong> <span style='color: purple'>{bookingDate} : {currentTime}</span></p>" +
-                       $"<p><strong>Note:</strong> <span style='color: purple'>{registrationModel.Note}</span></p>" +
-                        $"<p><strong>Branch:</strong> <span style='color: purple'>{branchInfo}</span></p>" +
-                        $"<p><strong>Combo:</strong> <span style='color: purple'>{comboInfo}</span></p>" +
-                       $"</body></html>"
+                        $"<h2>You have a customer booking:</h2>" +
+                        $"<p><strong>Client Name:</strong> {registrationModel.Name}</p>" +
+                        $"<p><strong>Client Phone:</strong> {registrationModel.Phone}</p>" +
+                        $"<p><strong>Time Create:</strong> <span style='color: purple'>{bookingDate} / {currentTime}</span></p>" +
+                        $"<p><strong>Note:</strong> <span style='color: purple'>{registrationModel.Note}</span></p>" +
+                        $"<p><strong>Branch:</strong> <span style='color: purple'>{branch?.Address}</span></p>" +
+                        $"<p><strong>Combo:</strong> <span style='color: purple'>{combo?.Name}</span></p>" +
+                        $"</body></html>"
                 };
-
 
                 using (var client = new SmtpClient())
                 {
@@ -206,7 +207,7 @@ namespace DoAn.ApiController
 
                     message.To.Add(new MailboxAddress(staffEmail, staffEmail));
 
-                    client.Send(message);
+                    await client.SendAsync(message);
 
                     client.Disconnect(true);
                 }
@@ -216,6 +217,7 @@ namespace DoAn.ApiController
                 Console.WriteLine("Error sending email: " + ex.Message);
             }
         }
+
 
         [HttpPut("update/{bookingId}")]
         public async Task<IActionResult> UpdateBookingClient(int bookingId, Booking updateModel)

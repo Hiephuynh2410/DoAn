@@ -207,7 +207,7 @@ public partial class DlctContext : DbContext
 
             entity.ToTable("CART");
 
-            entity.Property(e => e.UserId).HasColumnName("User_id");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.ProductId).HasColumnName("Product_id");
 
             entity.HasOne(d => d.Product).WithMany(p => p.Carts)
@@ -227,7 +227,7 @@ public partial class DlctContext : DbContext
 
             entity.ToTable("CLIENT");
 
-            entity.Property(e => e.ClientId).HasColumnName("Client__id");
+            entity.Property(e => e.ClientId).HasColumnName("Client_id");
             entity.Property(e => e.Address).HasMaxLength(255);
             entity.Property(e => e.Avatar)
                 .HasMaxLength(255)

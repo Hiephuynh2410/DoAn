@@ -58,7 +58,6 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     });
                 }
 
-                // Set the staff and schedule properties based on the inputModel
                 var staff = await db.Staff.FindAsync(inputModel.StaffId);
                 var schedule = await db.Schedules.FindAsync(inputModel.ScheduleId);
 
@@ -71,11 +70,9 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     Staff = staff,
                     Schedule = schedule
                 };
-
                 db.Scheduledetails.Add(createModel);
                 await db.SaveChangesAsync();
 
-                // Return the response as before
                 var registrationSuccessResponse = new
                 {
                     Message = "Schedule Detail registration successful",
