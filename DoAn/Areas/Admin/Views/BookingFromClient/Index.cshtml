@@ -26,13 +26,11 @@
                 <th>Staff</th>
                 <th>Action</th>
             </tr>
-
             <tbody class="box-tbody">
                 @foreach (var item in Model)
                 {
                     @if(item.Status == true)
                     {
-                        
                         <tr class="item-infoList">
                             <td>@item.BookingId</td>
                             <td>@item.Name</td>

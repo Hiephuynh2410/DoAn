@@ -49,7 +49,6 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseCors("corsapp");
-
 app.UseRouting();
 app.UseSession();
 app.UseAuthentication();

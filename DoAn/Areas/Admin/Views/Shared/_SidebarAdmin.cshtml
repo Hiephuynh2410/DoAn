@@ -44,16 +44,26 @@
                             <span class="hide-menu">Schedule</span>
                         </a>
                     </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="@Url.Action("Index", "BookingFromClient")">
+                            <i class="fa-regular fa-address-book"></i>
+                            <span class="hide-menu">BookingFromClient</span>
+                        </a>
+                    </li>
+                }
+                  @if (Context.Session.GetString("Role") == "2")
+                {
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="@Url.Action("Index", "BookingFromClient")">
+                            <i class="fa-regular fa-address-book"></i>
+                            <span class="hide-menu">BookingFromClient</span>
+                        </a>
+                    </li>
                 }
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="@Url.Action("Index", "Blog")">
                         <i class="fa-regular fa-address-book"></i>
                         <span class="hide-menu">Blog</span>
-                    </a>
-                </li><li class="sidebar-item">
-                    <a class="sidebar-link" href="@Url.Action("Index", "BookingFromClient")">
-                        <i class="fa-regular fa-address-book"></i>
-                        <span class="hide-menu">BookingFromClient</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
@@ -81,7 +91,6 @@
                     </a>
                 </li>
                 </>
-
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="@Url.Action("Index", "Branch")">
                         <i class="fa-solid fa-code-branch"></i>
