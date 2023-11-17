@@ -144,5 +144,30 @@ namespace DoAn.Areas.Admin.ApiAdminController
             };
             return Json(ComboDetail);
         }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchCombo(string keyword)
+        {
+            var combos = await _dbContext.Combos
+                .Include(s => s.Combodetails)
+                .Include(s => s.Bookings)
+                .Where(p => 
+                    p.Name.Contains(keyword) || p.ComboId.ToString() == keyword
+                )   
+                .ToListAsync();
+
+            var CombosWithFullInfo = combos.Select(s => new
+            {
+                s.ComboId,
+                s.Name,
+                s.Price,
+                s.CreatedAt,
+                s.UpdatedAt,
+                s.UpdatedBy,
+                s.CreatedBy,
+            }).ToList();
+
+            return Ok(CombosWithFullInfo);
+        }
     }
 }

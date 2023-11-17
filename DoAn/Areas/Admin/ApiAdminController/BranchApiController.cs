@@ -70,7 +70,6 @@ namespace DoAn.Areas.Admin.ApiAdminController
             };
             return BadRequest(invalidDataErrorResponse);
         }
-
         [HttpPut("update/{branchId}")]
         public async Task<IActionResult> UpdateBranch(int branchId, Branch updateModel)
         {
@@ -118,7 +117,6 @@ namespace DoAn.Areas.Admin.ApiAdminController
 
             return Ok(deleteSuccessResponse);
         }
-
         [HttpGet("detail/{branchId}")]
         public async Task<IActionResult> GetBranchDetail(int branchId)
         {
@@ -135,6 +133,26 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 branch.Hotline,
             };
             return Json(BranchtDetail);
+        }
+        [HttpGet("search")]
+        public async Task<IActionResult> searchBranch(string keyword)
+        {
+            var branchs = await _dbContext.Branches
+                .Include(p => p.Bookings)
+                .Include(p => p.Staff)
+                .Where(p =>
+                        p.Address.Contains(keyword) || p.BranchId.ToString() == keyword
+                )
+                .ToListAsync();
+
+            var BranchsWithFullInfo = branchs.Select(s => new
+            {
+                s.BranchId,
+                s.Address,
+                s.Hotline,
+            }).ToList();
+
+            return Ok(BranchsWithFullInfo);
         }
     }
 }

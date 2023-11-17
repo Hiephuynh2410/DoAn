@@ -78,6 +78,7 @@
                                 <td>
                                     @if (isAdmin)
                                     {
+                                        @Html.ActionLink("Send Mail", "SendmailOutDated", new { staffId = item.StaffId }, new { @class = "send-mail-button" })
                                         @Html.ActionLink("Edit", "Edit", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId })
                                         @Html.ActionLink("Details", "Details", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId  })
                                         @Html.ActionLink("Delete", "Delete", new {ScheduleId = item.ScheduleId, StaffId = item.StaffId  })
@@ -138,6 +139,7 @@
                                 <td>
                                     @if (isAdmin)
                                     {
+                                        @Html.ActionLink("Send Mail", "SendmailOutDated", new { staffId = item.StaffId }, new { @class = "send-mail-button" })
                                         @Html.ActionLink("Edit", "Edit", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId })
                                         @Html.ActionLink("Details", "Details", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId  })
                                         @Html.ActionLink("Delete", "Delete", new {ScheduleId = item.ScheduleId, StaffId = item.StaffId  })
@@ -155,4 +157,5 @@
     function showMessage() {
         alert("This action is only available to admins");
     }
+
 </script>

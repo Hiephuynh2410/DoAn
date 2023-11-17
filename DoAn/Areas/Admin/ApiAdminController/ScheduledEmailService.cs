@@ -8,7 +8,7 @@ public class ScheduledEmailService : BackgroundService
     //toi lich làm gửi gmail
     private readonly IServiceProvider _serviceProvider;
     DlctContext db = new DlctContext();
-
+     private bool hasEmailsSentToday = false;
     public ScheduledEmailService(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;

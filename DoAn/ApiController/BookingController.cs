@@ -3,9 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MimeKit;
 using MailKit.Net.Smtp;
-using static System.Net.Mime.MediaTypeNames;
-using Org.BouncyCastle.Asn1.Cms;
-using System.Globalization;
 
 namespace DoAn.ApiController
 {
@@ -95,7 +92,6 @@ namespace DoAn.ApiController
                     {
                         return NotFound("Client, Staff, booking, or Combo not found.");
                     }
-
 
                     var newBooking = new Booking
                     {

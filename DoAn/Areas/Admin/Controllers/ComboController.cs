@@ -16,6 +16,42 @@ namespace DoAn.Areas.Admin.Controllers
         {
             _httpClient = new HttpClient();
         }
+        //search
+        public async Task<IActionResult> SearchResult(string keyword)
+        {
+            List<Combo> comboList;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:7109/");
+                if (string.IsNullOrEmpty(keyword))
+                {
+                    var response = await client.GetAsync("api/ComboApi");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        comboList = JsonConvert.DeserializeObject<List<Combo>>(responseContent);
+                    }
+                    else
+                    {
+                        return View("Index");
+                    }
+                }
+                else
+                {
+                    var response = await client.GetAsync($"api/ComboApi/search?keyword={keyword}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        comboList = JsonConvert.DeserializeObject<List<Combo>>(responseContent);
+                    }
+                    else
+                    {
+                        return View("Index");
+                    }
+                }
+            }
+            return View("Index", comboList);
+        }
 
         //Create
         public IActionResult Create()

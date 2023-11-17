@@ -16,6 +16,43 @@ namespace DoAn.Areas.Admin.Controllers
             _httpClient = new HttpClient();
 
         }
+        //search
+        public async Task<IActionResult> SearchResult(string keyword)
+        {
+            List<Branch> branchList;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:7109/");
+                if (string.IsNullOrEmpty(keyword))
+                {
+                    var response = await client.GetAsync("api/BranchApi");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        branchList = JsonConvert.DeserializeObject<List<Branch>>(responseContent);
+                    }
+                    else
+                    {
+                        return View("Index");
+                    }
+                }
+                else
+                {
+                    var response = await client.GetAsync($"api/BranchApi/search?keyword={keyword}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        branchList = JsonConvert.DeserializeObject<List<Branch>>(responseContent);
+                    }
+                    else
+                    {
+                        return View("Index");
+                    }
+                }
+            }
+            return View("Index", branchList);
+        }
+
         //Create
         public IActionResult Create()
         {

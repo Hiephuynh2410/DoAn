@@ -1,11 +1,11 @@
 ﻿using DoAn.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using MimeKit;
 using Newtonsoft.Json;
-using System.Diagnostics;
 using System.Text;
+using MailKit.Net.Smtp;
 
 namespace DoAn.Areas.Admin.Controllers
 {
@@ -14,11 +14,66 @@ namespace DoAn.Areas.Admin.Controllers
     {
         DlctContext db = new DlctContext();
         private readonly HttpClient _httpClient;
-
+        private readonly ScheduledEmailService _emailService;
         public ScheduleDetailController()
         {
             _httpClient = new HttpClient();
         }
+
+        [HttpGet]
+        public IActionResult SendmailOutDated(int staffId)
+        {
+            ViewBag.StaffId = staffId;
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult SendmailOutDated(Mails model)
+        {
+            int staffId = int.Parse(Request.Form["staffId"]);
+            var staffMember = db.Staff.FirstOrDefault(s => s.StaffId == staffId);
+            var upcomingSchedule = db.Scheduledetails
+                .Where(sd => sd.StaffId == staffId && sd.Date >= DateTime.Now)
+                .OrderBy(sd => sd.Date)
+                .Include(sd => sd.Schedule) 
+                .FirstOrDefault();
+
+            if (staffMember != null && upcomingSchedule != null && upcomingSchedule.Schedule != null)
+            {
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress("Admin", "huynhhiepvan1998@gmail.com"));
+                message.Subject = "Upcoming Work Schedule Notification";
+
+                var staffName = upcomingSchedule.Staff.Name;
+                var scheduleTime = upcomingSchedule.Schedule.Time;
+
+                message.Body = new TextPart("html")
+                {
+                    Text = $"<html><body>" +
+                           $"<p style=\"text-transform: uppercase;\"> <strong>You have Schedule To work</strong> </p>" +
+                           $"<p><strong>staff Id: </strong> {upcomingSchedule.StaffId}</p>" +
+                           $"<p><strong>Staff Name: </strong> {staffName}</p>" +
+                           $"<p><strong>Time work: </strong> {scheduleTime}</p>" +
+                           $"<p><strong>Date work:</strong> {upcomingSchedule.Date?.ToString("dd/MM/yyyy")}</p>" +
+                           $"</body></html>"
+                };
+
+                using (var client = new SmtpClient())
+                {
+                    client.Connect("smtp.gmail.com", 587, false);
+                    client.Authenticate("huynhhiepvan1998@gmail.com", "nmqt ljyf skbz xcrs");
+
+                    message.To.Add(new MailboxAddress(staffMember.Name, staffMember.Email));
+
+                    client.Send(message);
+
+                    client.Disconnect(true);
+                }
+            }
+
+            return View();
+        }
+
 
         public async Task<IActionResult> Index()
         {
@@ -74,8 +129,8 @@ namespace DoAn.Areas.Admin.Controllers
                     ModelState.AddModelError("", "Please select a Staff and a Schedule.");
                     var staffList = await db.Staff.ToListAsync();
                     var scheduleList = await db.Schedules.ToListAsync();
-                    ViewBag.StaffId = new SelectList(staffList, "StaffId", "Name");
-                    ViewBag.ScheduleId = new SelectList(scheduleList, "ScheduleId", "Time");
+                    ViewBag.StaffId = staffList.Select(s => new SelectListItem { Value = s.StaffId.ToString(), Text = s.Name });
+                    ViewBag.ScheduleId = scheduleList.Select(s => new SelectListItem { Value = s.ScheduleId.ToString(), Text = s.Time.ToString() });
                     return View(inputModel);
                 }
 
@@ -84,6 +139,21 @@ namespace DoAn.Areas.Admin.Controllers
 
                 inputModel.Staff = selectedStaff;
                 inputModel.Schedule = selectedSchedule;
+
+                var existingDetail = await db.Scheduledetails
+                    .FirstOrDefaultAsync(sd =>
+                        sd.StaffId == inputModel.StaffId &&
+                        sd.ScheduleId == inputModel.ScheduleId);
+
+                if (existingDetail != null)
+                {
+                    ModelState.AddModelError("", "A schedule detail already exists for the selected Staff and Schedule.");
+                    var staffList = await db.Staff.ToListAsync();
+                    var scheduleList = await db.Schedules.ToListAsync();
+                    ViewBag.StaffId = staffList.Select(s => new SelectListItem { Value = s.StaffId.ToString(), Text = s.Name });
+                    ViewBag.ScheduleId = scheduleList.Select(s => new SelectListItem { Value = s.ScheduleId.ToString(), Text = s.Time.ToString() });
+                    return View(inputModel);
+                }
 
                 var serializedModel = JsonConvert.SerializeObject(inputModel);
                 var content = new StringContent(serializedModel, Encoding.UTF8, "application/json");
@@ -102,8 +172,8 @@ namespace DoAn.Areas.Admin.Controllers
                     ModelState.AddModelError("", "Failed to create Scheduledetail: " + errorResponse);
                     var staffList = await db.Staff.ToListAsync();
                     var scheduleList = await db.Schedules.ToListAsync();
-                    ViewBag.StaffId = new SelectList(staffList, "StaffId", "StaffName");
-                    ViewBag.ScheduleId = new SelectList(scheduleList, "ScheduleId", "ScheduleTime");
+                    ViewBag.StaffId = staffList.Select(s => new SelectListItem { Value = s.StaffId.ToString(), Text = s.Name });
+                    ViewBag.ScheduleId = scheduleList.Select(s => new SelectListItem { Value = s.ScheduleId.ToString(), Text = s.Time.ToString() });
                     return View(inputModel);
                 }
             }
@@ -207,7 +277,7 @@ namespace DoAn.Areas.Admin.Controllers
                 {
                     var errorResponse = await apiResponse.Content.ReadAsStringAsync();
                     ModelState.AddModelError("", "Failed to delete Scheduledetail: " + errorResponse);
-                    return RedirectToAction("Index"); // You can handle the error as needed
+                    return RedirectToAction("Index");
                 }
             }
             catch (Exception ex)
