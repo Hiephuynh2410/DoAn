@@ -12,7 +12,146 @@
     <div class="loading-bar">
         <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
     </div>
-        <div id="carouselExampleControls" style="padding:5rem 0" class="carousel slide" data-ride="carousel">
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="utf-8" />
+        <title>Swiper demo</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+
+        <style>
+            html,
+            body {
+                position: relative;
+                height: 100%;
+            }
+
+            body {
+                background: #eee;
+                font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+                font-size: 14px;
+                color: #000;
+                margin: 0;
+                padding: 0;
+            }
+
+            swiper-container {
+                width: 100%;
+                height: 100%;
+            }
+
+            swiper-slide {
+                text-align: center;
+                font-size: 18px;
+                background: #fff;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+                swiper-slide img {
+                    display: sw </swiper-slidek;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+
+            body {
+                background: #000;
+                color: #000;
+            }
+
+            swiper-container {
+                width: 100%;
+                height: 300px;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top:5rem;
+            }
+
+            swiper-slide {
+                background-size: cover;
+                background-position: center;
+            }
+
+            .mySwiper {
+                height: 80%;
+                width: 100%;
+            }
+
+            .mySwiper2 {
+                height: 20%;
+                box-sizing: border-box;
+                padding: 10px 0;
+            }
+
+                .mySwiper2 swiper-slide {
+                    width: 25%;
+                    height: 100%;
+                    opacity: 0.4;
+                }
+
+                .mySwiper2 .swiper-slide-thumb-active {
+                    opacity: 1;
+                }
+
+            swiper-slide img {
+                display: sw </swiper-slidek;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        </style>
+    </head>
+
+    <body>
+        <swiper-container style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="mySwiper"
+                          thumbs-swiper=".mySwiper2" loop="true" space-between="10" navigation="true">
+            <swiper-slide>
+                <img src="/images/banner_Home.jpg" />
+            </swiper-slide>
+            <swiper-slide>
+                <img src="/images/banner_home1.jpg" />
+            </swiper-slide>
+            <swiper-slide>
+                <img src="/images/banner_Home3.jpg" />
+            </swiper-slide>
+         
+            <swiper-slide>
+                <img src="/images/banner3.png" />
+            </swiper-slide>
+            <swiper-slide>
+                <img src="/images/banner_img.jpeg" />
+            </swiper-slide>
+        </swiper-container>
+
+        <swiper-container class="mySwiper2" loop="true" space-between="10" slides-per-view="4" free-mode="true"
+                          watch-slides-progress="true">
+            <swiper-slide>
+                <img src="/images/banner_Home.jpg" />
+            </swiper-slide>
+            <swiper-slide>
+                <img src="/images/banner_home1.jpg" />
+            </swiper-slide>
+            <swiper-slide>
+                <img src="/images/banner_Home3.jpg" />
+            </swiper-slide>
+            <swiper-slide>
+                <img src="/images/banner3.png" />
+            </swiper-slide>
+            <swiper-slide>
+                <img src="/images/banner_img.jpeg" />
+            </swiper-slide>
+        </swiper-container>
+
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
+
+    </body>
+
+</html>
+
+      @*  <div id="carouselExampleControls" style="padding:5rem 0" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active">
                     <img src="/images/banner_Home.jpg" class="d-block w-100" alt="...">
@@ -32,7 +171,7 @@
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="sr-only">Next</span>
             </a>
-    </div>
+    </div>*@
     <script>
         window.addEventListener("load", function () {
             var loadingBar = document.querySelector(".loading-bar");
@@ -48,9 +187,9 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 100px; /* Điều chỉnh kích thước của vòng tròn spinner theo ý muốn */
-        height: 100px; /* Điều chỉnh kích thước của vòng tròn spinner theo ý muốn */
-        background: rgba(255, 255, 255, 0.8); /* Màu nền của vòng tròn spinner */
+        width: 100px;
+        height: 100px; 
+        background: rgba(255, 255, 255, 0.8);
         border-radius: 50%;
         text-align: center;
         z-index: 9999;

@@ -60,7 +60,7 @@
                             <tr class="item-infoList">
                              
                                 <td>
-                                    @(item.Date?.ToShortDateString()) -  @item.Schedule.Time
+                                    @(item.Date?.ToString("dd/MM/yyyy")) - @item.Schedule.Time
                                 </td>
                                 <td>
                                     @item.Staff.Name
@@ -78,15 +78,16 @@
                                 <td>
                                     @if (isAdmin)
                                     {
-                                        @Html.ActionLink("Send Mail", "SendmailOutDated", new { staffId = item.StaffId }, new { @class = "send-mail-button" })
-                                        @Html.ActionLink("Edit", "Edit", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId })
-                                        @Html.ActionLink("Details", "Details", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId  })
-                                        @Html.ActionLink("Delete", "Delete", new {ScheduleId = item.ScheduleId, StaffId = item.StaffId  })
+                                        @Html.ActionLink("Send Mail", "SendmailOutDated", new { staffId = item.StaffId }, new { @class = "btn-add " })
+                                        <button onclick="edit('@item.ScheduleId', '@item.StaffId')" class="btn-edit">Edit</button>
+                                        <button onclick="deleteItem('@item.ScheduleId', '@item.StaffId')" class="btn-delete">Delete</button>
+                                        @*@Html.ActionLink("Edit", "Edit", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId }, new { @class = "btn_css " })
+                                        @Html.ActionLink("Details", "Details", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId  }, new { @class = "btn_css " })
+                                        @Html.ActionLink("Delete", "Delete", new {ScheduleId = item.ScheduleId, StaffId = item.StaffId  }, new { @class = "btn_css " })*@
                                     }
                                 </td>
                             </tr>
                         }
-                        
                     }
                 }
             </tbody>
@@ -139,10 +140,12 @@
                                 <td>
                                     @if (isAdmin)
                                     {
-                                        @Html.ActionLink("Send Mail", "SendmailOutDated", new { staffId = item.StaffId }, new { @class = "send-mail-button" })
-                                        @Html.ActionLink("Edit", "Edit", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId })
-                                        @Html.ActionLink("Details", "Details", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId  })
-                                        @Html.ActionLink("Delete", "Delete", new {ScheduleId = item.ScheduleId, StaffId = item.StaffId  })
+                                        @Html.ActionLink("Send Mail", "SendmailOutDated", new { staffId = item.StaffId }, new { @class = "btn-add" })
+                                        <button onclick="edit('@item.ScheduleId', '@item.StaffId')" class="btn-edit">Edit</button>
+                                        <button onclick="deleteItem('@item.ScheduleId', '@item.StaffId')" class="btn-delete">Delete</button>
+                                       @* @Html.ActionLink("Edit", "Edit", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId }, new { @class = "btn_css " })
+                                        @Html.ActionLink("Details", "Details", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId  }, new { @class = "btn_css " })
+                                        @Html.ActionLink("Delete", "Delete", new {ScheduleId = item.ScheduleId, StaffId = item.StaffId  }, new { @class = "btn_css " })*@
                                     }
                                 </td>
                             </tr>
@@ -157,5 +160,17 @@
     function showMessage() {
         alert("This action is only available to admins");
     }
+    function edit(scheduleId, staffId) {
+        window.location.href = '/Admin/ScheduleDetail/Edit?ScheduleId=' + scheduleId + '&StaffId=' + staffId;
+    }
 
+    function details(scheduleId, staffId) {
+        window.location.href = '/Admin/ScheduleDetail/Details?ScheduleId=' + scheduleId + '&StaffId=' + staffId;
+    }
+
+    function deleteItem(scheduleId, staffId) {
+        if (confirm('Are you sure you want to delete this item?')) {
+            window.location.href = '/Admin/ScheduleDetail/Delete?ScheduleId=' + scheduleId + '&StaffId=' + staffId;
+        }
+    }
 </script>

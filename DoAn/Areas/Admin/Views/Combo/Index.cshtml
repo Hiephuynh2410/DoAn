@@ -39,9 +39,9 @@
                         <td>@item.ComboId</td>
                         <td>@item.Name</td>
                         <td>@item.Price</td>
-                        <td>@item.CreatedAt</td>
+                        <td>@item.CreatedAt?.ToString("dd/MM/yyyy HH:mm tt")</td>
                         <td>@item.CreatedBy</td>
-                        <td>@item.UpdatedAt</td>
+                        <td>@item.UpdatedAt?.ToString("dd/MM/yyyy HH:mm tt")</td>
                         <td>@item.UpdatedBy</td>
                         <td>
                             <button class="btn-edit" onclick="navigateTo('Edit', @item.ComboId)">

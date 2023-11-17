@@ -144,7 +144,10 @@ namespace DoAn.Areas.Admin.Controllers
                     if (passwordVerificationResult == PasswordVerificationResult.Success)
                     {
                         HttpContext.Session.SetString("Username", nv.Username);
-                        HttpContext.Session.SetString("Avatar", nv.Avatar);
+                        if(nv.Avatar != null)
+                        {
+                            HttpContext.Session.SetString("Avatar", nv.Avatar);
+                        }
                         HttpContext.Session.SetString("UserId", nv.StaffId.ToString());
                         HttpContext.Session.SetString("Role", nv.RoleId.ToString());
                         HttpContext.Session.SetString("Name", nv.Name);
@@ -177,11 +180,12 @@ namespace DoAn.Areas.Admin.Controllers
 
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Register(Staff registrationModel)
         {
             var apiUrl = "https://localhost:7109/api/AdminApi/register";
-           
+
             if (string.IsNullOrEmpty(registrationModel.Name) && string.IsNullOrEmpty(registrationModel.Username)
                 && string.IsNullOrEmpty(registrationModel.Password) && string.IsNullOrEmpty(registrationModel.Phone)
                 && string.IsNullOrEmpty(registrationModel.Avatar) && string.IsNullOrEmpty(registrationModel.Address)
@@ -189,7 +193,7 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("Name", "cannot be empty.");
             }
-           
+
             else
             {
                 var eRegex = new Regex(@"^(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!])(?!.*\s).{8,32}$");
@@ -202,8 +206,8 @@ namespace DoAn.Areas.Admin.Controllers
                 {
                     ModelState.AddModelError("Username", "Invalid username format.");
                 }
-
             }
+
             if (string.IsNullOrEmpty(Request.Form["BranchId"]))
             {
                 ModelState.AddModelError("BranchId", "Branch is required.");
@@ -213,12 +217,13 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("RoleId", "Role is required.");
             }
+
             if (ModelState.IsValid)
             {
                 string createdByUserName = HttpContext.Session.GetString("Name");
 
                 registrationModel.CreatedBy = createdByUserName;
-                registrationModel.Status = Request.Form["Status"] == "true";
+                registrationModel.Status = Request.Form["Status"] == "true"; 
                 var json = JsonConvert.SerializeObject(registrationModel);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -267,6 +272,7 @@ namespace DoAn.Areas.Admin.Controllers
                 return View(registrationModel);
             }
         }
+
 
         ////Delete
         public async Task<IActionResult> Delete(int staffId)

@@ -14,7 +14,7 @@ namespace DoAn.Areas.Admin.Controllers
     {
         DlctContext db = new DlctContext();
         private readonly HttpClient _httpClient;
-        private readonly ScheduledEmailService _emailService;
+
         public ScheduleDetailController()
         {
             _httpClient = new HttpClient();
@@ -73,7 +73,6 @@ namespace DoAn.Areas.Admin.Controllers
 
             return View();
         }
-
 
         public async Task<IActionResult> Index()
         {

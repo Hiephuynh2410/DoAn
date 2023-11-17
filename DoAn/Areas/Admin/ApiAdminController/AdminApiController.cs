@@ -142,6 +142,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     Avatar = registrationModel.Avatar,
                     Email = registrationModel.Email,
                     Status = registrationModel.Status,
+                    IsDisabled = false,
                     CreatedAt = DateTime.Now,
                     CreatedBy = registrationModel.CreatedBy,
                     Branch = branch,

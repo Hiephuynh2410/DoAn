@@ -66,8 +66,8 @@
                         <td>
                             @item.Provider.Name
                         </td>
-                        <td>@item.CreatedAt</td>
-                        <td>@item.UpdatedAt</td>
+                        <td>@item.CreatedAt?.ToString("dd/MM/yyyy HH:mm tt")</td>
+                        <td>@item.UpdatedAt?.ToString("dd/MM/yyyy HH:mm tt")</td>
                         <td>@item.CreatedBy</td>
                         <td>@item.UpdatedBy</td>
                         <td>
