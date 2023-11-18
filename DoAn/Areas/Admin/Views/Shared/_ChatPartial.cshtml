@@ -1,14 +1,9 @@
 ﻿<div class="chat-container" id="chatContainer" style="border-radius: 10px; overflow: hidden;">
     <button type="button" id="closeChat" style="position: absolute; top: 5px; right: 5px;">X</button>
-    
+
     <div>
         <label>Your Name:</label>
         <input type="text" id="displayname" value="@ViewBag.Username" readonly />
-    </div>
-
-    <div class="mt-5">
-        <input type="text" id="message" />
-        <button type="button" id="sendmessage">Send</button>
     </div>
 
     <div class="mt-3">
@@ -16,8 +11,14 @@
         {
             <img src="@ViewBag.Avatar" alt="User Avatar" style="width: 50px; height: 50px; border-radius: 50%;" />
         }
-        <ul id="discussion"></ul>
+        <ul id="discussion" class="discussion-list"></ul>
     </div>
+
+    <div class="mt-5">
+        <input type="text" id="message" />
+        <button type="button" id="sendmessage">Send</button>
+    </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@3.1.12/dist/browser/signalr.min.js"></script>
@@ -48,12 +49,17 @@
 
         li.innerHTML = encodeMsg;
         document.getElementById("discussion").appendChild(li);
+
+        var discussionList = document.getElementById("discussion");
+        if (discussionList.scrollHeight - discussionList.scrollTop > 100) {
+            discussionList.scrollTop = discussionList.scrollHeight;
+        }
     });
 
     document.getElementById("closeChat").addEventListener("click", function () {
         if (isMinimized) {
-            document.getElementById("chatContainer").style.width = "300px";
-            document.getElementById("chatContainer").style.height = "150px";
+            document.getElementById("chatContainer").style.width = "184.12px";
+            document.getElementById("chatContainer").style.height = "197.81px";
             document.getElementById("chatContainer").style.borderRadius = "10px";
         } else {
             document.getElementById("chatContainer").style.width = "50px";
@@ -73,19 +79,28 @@
         background-color: #fff;
         border: 1px solid #ccc;
         padding: 10px;
+        max-height: 300px;
         max-width: 300px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         overflow-y: auto;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
     }
 
-    .chat-container img {
-        margin-right: 10px;
-    }
+        .chat-container img {
+            margin-right: 10px;
+        }
 
-    .message-list {
+    .discussion-list {
         list-style-type: none;
         padding: 0;
         margin: 0;
+        height:100px;
+        max-height: 100px; 
+        overflow-y: auto;
     }
+
+    #sendmessage {
+        margin-top: 10px; /* Add margin to the Send button */
+    }
+
 </style>
