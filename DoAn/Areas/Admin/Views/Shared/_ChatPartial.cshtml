@@ -1,0 +1,91 @@
+﻿<div class="chat-container" id="chatContainer" style="border-radius: 10px; overflow: hidden;">
+    <button type="button" id="closeChat" style="position: absolute; top: 5px; right: 5px;">X</button>
+    
+    <div>
+        <label>Your Name:</label>
+        <input type="text" id="displayname" value="@ViewBag.Username" readonly />
+    </div>
+
+    <div class="mt-5">
+        <input type="text" id="message" />
+        <button type="button" id="sendmessage">Send</button>
+    </div>
+
+    <div class="mt-3">
+        @if (!string.IsNullOrEmpty(ViewBag.Avatar))
+        {
+            <img src="@ViewBag.Avatar" alt="User Avatar" style="width: 50px; height: 50px; border-radius: 50%;" />
+        }
+        <ul id="discussion"></ul>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@3.1.12/dist/browser/signalr.min.js"></script>
+
+<script>
+    var isMinimized = false;
+
+    var connection = new signalR.HubConnectionBuilder().withUrl("/chat").build();
+
+    connection.start().catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    document.getElementById("sendmessage").addEventListener("click", function (event) {
+        var user = document.getElementById("displayname").value;
+        var message = document.getElementById("message").value;
+
+        connection.invoke("SendMessage", user, message, "@ViewBag.Avatar").catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        event.preventDefault();
+    });
+
+    connection.on("RevceiveMessage", function (user, message, avatar) {
+        var encodeMsg = `<img src="${avatar}" alt="${user}'s Avatar" style="width: 20px; height: 20px; border-radius: 50%;" /> ${user}: ${message}`;
+        var li = document.createElement("li");
+
+        li.innerHTML = encodeMsg;
+        document.getElementById("discussion").appendChild(li);
+    });
+
+    document.getElementById("closeChat").addEventListener("click", function () {
+        if (isMinimized) {
+            document.getElementById("chatContainer").style.width = "300px";
+            document.getElementById("chatContainer").style.height = "150px";
+            document.getElementById("chatContainer").style.borderRadius = "10px";
+        } else {
+            document.getElementById("chatContainer").style.width = "50px";
+            document.getElementById("chatContainer").style.height = "50px";
+            document.getElementById("chatContainer").style.borderRadius = "50%";
+        }
+
+        isMinimized = !isMinimized;
+    });
+</script>
+
+<style>
+    .chat-container {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 10px;
+        max-width: 300px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        overflow-y: auto;
+        transition: all 0.3s ease;
+    }
+
+    .chat-container img {
+        margin-right: 10px;
+    }
+
+    .message-list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+</style>

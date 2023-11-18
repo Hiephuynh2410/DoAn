@@ -22,6 +22,22 @@ namespace DoAn.Areas.Admin.Controllers
             _httpClient = new HttpClient();
         }
 
+        public IActionResult Chat()
+        {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
+            {
+                return RedirectToAction("Login", "Staff");
+            }
+
+            var username = HttpContext.Session.GetString("Username");
+            var avatar = HttpContext.Session.GetString("Avatar");
+
+            ViewBag.Username = username;
+            ViewBag.Avatar = avatar;
+
+            return View();
+        }
+
 
         [HttpGet]
         public IActionResult Sendmail(int staffId)

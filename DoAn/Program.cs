@@ -1,5 +1,6 @@
 using AspNetCoreHero.ToastNotification;
 using DoAn.Models;
+using DoAn.wwwroot;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,6 +39,9 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+//chat real time
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -65,6 +69,9 @@ app.UseEndpoints(endpoints =>
         name: "default",
         pattern: "{controller=Client}/{action=Index}/{id?}"
     );
+
+    endpoints.MapHub<ChatHub>("/chat");
+
     endpoints.MapGet("/", async context =>
     {
         context.Response.Redirect("/Admin/Home/Index");
