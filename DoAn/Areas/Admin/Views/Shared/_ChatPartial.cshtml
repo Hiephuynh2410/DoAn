@@ -6,14 +6,9 @@
 }
 
 
-<div class="chat-container" id="chatContainer" style="border-radius: 10px; overflow: hidden;">
+<div class="chat-container minimized" id="chatContainer" style="overflow: hidden;">
     <button type="button" id="closeChat" style="position: absolute; top: 5px; right: 5px;">X</button>
-
-    <div>
-     @*   <label>Your Name:</label>
-        <input type="text" id="displayname" value="@Username" readonly />*@
-    </div>
-
+    <div></div>
     <div class="mt-3">
         @if (!string.IsNullOrEmpty(ViewBag.Avatar))
         {
@@ -21,13 +16,14 @@
         }
         <ul id="discussion" class="discussion-list"></ul>
     </div>
-
     <div class="mt-5">
-        <input type="text" id="message" />
-        <button type="button" id="sendmessage">Send</button>
+        <input style="border: 1px solid #ccc;border-radius: 10px;padding: 0.4rem .4rem;" type="text" id="message" />
+        <button style="padding: 0.4rem 0.4rem; border-radius: 4px" type="button" id="sendmessage">
+            Send
+        </button>
     </div>
-
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@3.1.12/dist/browser/signalr.min.js"></script>
 
@@ -65,20 +61,28 @@
     });
 
     document.getElementById("closeChat").addEventListener("click", function () {
-        if (isMinimized) {
-            document.getElementById("chatContainer").style.width = "184.12px";
-            document.getElementById("chatContainer").style.height = "197.81px";
-            document.getElementById("chatContainer").style.maxHeight = "227.83px";
+        var chatContainer = document.getElementById("chatContainer");
 
-            document.getElementById("chatContainer").style.borderRadius = "10px";
+        if (isMinimized) {
+            chatContainer.style.width = "184.12px";
+            chatContainer.style.height = "197.81px";
+            chatContainer.style.maxHeight = "227.83px";
+            chatContainer.style.borderRadius = "10px";
+            chatContainer.classList.remove("minimized");
+            chatContainer.style.backgroundImage = 'none'; 
         } else {
-            document.getElementById("chatContainer").style.width = "50px";
-            document.getElementById("chatContainer").style.height = "50px";
-            document.getElementById("chatContainer").style.borderRadius = "50%";
+            chatContainer.style.width = "50px";
+            chatContainer.style.height = "50px";
+            chatContainer.style.borderRadius = "50%";
+            chatContainer.style.backgroundImage = 'url("/images/comments.png")';
+             chatContainer.style.backgroundRepeat = 'no-repeat';
+            chatContainer.classList.add("minimized");
         }
 
         isMinimized = !isMinimized;
     });
+
+
 </script>
 <style>
     .chat-container {
@@ -93,6 +97,11 @@
         overflow-y: auto;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-image: url("/images/comments.png");
+        background-repeat: no-repeat;
     }
 
         .chat-container img {
