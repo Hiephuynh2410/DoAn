@@ -102,13 +102,13 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 s.BranchId,
                 Branch = new
                 {
-                    s.Branch.Address,
-                    s.Branch.Hotline
+                    s.Branch?.Address,
+                    s.Branch?.Hotline
                 },
                 Role = new
                 {
-                    s.Role.Name,
-                    s.Role.RoleId
+                    s.Role?.Name,
+                    s.Role?.RoleId
                 },
 
                 s.UpdatedAt,

@@ -1,5 +1,7 @@
-﻿@model IEnumerable<DoAn.Models.Staff>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model IEnumerable<DoAn.Models.Staff>
 
+@inject IViewLocalizer Localizer
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
@@ -25,7 +27,7 @@
     <div class="table-infoStaff">
         <table class="table-List">
             <tr class="title-infoList">
-                <th>Staff ID</th>
+                <th>@Localizer["Staff ID"]</th>
                 <th>Name</th>
                 <th>UserName</th>
                 <th>Phone</th>
@@ -93,7 +95,7 @@
             </tbody>
         </table>   
     </div>
-    <h1 style="text-align:center; margin:1rem 0">Employee Is Deleted</h1>
+    <h1 style="text-align:center; margin:1rem 0">@Localizer["Employee Is Deleted"]</h1>
     <div class="table-infoStaff">
         <table class="table-List">
             <tr class="title-infoList">

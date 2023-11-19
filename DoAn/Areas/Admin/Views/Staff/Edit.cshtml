@@ -111,11 +111,22 @@
                             <ul style="display:flex">
                                 @foreach (var schedule in Model.Scheduledetails)
                                 {
-                                    <li style="font-size:2rem"><strong>Date:</strong>  @schedule.Date?.ToShortDateString() </li>
+                                    <li style="font-size:2rem"><strong>Date:</strong>  @schedule.Date?.ToString("dd/MM/yyy")-</li>
                                 }
                                 @foreach (var scheduleDetail in Model.Scheduledetails)
                                 {
-                                    <li style="font-size:2rem"><strong>Time:</strong>  @scheduleDetail.Schedule.Time</li>
+                                    <li style="font-size: 2rem">
+                                        <strong>Time:</strong>
+                                        @{
+                                            var scheduleTime = scheduleDetail.Schedule?.Time;
+                                            if (scheduleTime.HasValue)
+                                            {
+                                                <text>
+                                                    @scheduleTime.Value.Hours.ToString("00"):@scheduleTime.Value.Minutes.ToString("00")
+                                                </text>
+                                            }
+                                        }
+                                    </li>
                                 }
                             </u>
                         </div>

@@ -22,6 +22,28 @@ namespace DoAn.Areas.Admin.Controllers
             _httpClient = new HttpClient();
         }
 
+        //View List
+
+        public async Task<IActionResult> Index()
+        {
+            var apiResponse = await _httpClient.GetAsync("https://localhost:7109/api/AdminApi/");
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                var responseContent = await apiResponse.Content.ReadAsStringAsync();
+                var staff = JsonConvert.DeserializeObject<List<Staff>>(responseContent);
+                return View(staff);
+            }
+            else
+            {
+                var staffList = await db.Staff
+                    .Include(s => s.Branch)
+                    .Include(s => s.RoleId)
+                    .ToListAsync();
+                return View(staffList);
+            }
+        }
+
+
         public IActionResult Chat()
         {
             if (string.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
@@ -115,27 +137,7 @@ namespace DoAn.Areas.Admin.Controllers
             return Json("/images/" + fileName);
         }
 
-        //View List
-
-        public async Task<IActionResult> Index()
-        {
-            var apiResponse = await _httpClient.GetAsync("https://localhost:7109/api/AdminApi/");
-            if (apiResponse.IsSuccessStatusCode)
-            {
-                var responseContent = await apiResponse.Content.ReadAsStringAsync();
-                var staff = JsonConvert.DeserializeObject<List<Staff>>(responseContent);
-                return View(staff);
-            }
-            else
-            {
-                var staffList = await db.Staff
-                    .Include(s => s.Branch)
-                    .Include(s => s.RoleId)
-                    .ToListAsync();
-                return View(staffList);
-            }
-        }
-
+        
         //login
         [HttpGet]
         public ActionResult Login()

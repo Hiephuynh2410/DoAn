@@ -1,7 +1,10 @@
-using AspNetCoreHero.ToastNotification;
+﻿using AspNetCoreHero.ToastNotification;
 using DoAn.Models;
 using DoAn.wwwroot;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
@@ -11,9 +14,25 @@ builder.Services.AddDbContext<DlctContext>(options =>
 
 
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
 builder.Services.AddSession();
+builder.Services.AddLocalization(options =>
+{
+    options.ResourcesPath = " Resouces";
+});
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[]
+    {
+        new CultureInfo("en-US"),
+       new CultureInfo("vi-VN")
+    };
+    options.DefaultRequestCulture = new RequestCulture("vi-VN");
+    options.SupportedUICultures = supportedCultures;
+});
 
+//cors để gọi api từ c# qua reactJS
 builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
 {
     builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
@@ -43,6 +62,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddSignalR();
 
 var app = builder.Build();
+
 
 if (!app.Environment.IsDevelopment())
 {
