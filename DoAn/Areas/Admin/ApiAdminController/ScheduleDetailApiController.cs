@@ -41,8 +41,65 @@ namespace DoAn.Areas.Admin.ApiAdminController
             return Ok(SchedulesWithFullInfo);
         }
 
+        //[HttpPost("create")]
+        //public async Task<IActionResult> CreateScheduleDetail(Scheduledetail inputModel)
+        //{
+        //    try
+        //    {
+        //        if (!ModelState.IsValid)
+        //        {
+        //            return BadRequest(new
+        //            {
+        //                Message = "Invalid Schedule Detail data",
+        //                Errors = ModelState.Values
+        //                    .SelectMany(v => v.Errors)
+        //                    .Select(e => e.ErrorMessage)
+        //                    .ToList()
+        //            });
+        //        }
+
+        //        var staff = await db.Staff.FindAsync(inputModel.StaffId);
+        //        var schedule = await db.Schedules.FindAsync(inputModel.ScheduleId);
+
+        //        var createModel = new Scheduledetail
+        //        {
+        //            StaffId = inputModel.StaffId,
+        //            ScheduleId = inputModel.ScheduleId,
+        //            Date = inputModel.Date,
+        //            Status = true,
+        //            Staff = staff,
+        //            Schedule = schedule
+        //        };
+        //        db.Scheduledetails.Add(createModel);
+        //        await db.SaveChangesAsync();
+
+        //        var registrationSuccessResponse = new
+        //        {
+        //            Message = "Schedule Detail registration successful",
+        //            ScheduleDetailId = createModel.ScheduleId,
+        //            Staff = new
+        //            {
+        //                StaffId = createModel.Staff?.StaffId,
+        //            },
+        //            Schedule = new
+        //            {
+        //                Time = createModel.Schedule?.Time,
+        //            }
+        //        };
+
+        //        return Ok(registrationSuccessResponse);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError, new
+        //        {
+        //            Message = "An unexpected error occurred. Please try again later."
+        //        });
+        //    }
+        //}
+
         [HttpPost("create")]
-        public async Task<IActionResult> CreateScheduleDetail(Scheduledetail inputModel)
+        public async Task<IActionResult> CreateScheduleDetail([FromBody] Scheduledetail inputModel)
         {
             try
             {
@@ -61,6 +118,20 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 var staff = await db.Staff.FindAsync(inputModel.StaffId);
                 var schedule = await db.Schedules.FindAsync(inputModel.ScheduleId);
 
+                var existingDetail = await db.Scheduledetails
+                    .FirstOrDefaultAsync(sd =>
+                        sd.StaffId == inputModel.StaffId &&
+                        sd.ScheduleId == inputModel.ScheduleId &&
+                        sd.Schedule.Time == inputModel.Schedule.Time);
+
+                if (existingDetail != null)
+                {
+                    return BadRequest(new
+                    {
+                        Message = "A schedule detail already exists for the selected Staff, Schedule, and Time."
+                    });
+                }
+
                 var createModel = new Scheduledetail
                 {
                     StaffId = inputModel.StaffId,
@@ -70,6 +141,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     Staff = staff,
                     Schedule = schedule
                 };
+
                 db.Scheduledetails.Add(createModel);
                 await db.SaveChangesAsync();
 

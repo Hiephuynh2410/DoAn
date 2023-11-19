@@ -81,10 +81,20 @@ namespace DoAn.Areas.Admin.Controllers
                 if (int.TryParse(Encoding.UTF8.GetString(userIdBytes), out int staffId))
                 {
                     var apiResponse = await _httpClient.GetAsync("https://localhost:7109/api/ScheduleDetailApi/");
+
                     if (apiResponse.IsSuccessStatusCode)
                     {
                         var responseContent = await apiResponse.Content.ReadAsStringAsync();
                         var schedules = JsonConvert.DeserializeObject<List<Scheduledetail>>(responseContent);
+
+                        var currentDate = DateTime.Now.Date;
+
+                        //loc ra ngay bes hon ngayf hiện tài thì sẽ xóatrong DB lun
+                        var outdatedSchedules = schedules.Where(s => s.Date < currentDate).ToList();
+                        foreach (var outdatedSchedule in outdatedSchedules)
+                        {
+                            await Delete(outdatedSchedule.StaffId, outdatedSchedule.ScheduleId);
+                        }
 
                         var staff = await db.Staff.FirstOrDefaultAsync(s => s.StaffId == staffId);
                         if (staff != null)
@@ -106,6 +116,41 @@ namespace DoAn.Areas.Admin.Controllers
             ViewBag.LoginMessage = "Please log in to view the schedule.";
             return View();
         }
+
+
+
+        //public async Task<IActionResult> Index()
+        //{
+        //    if (HttpContext.Session.TryGetValue("UserId", out byte[] userIdBytes))
+        //    {
+        //        if (int.TryParse(Encoding.UTF8.GetString(userIdBytes), out int staffId))
+        //        {
+        //            var apiResponse = await _httpClient.GetAsync("https://localhost:7109/api/ScheduleDetailApi/");
+        //            if (apiResponse.IsSuccessStatusCode)
+        //            {
+        //                var responseContent = await apiResponse.Content.ReadAsStringAsync();
+        //                var schedules = JsonConvert.DeserializeObject<List<Scheduledetail>>(responseContent);
+
+        //                var staff = await db.Staff.FirstOrDefaultAsync(s => s.StaffId == staffId);
+        //                if (staff != null)
+        //                {
+        //                    if (staff.RoleId == 1)
+        //                    {
+        //                        return View(schedules);
+        //                    }
+        //                    else
+        //                    {
+        //                        var filteredSchedules = schedules.Where(s => s.Staff.StaffId == staffId).ToList();
+        //                        return View(filteredSchedules);
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    ViewBag.LoginMessage = "Please log in to view the schedule.";
+        //    return View();
+        //}
 
         public IActionResult Create()
         {
