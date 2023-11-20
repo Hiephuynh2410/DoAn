@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Mvc.Localization
 @{
     string userRole = Context.Session.GetString("Role");
     bool isAdmin = userRole == "1";
@@ -10,7 +11,7 @@
             <ul id="sidebarnav">
                 <li class="nav-small-cap">
                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                    <span class="hide-menu">Home</span>
+                    <span class="hide-menu"></span>
                 </li>
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="@Url.Action("Index", "Home")">

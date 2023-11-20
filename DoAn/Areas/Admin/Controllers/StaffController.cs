@@ -216,13 +216,14 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 var eRegex = new Regex(@"^(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!])(?!.*\s).{8,32}$");
                 var phoneRegex = new Regex(@"^(03|05|07|08|09|01[2|6|8|9])(?!84)[0-9]{8}$");
-                if (!phoneRegex.IsMatch(registrationModel.Phone) || registrationModel.Phone.Length > 10)
+                if (registrationModel.Phone != null && (!phoneRegex.IsMatch(registrationModel.Phone) || registrationModel.Phone.Length > 10))
                 {
                     ModelState.AddModelError("Phone", "Invalid Vietnamese phone number");
                 }
-                if (!eRegex.IsMatch(registrationModel.Username) && !eRegex.IsMatch(registrationModel.Password))
+
+                if (!eRegex.IsMatch(registrationModel.Password))
                 {
-                    ModelState.AddModelError("Username", "Invalid username format.");
+                    ModelState.AddModelError("Username", "Invalid password format.");
                 }
             }
 
@@ -241,7 +242,7 @@ namespace DoAn.Areas.Admin.Controllers
                 string createdByUserName = HttpContext.Session.GetString("Name");
 
                 registrationModel.CreatedBy = createdByUserName;
-                registrationModel.Status = Request.Form["Status"] == "true"; 
+                registrationModel.Status = Request.Form["Status"] == "true";
                 var json = JsonConvert.SerializeObject(registrationModel);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -290,6 +291,7 @@ namespace DoAn.Areas.Admin.Controllers
                 return View(registrationModel);
             }
         }
+
 
 
         ////Delete

@@ -19,14 +19,14 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddSession();
 builder.Services.AddLocalization(options =>
 {
-    options.ResourcesPath = " Resouces";
+    options.ResourcesPath = "Resouces";
 });
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     var supportedCultures = new[]
     {
         new CultureInfo("en-US"),
-       new CultureInfo("vi-VN")
+        new CultureInfo("vi-VN")
     };
     options.DefaultRequestCulture = new RequestCulture("vi-VN");
     options.SupportedUICultures = supportedCultures;

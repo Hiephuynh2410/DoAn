@@ -1,7 +1,4 @@
-﻿@using Microsoft.AspNetCore.Mvc.Localization
-@model IEnumerable<DoAn.Models.Staff>
-
-@inject IViewLocalizer Localizer
+﻿@model IEnumerable<DoAn.Models.Staff>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
@@ -27,7 +24,7 @@
     <div class="table-infoStaff">
         <table class="table-List">
             <tr class="title-infoList">
-                <th>@Localizer["Staff ID"]</th>
+                <th>Staff ID</th>
                 <th>Name</th>
                 <th>UserName</th>
                 <th>Phone</th>
@@ -95,7 +92,7 @@
             </tbody>
         </table>   
     </div>
-    <h1 style="text-align:center; margin:1rem 0">@Localizer["Employee Is Deleted"]</h1>
+    <h1 style="text-align:center; margin:1rem 0">Employee Is Deleted</h1>
     <div class="table-infoStaff">
         <table class="table-List">
             <tr class="title-infoList">
@@ -149,7 +146,7 @@
                             <td>@item.Branch?.Address</td>
                             <td>@item.Role?.Name</td>
                             <td>
-                                <button class="btn-add" onclick="addStaff(@item.StaffId)">
+                                <button class="btn-add" onclick="ReloaStaff(@item.StaffId)">
                                     Add
                                 </button>
 
@@ -176,23 +173,10 @@
         }
     });
 
-    //function validateSearch() {
-    //    const searchInput = document.getElementById("searchInput");
-
-    //    const keyword = searchInput.value.trim();
-
-    //    if (keyword === "") {
-    //        alert("vui lòng nhập tên hoặc mã nhân viên cần tìm.");
-    //        return false;
-    //    }
-
-    //    return true; 
-    //}
-
-
     function addStaff(staffId) {
         window.location.href = `/Admin/Staff/ReloadEmployee?staffId=${staffId}`;
     }
+
     function navigateTo(action, staffId) {
         window.location.href = `/Admin/Staff/${action}?StaffId=${staffId}`;
     }
@@ -200,6 +184,12 @@
     function deleteStaff(staffId) {
         if (confirm('Are you sure you want to delete this staff?')) {
             navigateTo('Delete', staffId);
+        }
+    }
+
+    function ReloaStaff(staffId) {
+        if (confirm('Are you sure you want to add this staff?')) {
+            window.location.href = `/Admin/Staff/ReloadEmployee?staffId=${staffId}`;
         }
     }
 </script>

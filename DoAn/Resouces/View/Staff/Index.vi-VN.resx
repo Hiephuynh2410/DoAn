@@ -120,6 +120,12 @@
   <data name="Employee Is Deleted" xml:space="preserve">
     <value>Nhân Viên Đã Xóa</value>
   </data>
+  <data name="Home" xml:space="preserve">
+    <value>Nhà</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Tên Nhân Viên</value>
+  </data>
   <data name="Staff ID" xml:space="preserve">
     <value>Mã Nhân Viên</value>
   </data>
