@@ -206,8 +206,7 @@ namespace DoAn.Areas.Admin.Controllers
 
             if (string.IsNullOrEmpty(registrationModel.Name) && string.IsNullOrEmpty(registrationModel.Username)
                 && string.IsNullOrEmpty(registrationModel.Password) && string.IsNullOrEmpty(registrationModel.Phone)
-                && string.IsNullOrEmpty(registrationModel.Avatar) && string.IsNullOrEmpty(registrationModel.Address)
-                && string.IsNullOrEmpty(registrationModel.Email) && string.IsNullOrEmpty(registrationModel.Phone))
+                && string.IsNullOrEmpty(registrationModel.Address)  && string.IsNullOrEmpty(registrationModel.Email) && string.IsNullOrEmpty(registrationModel.Phone))
             {
                 ModelState.AddModelError("Name", "cannot be empty.");
             }
@@ -220,8 +219,7 @@ namespace DoAn.Areas.Admin.Controllers
                 {
                     ModelState.AddModelError("Phone", "Invalid Vietnamese phone number");
                 }
-
-                if (!eRegex.IsMatch(registrationModel.Password))
+                if (registrationModel.Password != null && !eRegex.IsMatch(registrationModel.Password))
                 {
                     ModelState.AddModelError("Username", "Invalid password format.");
                 }

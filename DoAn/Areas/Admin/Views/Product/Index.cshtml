@@ -39,7 +39,6 @@
                 <th>Update By</th>
                 <th>Action</th>
             </tr>
-
             <tbody class="box-tbody">
                 @foreach (var item in Model)
                 {
@@ -61,10 +60,10 @@
                             <img width="20px" style="object-fit: scale-down" src="@item.Image" />
                         </td>
                         <td>
-                            @item.ProductType.Name
+                            @item.ProductType?.Name
                         </td>
                         <td>
-                            @item.Provider.Name
+                            @item.Provider?.Name
                         </td>
                         <td>@item.CreatedAt?.ToString("dd/MM/yyyy HH:mm tt")</td>
                         <td>@item.UpdatedAt?.ToString("dd/MM/yyyy HH:mm tt")</td>

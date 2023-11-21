@@ -17,11 +17,11 @@ namespace DoAn.Areas.Admin.ApiAdminController
     {
         private readonly DlctContext _dbContext;
         private readonly IConfiguration _configuration;
+
         public AdminApiController(DlctContext dbContext, IConfiguration configuration)
         {
             _dbContext = dbContext;
         }
-
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginModel loginModel)
@@ -119,8 +119,6 @@ namespace DoAn.Areas.Admin.ApiAdminController
             return Ok(staffsWithFullInfo);
         }
 
-
-
         [HttpPost("register")]
         public async Task<IActionResult> RegisterStaff(Staff registrationModel)
         {
@@ -183,7 +181,6 @@ namespace DoAn.Areas.Admin.ApiAdminController
             };
             return BadRequest(invalidDataErrorResponse);
         }
-
 
         [HttpPut("update/{staffId}")]
         public async Task<IActionResult> UpdateStaff(int staffId, Staff updateModel)
@@ -363,7 +360,6 @@ namespace DoAn.Areas.Admin.ApiAdminController
 
             return Json(staffDetail);
         }
-
     }
 
 }

@@ -16,10 +16,9 @@
                                 <img src="~/images/logos/dark-logo.svg" width="180" alt="">
                             </a>
                             <p class="text-center">Your Social Campaigns</p>
-                            <div class="img-wrap" style="align-items: center;display: flex;justify-content: center;">
+                           <div class="img-wrap" style="align-items: center; display: flex; justify-content: center;">
                                 <input type="file" name="fileUpload" id="fileUpload" accept="image/*" style="display:none;" />
-                                <img style="width: 100px; border-radius: 50%; height: 100px; object-fit:cover" class="wrapper-img" src="~/images/img.jpg" id="pictureUpload" />
-                                <span asp-validation-for="Avatar" class="text-danger"></span>
+                                <img style="width: 100px; border-radius: 50%; height: 100px; object-fit: cover" class="wrapper-img" src="~/images/img.jpg" id="pictureUpload" />
                             </div>
                             <form asp-action="Register">
                                 <div style="display:flex">
@@ -102,59 +101,40 @@
     </div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-@section upload {
+@section upload
+    {
     <script>
         $(function () {
-            // Ẩn thẻ ban đầu
-            $('.error-indicator').hide();
-
-            // Set default image source
-            $('#pictureUpload').attr('src', '~/images/img.jpg');
-
-            // Kiểm tra khi thay đổi các trường để hiển thị/ẩn thẻ
-            $('input, select').on('change', function () {
-                if ($('.text-danger:visible').length > 0) {
-                    $('.error-indicator').show();
-                } else {
-                    $('.error-indicator').hide();
-                }
-            });
-
-            // Xử lý sự kiện khi nút "Chọn ảnh" được click
             $('#btnUpload').click(function () {
                 $('#fileUpload').trigger('click');
             });
+        });
+        $('#fileUpload').change(function () {
+            if (window.FormData !== undefined) {
+                var fileUpload = $('#fileUpload').get(0);
+                var files = fileUpload.files;
+                var formData = new FormData();
+                formData.append('file', files[0]);
 
-            $('#fileUpload').change(function () {
-                if (window.FormData !== undefined) {
-                    var fileUpload = $('#fileUpload').get(0);
-                    var files = fileUpload.files;
-                    var formData = new FormData();
-                    formData.append('file', files[0]);
-
-                    $.ajax({
+                $.ajax(
+                    {
                         type: 'POST',
-                        url: '/Admin/Staff/ProcessUpload',
+                        url: '@Url.Action("ProcessUpload", "Staff")',
                         contentType: false,
                         processData: false,
                         data: formData,
                         success: function (urlImage) {
                             $('#pictureUpload').attr('src', urlImage);
                             $('#Avatar').val(urlImage);
-
-                            // Hiển thị nút khi có hình ảnh
-                            $('#btnUpload').show();
                         },
                         error: function (err) {
-                            alert('Error: ' + err.statusText);
+                            alert('Error ', err.statusText);
                         }
                     });
-                }
-            });
+            }
         });
     </script>
-
-}
+    }
 
 <style>
     .wrapper-img {
