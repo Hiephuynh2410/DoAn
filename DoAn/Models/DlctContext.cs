@@ -310,9 +310,7 @@ public partial class DlctContext : DbContext
                 .HasColumnName("Created_at");
             entity.Property(e => e.CreatedBy).HasColumnName("Created_by");
             entity.Property(e => e.Description).HasMaxLength(255);
-            entity.Property(e => e.Image)
-                .HasMaxLength(255)
-                .IsUnicode(false);
+            entity.Property(e => e.Image).HasMaxLength(200);
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.ProductTypeId).HasColumnName("Product_type_id");
             entity.Property(e => e.ProviderId).HasColumnName("Provider_id");

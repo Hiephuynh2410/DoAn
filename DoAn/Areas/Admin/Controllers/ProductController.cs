@@ -26,8 +26,15 @@ namespace DoAn.Areas.Admin.Controllers
                 return Json("No file uploaded");
             }
 
+            string uploadDirectory = @"C:\images";
+
+            if (!Directory.Exists(uploadDirectory))
+            {
+                Directory.CreateDirectory(uploadDirectory);
+            }
+
             string fileName = Path.GetFileName(file.FileName);
-            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+            string filePath = Path.Combine(uploadDirectory, fileName);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
@@ -36,6 +43,7 @@ namespace DoAn.Areas.Admin.Controllers
 
             return Json("/images/" + fileName);
         }
+
 
 
         //Delete
@@ -99,11 +107,11 @@ namespace DoAn.Areas.Admin.Controllers
                 if (string.IsNullOrEmpty(keyword))
                 {
                     var response = await client.GetAsync("api/ProductApi");
-                    if(response.IsSuccessStatusCode)
+                    if (response.IsSuccessStatusCode)
                     {
                         var responseContent = await response.Content.ReadAsStringAsync();
                         productList = JsonConvert.DeserializeObject<List<Product>>(responseContent);
-                    } 
+                    }
                     else
                     {
                         return View("Index");
@@ -130,7 +138,7 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(int productId)
         {
-            if(HttpContext.Session.GetString("UserId") == null)
+            if (HttpContext.Session.GetString("UserId") == null)
             {
                 return RedirectToAction("Login", "Staff");
             }
@@ -162,7 +170,7 @@ namespace DoAn.Areas.Admin.Controllers
 
             var json = JsonConvert.SerializeObject(updateModel);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-          
+
             var response = await _httpClient.PutAsync(apiUrl, content);
 
             if (response.IsSuccessStatusCode)
@@ -216,7 +224,7 @@ namespace DoAn.Areas.Admin.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-               
+
 
                 return RedirectToAction("Index");
             }

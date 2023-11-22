@@ -59,7 +59,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
             var products = await _dbContext.Products
                 .Include(p => p.ProductType)
                 .Include(p => p.Provider)
-                .Where(p => 
+                .Where(p =>
                         p.Name.Contains(keyword) || p.ProductId.ToString() == keyword
                 )
                 .ToListAsync();
@@ -182,10 +182,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 productToUpdate.Quantity = updateModel.Quantity;
             }
 
-            if (!string.IsNullOrWhiteSpace(updateModel.Image))
-            {
-                productToUpdate.Image = updateModel.Image;
-            }
+          
 
             if (updateModel.ProductTypeId.HasValue)
             {
@@ -273,5 +270,44 @@ namespace DoAn.Areas.Admin.ApiAdminController
             };
             return Json(produtDetail);
         }
+        [HttpGet("{productId}")]
+        public async Task<IActionResult> GetProductById(int productId)
+        {
+            var product = await _dbContext.Products
+                .Include(p => p.ProductType)
+                .Include(p => p.Provider)
+                .FirstOrDefaultAsync(p => p.ProductId == productId);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            var productDetail = new
+            {
+                product.ProductId,
+                product.Name,
+                product.Description,
+                product.Price,
+                product.Quantity,
+                product.Image,
+                product.ProductTypeId,
+                product.ProviderId,
+                ProductType = new
+                {
+                    Name = product.ProductType?.Name
+                },
+                Provider = new
+                {
+                    product.Provider?.Name,
+                    product.Provider?.Address,
+                    product.Provider?.Email,
+                    product.Provider?.Phone
+                },
+            };
+
+            return Ok(productDetail);
+        }
+
     }
 }

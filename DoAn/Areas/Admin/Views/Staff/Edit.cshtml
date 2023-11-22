@@ -47,17 +47,18 @@
                         <input asp-for="UpdatedBy" readonly type="email" class="userName" />
                     </div>
                 </div>
+                
                 <hr />
+
                 <form asp-action="Edit">
                     <input type="hidden" asp-for="StaffId" />
                     <div class="wrapper-box" style="display:flex; flex-wrap:wrap; gap:1.5rem">
                         <div style="flex:1 1 18rem" class="box">
-                                <span><strong style="color:red">*</strong>name: </span>
+                            <span><strong style="color:red">*</strong>name: </span>
                             <input asp-for="Name" type="text" class="userName" />
-                            <span asp-validation-for="Name" class="text-danger"></span>
-
                         </div>
-                        <div style="flex:1 1 18rem" class="box">
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        <div style="flex:1 1 18rem" class="box wrappUserName">
                             <span> <strong style="color:red">*</strong> Role: </span>
                                 @Html.DropDownList("RoleId", (SelectList)ViewBag.Roles, "Select a role", new { @class = "userName" })
                         </div>
@@ -71,7 +72,6 @@
                                 <span><strong style="color:red">*</strong>Phonenumber:</span>
                             <input asp-for="Phone" type="number" class="userName"  />
                             <span asp-validation-for="Phone" class="text-danger"></span>
-
                         </div>
                             <div hidden style="flex:1 1 18rem" class="box">
                                 <span><strong style="color:red">*</strong>Avatar: </span>
@@ -176,20 +176,45 @@
             });
         </script>
     }
-    <style>
-         .border-image {
-             width: 150px; 
-             height: 150px; 
-             text-align: center;
-             display: flex;
-             align-items: center;
-             justify-content: center;
-         }
+<style>
+    .border-image {
+        width: 150px; 
+        height: 150px; 
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-             .border-image img {
-                 max-width: 100%;
-                 max-height: 100%; 
-                 height: auto;
-                 width: auto; 
-             }
-    </style>
+    .border-image img {
+        max-width: 100%;
+        max-height: 100%; 
+        height: auto;
+        width: auto; 
+    }
+
+    .wrappUserName {
+        flex: 1 1 18rem;
+        justify-content: center;
+        display: flex;
+        flex-direction: column;
+        padding: 1rem 5rem;
+    }
+
+    .wrapper-box input {
+        border: none; 
+        border-bottom: 1px solid #000;
+        margin-bottom: 1rem;
+    }
+
+    .wrapper-box select {
+        border: none; 
+        border-bottom: 1px solid #000;
+        margin-bottom: 1rem;
+    }
+
+    .wrappercalendar-containerList input[type="submit"] {
+        margin-top: 1rem; 
+    }
+
+</style>

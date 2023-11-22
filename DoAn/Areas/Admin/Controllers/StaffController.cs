@@ -27,6 +27,7 @@ namespace DoAn.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             var apiResponse = await _httpClient.GetAsync("https://localhost:7109/api/AdminApi/");
+            
             if (apiResponse.IsSuccessStatusCode)
             {
                 var responseContent = await apiResponse.Content.ReadAsStringAsync();
@@ -137,7 +138,6 @@ namespace DoAn.Areas.Admin.Controllers
             return Json("/images/" + fileName);
         }
 
-        
         //login
         [HttpGet]
         public ActionResult Login()
