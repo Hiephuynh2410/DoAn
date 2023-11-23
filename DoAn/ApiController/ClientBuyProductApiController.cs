@@ -36,6 +36,12 @@ namespace DoAn.ApiController
                     return NotFound("Product or client not found.");
                 }
 
+                // Check if there is enough quantity available
+                if (product.Quantity < request.Quantity)
+                {
+                    return BadRequest("Not enough stock available.");
+                }
+
                 var existingCartItem = await _dbContext.Carts
                     .Include(c => c.Product)
                     .Include(c => c.User)
@@ -48,19 +54,27 @@ namespace DoAn.ApiController
                 }
                 else
                 {
-                    var newCartItem = new Cart
+                    if (product.Quantity > 0)
                     {
-                        UserId = request.UserId,
-                        ProductId = request.ProductId,
-                        Quantity = request.Quantity,
-                        Product = product,
-                        User = client
-                    };
+                        var newCartItem = new Cart
+                        {
+                            UserId = request.UserId,
+                            ProductId = request.ProductId,
+                            Quantity = request.Quantity,
+                            Product = product,
+                            User = client
+                        };
 
-                    _dbContext.Carts.Add(newCartItem);
+                        _dbContext.Carts.Add(newCartItem);
+
+                        // Update product quantity
+                        product.Quantity -= request.Quantity;
+                    }
+                    else
+                    {
+                        return BadRequest("Product is out of stock.");
+                    }
                 }
-
-                product.Quantity -= request.Quantity;
 
                 var cartItems = await _dbContext.Carts
                     .Where(c => c.UserId == request.UserId)
@@ -86,9 +100,7 @@ namespace DoAn.ApiController
         }
 
 
-
-
-    [HttpDelete("RemoveFromCart/{userId}/{productId}/{quantity}")]
+        [HttpDelete("RemoveFromCart/{userId}/{productId}/{quantity}")]
         public async Task<IActionResult> RemoveFromCart(int userId, int productId, int quantity)
         {
             try
