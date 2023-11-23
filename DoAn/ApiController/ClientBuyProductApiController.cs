@@ -36,7 +36,6 @@ namespace DoAn.ApiController
                     return NotFound("Product or client not found.");
                 }
 
-                // Check if there is enough quantity available
                 if (product.Quantity < request.Quantity)
                 {
                     return BadRequest("Not enough stock available.");
@@ -51,6 +50,9 @@ namespace DoAn.ApiController
                 if (existingCartItem != null)
                 {
                     existingCartItem.Quantity += request.Quantity;
+
+                    // Update the quantity in the database
+                    product.Quantity -= request.Quantity;
                 }
                 else
                 {
@@ -67,7 +69,6 @@ namespace DoAn.ApiController
 
                         _dbContext.Carts.Add(newCartItem);
 
-                        // Update product quantity
                         product.Quantity -= request.Quantity;
                     }
                     else
@@ -98,6 +99,7 @@ namespace DoAn.ApiController
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
 
 
         [HttpDelete("RemoveFromCart/{userId}/{productId}/{quantity}")]
