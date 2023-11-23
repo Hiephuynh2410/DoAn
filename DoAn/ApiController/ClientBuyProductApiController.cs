@@ -60,18 +60,24 @@ namespace DoAn.ApiController
                     _dbContext.Carts.Add(newCartItem);
                 }
 
-                var cartItem = await _dbContext.Carts
-                    .Where(c => c.UserId == request.UserId && c.ProductId == request.ProductId)
-                    .FirstOrDefaultAsync();
+                product.Quantity -= request.Quantity;
 
-                if (cartItem != null)
+                var cartItems = await _dbContext.Carts
+                    .Where(c => c.UserId == request.UserId)
+                    .ToListAsync();
+
+                foreach (var cartItem in cartItems)
                 {
                     cartItem.UpdateTotalAmount();
                 }
 
                 await _dbContext.SaveChangesAsync();
 
-                return Ok("Product added to the cart successfully.");
+                var totalAmount = cartItems.Sum(c => c.TotalAmount.GetValueOrDefault());
+
+                var responseMessage = $"Product added to the cart successfully. Total amount: {totalAmount}.";
+
+                return Ok(responseMessage);
             }
             catch (Exception ex)
             {
@@ -81,7 +87,8 @@ namespace DoAn.ApiController
 
 
 
-        [HttpDelete("RemoveFromCart/{userId}/{productId}/{quantity}")]
+
+    [HttpDelete("RemoveFromCart/{userId}/{productId}/{quantity}")]
         public async Task<IActionResult> RemoveFromCart(int userId, int productId, int quantity)
         {
             try
