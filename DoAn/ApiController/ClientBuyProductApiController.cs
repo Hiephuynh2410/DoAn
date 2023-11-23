@@ -60,6 +60,15 @@ namespace DoAn.ApiController
                     _dbContext.Carts.Add(newCartItem);
                 }
 
+                var cartItem = await _dbContext.Carts
+                    .Where(c => c.UserId == request.UserId && c.ProductId == request.ProductId)
+                    .FirstOrDefaultAsync();
+
+                if (cartItem != null)
+                {
+                    cartItem.UpdateTotalAmount();
+                }
+
                 await _dbContext.SaveChangesAsync();
 
                 return Ok("Product added to the cart successfully.");
@@ -69,6 +78,7 @@ namespace DoAn.ApiController
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
 
 
         [HttpDelete("RemoveFromCart/{userId}/{productId}/{quantity}")]
@@ -111,51 +121,6 @@ namespace DoAn.ApiController
             }
         }
 
-        [HttpPut("UpdateCart/{userId}/{productId}/{quantity}")]
-        public async Task<IActionResult> UpdateCart(int userId, int productId, int quantity)
-        {
-            try
-            {
-                if (userId <= 0 || productId <= 0 || quantity <= 0)
-                {
-                    return BadRequest("Invalid request parameters.");
-                }
-
-                var existingCartItem = await _dbContext.Carts
-                    .Include(c => c.Product)
-                    .Include(c => c.User)
-                    .Where(c => c.UserId == userId && c.ProductId == productId)
-                    .FirstOrDefaultAsync();
-
-                if (existingCartItem == null)
-                {
-                    return NotFound("CartItem not found.");
-                }
-
-                if (quantity > existingCartItem.Product.Quantity)
-                {
-                    return BadRequest("Requested quantity exceeds available stock.");
-                }
-
-                var originalQuantity = existingCartItem.Quantity;
-
-                existingCartItem.Product.Quantity -= quantity;
-
-                existingCartItem.Quantity = quantity;
-
-
-                var updatedTotalAmount = existingCartItem.TotalAmount;
-                await _dbContext.SaveChangesAsync();
-
-                return Ok($"Cart updated successfully. Updated Total Amount: {updatedTotalAmount}");
-
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
         //[HttpPut("UpdateCart/{userId}/{productId}/{quantity}")]
         //public async Task<IActionResult> UpdateCart(int userId, int productId, int quantity)
         //{
@@ -182,19 +147,23 @@ namespace DoAn.ApiController
         //            return BadRequest("Requested quantity exceeds available stock.");
         //        }
 
+        //        var originalQuantity = existingCartItem.Quantity;
+
         //        existingCartItem.Product.Quantity -= quantity;
 
         //        existingCartItem.Quantity = quantity;
 
+
+        //        var updatedTotalAmount = existingCartItem.TotalAmount;
         //        await _dbContext.SaveChangesAsync();
 
-        //        return Ok("Cart updated successfully.");
+        //        return Ok($"Cart updated successfully. Updated Total Amount: {updatedTotalAmount}");
+
         //    }
         //    catch (Exception ex)
         //    {
         //        return StatusCode(500, $"Internal server error: {ex.Message}");
         //    }
         //}
-
     }
 }

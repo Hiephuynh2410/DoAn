@@ -63,6 +63,10 @@ namespace DoAn.Areas.Admin.ApiAdminController
                         p.Name.Contains(keyword) || p.ProductId.ToString() == keyword
                 )
                 .ToListAsync();
+            if (products.Count == 0)
+            {
+                return NotFound("No products found with the given keyword.");
+            }
 
             var productWithFullInfo = products.Select(p => new
             {
