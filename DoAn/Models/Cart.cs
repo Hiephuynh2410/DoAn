@@ -15,7 +15,6 @@ public partial class Cart
     public virtual Product Product { get; set; } = null!;
 
     public virtual Client User { get; set; } = null!;
-
     [NotMapped]
     public double? TotalAmount
     {
@@ -28,7 +27,7 @@ public partial class Cart
 
             return null;
         }
-        private set { } 
+        private set { }
     }
 
     public void UpdateTotalAmount()

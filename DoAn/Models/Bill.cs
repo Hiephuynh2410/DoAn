@@ -7,7 +7,7 @@ public partial class Bill
 {
     public int BillId { get; set; }
 
-    public string? CreatedAt { get; set; }
+    public DateTime? CreatedAt { get; set; }
 
     public DateTime Date { get; set; }
 

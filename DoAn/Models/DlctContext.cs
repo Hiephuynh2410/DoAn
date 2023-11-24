@@ -65,13 +65,10 @@ public partial class DlctContext : DbContext
         {
             entity.ToTable("BILL");
 
-            entity.Property(e => e.BillId)
-                .ValueGeneratedNever()
-                .HasColumnName("Bill_id");
+            entity.Property(e => e.BillId).HasColumnName("Bill_id");
             entity.Property(e => e.ClientId).HasColumnName("Client_id");
             entity.Property(e => e.CreatedAt)
-                .HasMaxLength(10)
-                .IsFixedLength()
+                .HasColumnType("datetime")
                 .HasColumnName("Created_at");
             entity.Property(e => e.Date).HasColumnType("datetime");
 
