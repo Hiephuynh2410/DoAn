@@ -23,7 +23,7 @@ namespace DoAn.ApiController
         {
             try
             {
-                if (request == null || request.UserId <= 0 || request.ProductId <= 0 || request.Quantity <= 0)
+                if (request == null || request.UserId <= 0 || request.ProductId <= 0)
                 {
                     return BadRequest("Invalid request parameters.");
                 }
@@ -36,7 +36,9 @@ namespace DoAn.ApiController
                     return NotFound("Product or client not found.");
                 }
 
-                if (product.Quantity < request.Quantity)
+                var quantityToAdd = request.Quantity > 0 ? request.Quantity : 1;
+
+                if (product.Quantity < quantityToAdd)
                 {
                     return BadRequest("Not enough stock available.");
                 }
@@ -49,27 +51,29 @@ namespace DoAn.ApiController
 
                 if (existingCartItem != null)
                 {
-                    existingCartItem.Quantity += request.Quantity;
+                    var newTotalQuantity = existingCartItem.Quantity + quantityToAdd;
 
-                    // Update the quantity in the database
-                    product.Quantity -= request.Quantity;
+                    if (product.Quantity < newTotalQuantity)
+                    {
+                        return BadRequest("Not enough stock available for the requested quantity.");
+                    }
+
+                    existingCartItem.Quantity = newTotalQuantity;
                 }
                 else
                 {
-                    if (product.Quantity > 0)
+                    if (product.Quantity >= quantityToAdd)
                     {
                         var newCartItem = new Cart
                         {
                             UserId = request.UserId,
                             ProductId = request.ProductId,
-                            Quantity = request.Quantity,
+                            Quantity = quantityToAdd,
                             Product = product,
                             User = client
                         };
 
                         _dbContext.Carts.Add(newCartItem);
-
-                        product.Quantity -= request.Quantity;
                     }
                     else
                     {
@@ -99,7 +103,6 @@ namespace DoAn.ApiController
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
 
 
         [HttpDelete("RemoveFromCart/{userId}/{productId}/{quantity}")]
