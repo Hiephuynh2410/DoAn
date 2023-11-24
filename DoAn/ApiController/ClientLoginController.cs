@@ -50,6 +50,11 @@ namespace DoAn.ApiController
                 var loginSuccessResponse = new
                 {
                     userID = client.ClientId,
+                    Username = client.Username,
+                    Name = client.Name,
+                    phone = client.Phone,
+                    Address = client.Address,
+                    Email = client.Email,
                     Message = "Login successful"
                 };
                 return Ok(loginSuccessResponse);
