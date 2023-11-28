@@ -89,10 +89,6 @@ namespace DoAn.ApiController
                 var emptyFieldsErrorResponse = new
                 {
                     Message = "Empty fields in registration data.",
-                    Errors = new List<string>
-            {
-                "Username, Password, Name, Phone, and Email are required fields."
-            }
                 };
                 return BadRequest(emptyFieldsErrorResponse);
             }
@@ -102,10 +98,6 @@ namespace DoAn.ApiController
                 var phoneFormatErrorResponse = new
                 {
                     Message = "Invalid phone number format",
-                    Errors = new List<string>
-            {
-                "Phone number must be in the format 0XXXXXXXXX or 0XXXXXXXXXX (10 or 11 digits)."
-            }
                 };
                 return BadRequest(phoneFormatErrorResponse);
             }
