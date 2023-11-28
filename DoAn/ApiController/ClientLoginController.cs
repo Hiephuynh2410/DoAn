@@ -34,10 +34,6 @@ namespace DoAn.ApiController
                 var loginErrorResponse = new
                 {
                     Message = "wrong pass or usenmae",
-                    Errors = new List<string>
-            {
-                "Invalid username"
-            }
                 };
                 return BadRequest(loginErrorResponse);
             }
@@ -97,9 +93,18 @@ namespace DoAn.ApiController
             {
                 var phoneFormatErrorResponse = new
                 {
-                    Message = "Invalid phone number format",
+                    Message = "Vui lòng nhập đúng định dạng số điện thoại",
                 };
                 return BadRequest(phoneFormatErrorResponse);
+            }
+            var emailRegex  = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
+            if(!Regex.IsMatch(registrationModel.Email, emailRegex)) 
+            {
+                var emailEmailFormat = new
+                {
+                    Message = "Vui lòng nhập đúng định dạng Email",
+                };
+                return BadRequest(emailEmailFormat);
             }
             if (ModelState.IsValid)
             {
