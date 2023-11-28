@@ -54,16 +54,22 @@ namespace DoAn.Areas.Admin.Controllers
         {
             var apiUrl = "https://localhost:7109/api/BlogApi/create";
 
-            if (string.IsNullOrEmpty(registrationModel.Titile) && string.IsNullOrEmpty(registrationModel.Body))
+            if (string.IsNullOrEmpty(registrationModel.Titile))
             {
-                ModelState.AddModelError("Name", "cannot be empty.");
+                ModelState.AddModelError("Titile", "Title cannot be empty.");
             }
-
+            if (string.IsNullOrEmpty(registrationModel.Body))
+            {
+                ModelState.AddModelError("Body", "Body cannot be empty.");
+            }
+            if (string.IsNullOrEmpty(registrationModel.Thumbnail))
+            {
+                ModelState.AddModelError("Thumbnail", "Thumbnail cannot be empty.");
+            }
             if (string.IsNullOrEmpty(Request.Form["StaffId"]))
             {
                 ModelState.AddModelError("StaffId", "Staff is required.");
             }
-
             if (string.IsNullOrEmpty(Request.Form["BlogCategoryId"]))
             {
                 ModelState.AddModelError("BlogCategoryId", "BlogCategory is required.");
@@ -148,54 +154,87 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int blogPostId, BlogPost updateModel)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                var blogcategory = db.BlogCategories.ToList();
-                var staffs = db.Staff.ToList();
-
-                ViewBag.blogcategory = new SelectList(blogcategory, "BlogCategoryId", "Title");
-                ViewBag.staffs = new SelectList(staffs, "StaffId", "Name");
-                return View(updateModel);
-            }
-
-            var apiUrl = $"https://localhost:7109/api/BlogApi/update/{blogPostId}";
-
-            var json = JsonConvert.SerializeObject(updateModel);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PutAsync(apiUrl, content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                try
+                if (string.IsNullOrEmpty(updateModel.Titile))
                 {
-                    var updatedBlog = await db.BlogPosts.FirstOrDefaultAsync(s => s.BlogPostId == blogPostId);
-                    if (updatedBlog != null)
+                    ModelState.AddModelError("Titile", "Title cannot be empty.");
+                }
+                if (string.IsNullOrEmpty(updateModel.Body))
+                {
+                    ModelState.AddModelError("Body", "Body cannot be empty.");
+                }
+                if (string.IsNullOrEmpty(updateModel.Thumbnail))
+                {
+                    ModelState.AddModelError("Thumbnail", "Thumbnail cannot be empty.");
+                }
+                if (string.IsNullOrEmpty(Request.Form["StaffId"]))
+                {
+                    ModelState.AddModelError("StaffId", "Staff is required.");
+                }
+                if (string.IsNullOrEmpty(Request.Form["BlogCategoryId"]))
+                {
+                    ModelState.AddModelError("BlogCategoryId", "BlogCategory is required.");
+                }
+                if (!ModelState.IsValid)
+                {
+                    var blogcategory = db.BlogCategories.ToList();
+                    var staffs = db.Staff.ToList();
+
+                    ViewBag.blogcategory = new SelectList(blogcategory, "BlogCategoryId", "Title");
+                    ViewBag.staffs = new SelectList(staffs, "StaffId", "Name");
+                    return View(updateModel);
+                }
+
+                var apiUrl = $"https://localhost:7109/api/BlogApi/update/{blogPostId}";
+
+                var json = JsonConvert.SerializeObject(updateModel);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PutAsync(apiUrl, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    try
                     {
-                        db.Entry(updatedBlog).State = EntityState.Modified;
-                        await db.SaveChangesAsync();
+                        var updatedBlog = await db.BlogPosts.FirstOrDefaultAsync(s => s.BlogPostId == blogPostId);
+                        if (updatedBlog != null)
+                        {
+                            db.Entry(updatedBlog).State = EntityState.Modified;
+                            await db.SaveChangesAsync();
+                        }
                     }
+                    catch (Exception ex)
+                    {
+                        ModelState.AddModelError("", "An error occurred while saving the editor's name: " + ex.Message);
+                    }
+                    return RedirectToAction("Index");
                 }
-                catch (Exception ex)
+                else
                 {
-                    ModelState.AddModelError("", "An error occurred while saving the editor's name: " + ex.Message);
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine("API Response Content: " + responseContent);
+
+                    var errorResponse = JsonConvert.DeserializeObject<object>(responseContent);
+
+                    var blogcategory = db.BlogCategories.ToList();
+                    var staffs = db.Staff.ToList();
+
+                    ViewBag.blogcategory = new SelectList(blogcategory, "BlogCategoryId", "Title");
+                    ViewBag.staffs = new SelectList(staffs, "StaffId", "Name");
+
+                    ModelState.AddModelError("", errorResponse.ToString());
+                    return View(updateModel);
                 }
-                return RedirectToAction("Index");
             }
-            else
+
+            catch (Exception ex)
             {
-                var responseContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine("API Response Content: " + responseContent);
+                // Log the exception for debugging purposes
+                Console.WriteLine("An error occurred during the edit operation: " + ex.Message);
 
-                var errorResponse = JsonConvert.DeserializeObject<object>(responseContent);
-
-                var blogcategory = db.BlogCategories.ToList();
-                var staffs = db.Staff.ToList();
-
-                ViewBag.blogcategory = new SelectList(blogcategory, "BlogCategoryId", "Title");
-                ViewBag.staffs = new SelectList(staffs, "StaffId", "Name");
-
-                ModelState.AddModelError("", errorResponse.ToString());
+                // Add a generic error message to the ModelState
+                ModelState.AddModelError("", "An error occurred during the edit operation.");
                 return View(updateModel);
             }
         }

@@ -11,7 +11,7 @@
 
 <div class="wrapper-box" style="padding:7rem">
     <div class="toolBar-control">
-         @if (Context.Session.GetString("Role") == "1")
+        @if (Context.Session.GetString("Role") == "1")
         {
             <button class="btn-create" onclick="window.location.href='/Admin/ScheduleDetail/Create'">
                 Create new

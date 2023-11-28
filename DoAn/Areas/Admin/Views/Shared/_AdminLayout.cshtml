@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="shortcut icon" type="image/png" href="~/images/logos/favicon.png" />
     <link rel="stylesheet" href="/css/styles.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" type="text/css"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" type="text/css" />
     <link rel="stylesheet" href="~/DoAn.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
     <link rel="stylesheet" href="~/sass/layout_UiCreate.css">
@@ -39,21 +39,21 @@
             <div>
                 <partial name="_SidebarAdmin" />
                 <!-- End Sidebar navigation -->
-            </div> 
+            </div>
             <!-- End Sidebar scroll-->
         </aside>
         <!--  Main wrapper -->
         <div class="body-wrapper">
             <!--  Header Start -->
-            <partial name="_HeaderAdmin"/>
+            <partial name="_HeaderAdmin" />
             <!--  Header End -->
             <div class="">
                 < class="table-container">
-                        @RenderBody()
-                </div>
-            @await Html.PartialAsync("_ChatPartial")
+                    @RenderBody()
             </div>
+            @await Html.PartialAsync("_ChatPartial")
         </div>
+    </div>
     </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

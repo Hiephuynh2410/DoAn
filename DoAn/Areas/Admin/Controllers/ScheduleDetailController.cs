@@ -166,6 +166,7 @@ namespace DoAn.Areas.Admin.Controllers
         {
             try
             {
+
                 if (inputModel.StaffId == 0 || inputModel.ScheduleId == 0)
                 {
                     ModelState.AddModelError("", "Please select a Staff and a Schedule.");
@@ -175,6 +176,17 @@ namespace DoAn.Areas.Admin.Controllers
                     ViewBag.ScheduleId = scheduleList.Select(s => new SelectListItem { Value = s.ScheduleId.ToString(), Text = s.Time.ToString() });
                     return View(inputModel);
                 }
+
+                if (!inputModel.Date.HasValue)
+                {
+                    ModelState.AddModelError("", "Please provide a valid Date.");
+                    var staffList = await db.Staff.ToListAsync();
+                    var scheduleList = await db.Schedules.ToListAsync();
+                    ViewBag.StaffId = staffList.Select(s => new SelectListItem { Value = s.StaffId.ToString(), Text = s.Name });
+                    ViewBag.ScheduleId = scheduleList.Select(s => new SelectListItem { Value = s.ScheduleId.ToString(), Text = s.Time.ToString() });
+                    return View(inputModel);
+                }
+
 
                 var selectedStaff = await db.Staff.FindAsync(inputModel.StaffId);
                 var selectedSchedule = await db.Schedules.FindAsync(inputModel.ScheduleId);

@@ -24,12 +24,13 @@
             <div class="form-group">
                 <label asp-for="BlogCategoryId" class="control-label"></label>
                 @Html.DropDownList("BlogCategoryId", (SelectList)ViewBag.blogcategory, "Select a blogcategory", new { @class = "form-control" })
+                <span asp-validation-for="BlogCategoryId" class="text-danger"></span>
 
             </div>
             <div class="form-group">
                 <label asp-for="StaffId" class="control-label"></label>
                 @Html.DropDownList("StaffId", (SelectList)ViewBag.staffs, "Select a staffs", new { @class = "form-control" })
-
+                <span asp-validation-for="StaffId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

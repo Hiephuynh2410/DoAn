@@ -12,7 +12,7 @@ public class ScheduledEmailService : BackgroundService
     public ScheduledEmailService(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
-    }
+    }   
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

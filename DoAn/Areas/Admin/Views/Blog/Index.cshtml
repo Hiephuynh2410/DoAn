@@ -59,8 +59,8 @@
                         <td>@item.Body</td>
                         <td>@item.Thumbnail</td>
                         <td>@item.DateTime?.ToString("dd/MM/yyyy")</td>
-                        <td>@item.BlogCategory.BlogCategoryId</td>
-                        <td>@item.Staff.Name</td>
+                        <td>@item.BlogCategory?.Title</td>
+                        <td>@item.Staff?.Name</td>
                         <td>
                             <button class="btn-edit" onclick="navigateTo('Edit', @item.BlogPostId)">
                                 Edit

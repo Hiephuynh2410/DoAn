@@ -53,25 +53,29 @@
                                     {
                                         @if (Context.Session.GetString("Role") == "1")
                                         {
-                                            <p class="mb-0 fs-3">
+                                           @* <p class="mb-0 fs-3">
                                                 <a class="mb-0 fs-3 edit-link" href="@Url.Action("Edit", "Staff", new { staffId = userId })">Edit profile</a>
-                                            </p>
+                                            </p>*@
+                                            <p class="mb-0 fs-3 edit-link" id="editProfile">Edit profile</p>
+                                            <a href="@Url.Action("Index", "ScheduleDetail", new { area = "Admin" })" class="d-flex align-items-center gap-2 dropdown-item">
+                                                <i class="ti ti-list-check fs-6"></i>
+                                                <p class="mb-0 fs-3">My Task</p>
+                                            </a>
                                         }
                                         else
                                         {
-                                            <p class="mb-0 fs-3">
-                                            </p>
+                                            <a href="@Url.Action("Index", "ScheduleDetail", new { area = "Admin" })" class="d-flex align-items-center gap-2 dropdown-item">
+                                                <i class="ti ti-list-check fs-6"></i>
+                                                <p class="mb-0 fs-3">My Task</p>
+                                            </a>
                                         }
                                     }
                                 </a>
-                              @*<a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
-                                    <i class="ti ti-mail fs-6"></i>
-                                    <p class="mb-0 fs-3">My Account</p>
-                                </a>*@
-                                @*<a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
-                                    <i class="ti ti-list-check fs-6"></i>
-                                    <p class="mb-0 fs-3">My Task</p>
-                                </a>*@
+                                 @* <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                                        <i class="ti ti-mail fs-6"></i>
+                                        <p class="mb-0 fs-3">My Account</p>
+                                    </a>*@
+                             
                                 @if (Context.Session.GetString("Role") == null)
                                 {
                                     <a href="@Url.Action("Login", "Staff", new { area = "Admin" })" class="btn btn-outline-primary mx-3 mt-2 d-block">Login</a>
@@ -104,6 +108,14 @@
         dropdownTrigger.addEventListener("click", function (event) {
             event.preventDefault();
             dropdownMenu.classList.toggle("show");
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var editProfile = document.getElementById("editProfile");
+
+        editProfile.addEventListener("click", function () {
+            window.location.href = "@Url.Action("Edit", "Staff", new { staffId = userId })";
         });
     });
 </script>

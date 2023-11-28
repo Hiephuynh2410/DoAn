@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -104,7 +105,6 @@ namespace DoAn.ApiController
             }
         }
 
-
         [HttpDelete("RemoveFromCart/{userId}/{productId}/{quantity}")]
         public async Task<IActionResult> RemoveFromCart(int userId, int productId, int quantity)
         {
@@ -206,7 +206,43 @@ namespace DoAn.ApiController
             }
         }
 
+        [HttpGet("GetCart/{userId}")]
+        public async Task<IActionResult> GetCart(int userId)
+        {
+            try
+            {
+                if (userId <= 0)
+                {
+                    return BadRequest("Invalid user ID.");
+                }
 
+                var cartItems = await _dbContext.Carts
+                    .Include(c => c.Product)
+                    .Where(c => c.UserId == userId)
+                    .ToListAsync();
+
+                if (cartItems == null || cartItems.Count == 0)
+                {
+                    return NotFound("Cart is empty.");
+                }
+
+                var cartDetails = cartItems.Select(cartItem => new
+                {
+                    ProductId = cartItem.ProductId,
+                    ProductName = cartItem.Product.Name,
+                    ProductImage = cartItem.Product.Image,
+                    Quantity = cartItem.Quantity,
+                    TotalAmount = cartItem.TotalAmount
+
+                }).ToList();
+
+                return Ok(cartDetails);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }
 //[HttpPut("UpdateCart/{userId}/{productId}/{quantity}")]

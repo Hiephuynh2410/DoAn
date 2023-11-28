@@ -31,7 +31,7 @@
                             <span class="hide-menu">Staff</span>
                         </a>
                     </li>
-                   
+
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="@Url.Action("Index", "Role")">
                             <i class="fa-regular fa-address-book"></i>
@@ -41,7 +41,7 @@
 
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="@Url.Action("Index", "Schedule")">
-                          <i class="fa-regular fa-calendar-days"></i>
+                            <i class="fa-regular fa-calendar-days"></i>
                             <span class="hide-menu">Schedule</span>
                         </a>
                     </li>
@@ -52,7 +52,7 @@
                         </a>
                     </li>
                 }
-                  @if (Context.Session.GetString("Role") == "2")
+                @if (Context.Session.GetString("Role") == "2")
                 {
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="@Url.Action("Index", "BookingFromClient")">
@@ -60,13 +60,13 @@
                             <span class="hide-menu">BookingFromClient</span>
                         </a>
                     </li>
-                  
+
                 }
-              @*  <li class="sidebar-item">
-                    <a class="sidebar-link" href="@Url.Action("Chat", "Staff")">
-                        <i class="fa-regular fa-address-book"></i>
-                        <span class="hide-menu">Chat</span>
-                    </a>
+                @*  <li class="sidebar-item">
+                <a class="sidebar-link" href="@Url.Action("Chat", "Staff")">
+                <i class="fa-regular fa-address-book"></i>
+                <span class="hide-menu">Chat</span>
+                </a>
                 </li>*@
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="@Url.Action("Index", "Blog")">
@@ -157,7 +157,8 @@
                             </span>
                             LogIn
                         </a>
-                    } else
+                    }
+                    else
                     {
                         <a class="sidebar-link" href="@Url.Action("Logout", "Staff", new { area = "Admin" })">
                             <span>
@@ -165,11 +166,10 @@
                             </span>
                             LogOut
                         </a>
-                        
+
                     }
                 </li>
             </ul>
         </nav>
     </div>
 </div>
-

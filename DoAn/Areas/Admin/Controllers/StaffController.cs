@@ -206,7 +206,8 @@ namespace DoAn.Areas.Admin.Controllers
 
             if (string.IsNullOrEmpty(registrationModel.Name) && string.IsNullOrEmpty(registrationModel.Username)
                 && string.IsNullOrEmpty(registrationModel.Password) && string.IsNullOrEmpty(registrationModel.Phone)
-                && string.IsNullOrEmpty(registrationModel.Address)  && string.IsNullOrEmpty(registrationModel.Email) && string.IsNullOrEmpty(registrationModel.Phone))
+                && string.IsNullOrEmpty(registrationModel.Address)  && string.IsNullOrEmpty(registrationModel.Email) 
+                && string.IsNullOrEmpty(registrationModel.Phone))
             {
                 ModelState.AddModelError("Name", "cannot be empty.");
             }
