@@ -90,7 +90,7 @@ namespace DoAn.ApiController
                 {
                     Message = "Empty fields in registration data.",
                 };
-                return BadRequest(emptyFieldsErrorResponse);
+                return Ok(emptyFieldsErrorResponse);
             }
             var vietnamesePhoneNumberPattern = @"^(0[0-9]{9,10})$"; 
             if (!Regex.IsMatch(registrationModel.Phone, vietnamesePhoneNumberPattern))
@@ -99,7 +99,7 @@ namespace DoAn.ApiController
                 {
                     Message = "Invalid phone number format",
                 };
-                return BadRequest(phoneFormatErrorResponse);
+                return Ok(phoneFormatErrorResponse);
             }
             if (ModelState.IsValid)
             {
@@ -112,7 +112,7 @@ namespace DoAn.ApiController
 
                 if (role == null)
                 {
-                    return BadRequest("Default role not found.");
+                    return Ok("Default role not found.");
                 }
                 var newClient = new Client
                 {
