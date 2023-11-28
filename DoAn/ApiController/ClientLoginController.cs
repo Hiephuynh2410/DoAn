@@ -90,7 +90,7 @@ namespace DoAn.ApiController
                 {
                     Message = "Empty fields in registration data.",
                 };
-                return Ok(emptyFieldsErrorResponse);
+                return BadRequest(emptyFieldsErrorResponse);
             }
             var vietnamesePhoneNumberPattern = @"^(0[0-9]{9,10})$"; 
             if (!Regex.IsMatch(registrationModel.Phone, vietnamesePhoneNumberPattern))
@@ -99,7 +99,7 @@ namespace DoAn.ApiController
                 {
                     Message = "Invalid phone number format",
                 };
-                return Ok(phoneFormatErrorResponse);
+                return BadRequest(phoneFormatErrorResponse);
             }
             if (ModelState.IsValid)
             {
