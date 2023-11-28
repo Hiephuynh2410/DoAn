@@ -84,7 +84,7 @@ namespace DoAn.ApiController
             {
                 var emptyFieldsErrorResponse = new
                 {
-                    Message = "Không được để trống username password name phone Email đâu Cưng !",
+                    Message = "Không được để trống username password name phone Email đâu Cưng!",
                 };
                 return BadRequest(emptyFieldsErrorResponse);
             }
