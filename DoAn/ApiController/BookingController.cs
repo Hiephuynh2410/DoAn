@@ -109,13 +109,15 @@ namespace DoAn.ApiController
 
                     _dbContext.Bookings.Add(newBooking);
                     await _dbContext.SaveChangesAsync();
-
                     //nguoi dung book thi gui mail
                     SendBookingNotificationEmail(staff.Email, registrationModel);
 
-                    // nguoi dung book thi gui về xác nhận
-                    SendBookingConfirmationEmail(client.Email ,registrationModel);
-
+                    if (client != null )
+                    {
+                        
+                        // nguoi dung book thi gui về xác nhận
+                        SendBookingConfirmationEmail(client.Email, registrationModel);
+                    } 
                     var registrationSuccessResponse = new
                     {
                         Message = "Registration successful",
