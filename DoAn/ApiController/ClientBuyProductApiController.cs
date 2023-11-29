@@ -134,7 +134,6 @@ namespace DoAn.ApiController
                 {
                     _dbContext.Carts.Remove(existingCartItem);
                 }
-
                 await _dbContext.SaveChangesAsync();
 
                 return Ok("Product removed from the cart successfully.");
@@ -243,6 +242,37 @@ namespace DoAn.ApiController
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpDelete("removeAll/{userId}")]
+        public async Task<IActionResult> ClearCart(int userId)
+        {
+            try
+            {
+                if (userId <= 0)
+                {
+                    return BadRequest("Invalid user ID.");
+                }
+
+                var cartItems = await _dbContext.Carts
+                    .Where(c => c.UserId == userId)
+                    .ToListAsync();
+
+                if (cartItems == null || cartItems.Count == 0)
+                {
+                    return NotFound("Cart is already empty.");
+                }
+
+                _dbContext.Carts.RemoveRange(cartItems);
+                await _dbContext.SaveChangesAsync();
+
+                return Ok("Cart cleared successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
     }
 }
 //[HttpPut("UpdateCart/{userId}/{productId}/{quantity}")]

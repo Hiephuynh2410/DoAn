@@ -114,7 +114,6 @@ namespace DoAn.ApiController
 
                     if (client != null )
                     {
-                        
                         // nguoi dung book thi gui về xác nhận
                         SendBookingConfirmationEmail(client.Email, registrationModel);
                     } 
