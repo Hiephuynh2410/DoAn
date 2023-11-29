@@ -1,9 +1,13 @@
 ﻿@model IEnumerable<DoAn.Models.Combo>
+@using Microsoft.AspNetCore.Http
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    string userRole = Context.Session.GetString("Role");
+    bool isAdmin = userRole == "1";
 }
+
 
 <div class="wrapper-box" style="padding:7rem">
     <div class="toolBar-control">
@@ -50,9 +54,11 @@
                             <button class="btn-detail" onclick="navigateTo('Detail', @item.ComboId)">
                                 Detail
                             </button>
-                            <button class="btn-delete" onclick="deleteStaff(@item.ComboId)">
+                            @if (isAdmin)
+                            { <button class="btn-delete" onclick="deleteStaff(@item.ComboId)">
                                 Delete
                             </button>
+                            }
                         </td>
                     </tr>
                 }

@@ -58,15 +58,19 @@
                             <input asp-for="Name" type="text" class="userName" />
                         </div>
                             <span asp-validation-for="Name" class="text-danger"></span>
-                        <div style="flex:1 1 18rem" class="box wrappUserName">
-                            <span> <strong style="color:red">*</strong> Role: </span>
-                                @Html.DropDownList("RoleId", (SelectList)ViewBag.Roles, "Select a role", new { @class = "userName" })
+                        <div class ="mb-4">
+                            <label for="BranchId" class="form-label">RoleId</label>
+                                @Html.DropDownList("RoleId", (SelectList)ViewBag.Roles, "Select a role", new { @class = "form-control" })
+                        </div>
+                        <div class="mb-4">
+                            <label for="BranchId" class="form-label">Branch</label>
+                            @Html.DropDownList("BranchId", (SelectList)ViewBag.Branches, "Select a branch", new { @class = "form-control" })
+                            <span asp-validation-for="BranchId" class="text-danger"></span>
                         </div>
                         <div style="flex:1 1 18rem" class="box">
                                 <span><strong style="color:red">*</strong> Username: </span>
                             <input asp-for="Username" type="text" class="userName"  />
                             <span asp-validation-for="Username" class="text-danger"></span>
-
                         </div>
                         <div style="flex:1 1 18rem" class="box">
                                 <span><strong style="color:red">*</strong>Phonenumber:</span>

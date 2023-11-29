@@ -74,6 +74,25 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 registrationModel.CreatedBy = createdByUserId;
             }
+            var checkCombo = db.Combos.FirstOrDefault(x => x.Name == registrationModel.Name);
+            if (checkCombo != null)
+            {
+                ModelState.AddModelError("Name", "Combo with this name already exists.");
+                return View(registrationModel);
+            }
+            if (string.IsNullOrEmpty(registrationModel.Name))
+            {
+                ModelState.AddModelError("Name", "Name cannot be empty.");
+            }
+
+            if (string.IsNullOrEmpty(registrationModel.Price.ToString()) || registrationModel.Price <= 0)
+            {
+                ModelState.AddModelError("Price", "Price cannot be empty or bé hơn 0");
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(registrationModel);
+            }
 
             var json = JsonConvert.SerializeObject(registrationModel);
             var content = new StringContent(json, Encoding.UTF8, "application/json");

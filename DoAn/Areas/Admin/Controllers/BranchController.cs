@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Diagnostics.Metrics;
 using System.Text;
 
 namespace DoAn.Areas.Admin.Controllers
@@ -56,7 +57,6 @@ namespace DoAn.Areas.Admin.Controllers
         //Create
         public IActionResult Create()
         {
-           
             return View();
         }
         [HttpPost]
@@ -64,6 +64,20 @@ namespace DoAn.Areas.Admin.Controllers
         {
             var apiUrl = "https://localhost:7109/api/BranchApi/create";
 
+            var checkBranch = db.Branches.FirstOrDefault(b => b.Address == registrationModel.Address);
+            if(checkBranch != null)
+            {
+                ModelState.AddModelError("Address", "Address with this name already exists.");
+                return View(registrationModel);
+            }
+            if (string.IsNullOrEmpty(registrationModel.Address))
+            {
+                ModelState.AddModelError("Address", "Address cannot be empty.");
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(registrationModel);
+            }
             var json = JsonConvert.SerializeObject(registrationModel);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 

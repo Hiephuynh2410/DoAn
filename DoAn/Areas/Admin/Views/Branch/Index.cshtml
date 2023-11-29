@@ -1,8 +1,11 @@
 ﻿@model IEnumerable<DoAn.Models.Branch>
+@using Microsoft.AspNetCore.Http
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    string userRole = Context.Session.GetString("Role");
+    bool isAdmin = userRole == "1";
 }
 <div class="wrapper-box" style="padding:7rem">
     <div class="toolBar-control">
@@ -43,9 +46,12 @@
                             <button class="btn-detail" onclick="navigateTo('Detail', @item.BranchId)">
                                 Detail
                             </button>
-                            <button class="btn-delete" onclick="deleteStaff(@item.BranchId)">
-                                Delete
-                            </button>
+                            @if (isAdmin)
+                            {
+                                <button class="btn-delete" onclick="deleteStaff(@item.BranchId)">
+                                    Delete
+                                </button>
+                            }
                         </td>
 
                     </tr>
