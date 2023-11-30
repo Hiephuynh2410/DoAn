@@ -35,7 +35,9 @@
             </div>
             <div class="form-group">
                 <label asp-for="ProductTypeId" class="control-label"></label>
-                @Html.DropDownList("ProductTypeId", (SelectList)ViewBag.ProductType, "Select a Type", new { @id="select-productType"})
+                @Html.DropDownList("ProductTypeId", (SelectList)ViewBag.ProductType, "Select a Type", new { @class="form-control", @id="select-productType"})
+                <span asp-validation-for="ProductTypeId" class="text-danger"></span>
+
             </div>
             <div class="form-group">
                 <label asp-for="Image" class="control-label"></label>
@@ -49,8 +51,8 @@
             </div>
             <div class="form-group">
                 <label asp-for="ProviderId" class="control-label"></label>
-                @Html.DropDownList("ProviderId", (SelectList)ViewBag.providers, "Select a Type", new {@id="select-provider" })
-
+                @Html.DropDownList("ProviderId", (SelectList)ViewBag.providers, "Select a Type", new {@class="form-control", @id="select-provider" })
+                <span asp-validation-for="ProviderId" class="text-danger"></span>
             </div>
            
             <div class="form-group">

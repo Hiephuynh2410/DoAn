@@ -70,9 +70,13 @@ namespace DoAn.Areas.Admin.Controllers
                 ModelState.AddModelError("Address", "Address with this name already exists.");
                 return View(registrationModel);
             }
-            if (string.IsNullOrEmpty(registrationModel.Address))
+            if (string.IsNullOrEmpty(registrationModel.Address) )
             {
                 ModelState.AddModelError("Address", "Address cannot be empty.");
+            }
+            if(string.IsNullOrEmpty(registrationModel.Hotline))
+            {
+                ModelState.AddModelError("Hotline", "Hotline cannot be empty");
             }
             if (!ModelState.IsValid)
             {

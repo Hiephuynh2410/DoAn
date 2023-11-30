@@ -216,6 +216,53 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 registrationModel.CreatedBy = createdByUserId;
             }
+            if (db.Products.Any(p => p.Name == registrationModel.Name))
+            {
+                ModelState.AddModelError("Name", "Name already exists");
+            }
+            if (string.IsNullOrEmpty(registrationModel.Name))
+            {
+                ModelState.AddModelError("Name", "Name cannot be empty");
+            }
+            if (string.IsNullOrEmpty(registrationModel.Description))
+            {
+                ModelState.AddModelError("Description", "Description cannot be empty");
+            }
+            if (string.IsNullOrEmpty(registrationModel.Price.ToString()))
+            {
+                ModelState.AddModelError("Price", "Price cannot be empty");
+            }
+            if (registrationModel.Price <= 0)
+            {
+                ModelState.AddModelError("Price", "Price must be greater than 0");
+            }
+            if(string.IsNullOrEmpty(registrationModel.Quantity.ToString()))
+            {
+                ModelState.AddModelError("Quantity", "Quantity cannot be empty");
+            }
+            if (registrationModel.Quantity <= 0)
+            {
+                ModelState.AddModelError("Quantity", "Quantity must be greater than 0");
+            }
+            if (string.IsNullOrEmpty(Request.Form["ProductTypeId"]))
+            {
+                ModelState.AddModelError("ProductTypeId", "ProductTypeId is required.");
+            }
+            if (string.IsNullOrEmpty(Request.Form["ProviderId"]))
+            {
+                ModelState.AddModelError("ProviderId", "ProviderId is required.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                var ProductType = db.Producttypes.ToList();
+                var providers = db.Providers.ToList();
+
+                ViewBag.ProductType = new SelectList(ProductType, "ProductTypeId", "Name");
+                ViewBag.providers = new SelectList(providers, "ProviderId", "Name");
+
+                return View(registrationModel);
+            }
 
             var json = JsonConvert.SerializeObject(registrationModel);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -224,8 +271,6 @@ namespace DoAn.Areas.Admin.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-
-
                 return RedirectToAction("Index");
             }
             else
@@ -233,13 +278,19 @@ namespace DoAn.Areas.Admin.Controllers
                 var responseContent = await response.Content.ReadAsStringAsync();
                 Console.WriteLine("API Response Content: " + responseContent);
 
-
                 var errorResponse = JsonConvert.DeserializeObject<object>(responseContent);
-
                 ModelState.AddModelError("", errorResponse.ToString());
+
+                var ProductType = db.Producttypes.ToList();
+                var providers = db.Providers.ToList();
+
+                ViewBag.ProductType = new SelectList(ProductType, "ProductTypeId", "Name");
+                ViewBag.providers = new SelectList(providers, "ProviderId", "Name");
+
                 return View(registrationModel);
             }
         }
+
 
         //View List
         public async Task<IActionResult> Index()
