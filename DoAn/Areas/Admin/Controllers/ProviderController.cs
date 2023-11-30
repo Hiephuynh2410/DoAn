@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace DoAn.Areas.Admin.Controllers
 {
@@ -30,6 +31,46 @@ namespace DoAn.Areas.Admin.Controllers
         public async Task<IActionResult> Create(Provider registrationModel)
         {
             var apiUrl = "https://localhost:7109/api/ProviderApi/create";
+            var checkProvider = db.Providers.FirstOrDefault(x => x.Name == registrationModel.Name);
+
+            if (checkProvider != null)
+            {
+                ModelState.AddModelError("Name", "Name with this name already exists.");
+                return View(registrationModel);
+            }
+
+            if (string.IsNullOrEmpty(registrationModel.Name))
+            {
+                ModelState.AddModelError("Name", "Name cannot be empty");
+            }
+
+            if (string.IsNullOrEmpty(registrationModel.Address))
+            {
+                ModelState.AddModelError("Address", "Address cannot be empty");
+            }
+
+            if (string.IsNullOrEmpty(registrationModel.Phone))
+            {
+                ModelState.AddModelError("Phone", "Phone cannot be empty");
+            }
+
+            if (string.IsNullOrEmpty(registrationModel.Email))
+            {
+                ModelState.AddModelError("Email", "Email cannot be empty");
+            }
+            else
+            {
+                var emailRegex = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
+                if (!Regex.IsMatch(registrationModel.Email, emailRegex))
+                {
+                    ModelState.AddModelError("Email", "sai định dạng email");
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(registrationModel);
+            }
 
             var json = JsonConvert.SerializeObject(registrationModel);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -45,13 +86,12 @@ namespace DoAn.Areas.Admin.Controllers
                 var responseContent = await response.Content.ReadAsStringAsync();
                 Console.WriteLine("API Response Content: " + responseContent);
 
-
                 var errorResponse = JsonConvert.DeserializeObject<object>(responseContent);
-
                 ModelState.AddModelError("", errorResponse.ToString());
                 return View(registrationModel);
             }
         }
+
 
         //search
         public async Task<IActionResult> SearchResult(string keyword)

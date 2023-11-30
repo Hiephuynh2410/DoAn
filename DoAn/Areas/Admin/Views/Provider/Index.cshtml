@@ -1,8 +1,10 @@
 ﻿@model IEnumerable<DoAn.Models.Provider>
-
+@using Microsoft.AspNetCore.Http
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    string userRole = Context.Session.GetString("Role");
+    bool isAdmin = userRole == "1";
 }
 
 <div class="wrapper-box" style="padding:7rem">
@@ -40,9 +42,9 @@
                 <th>
                     Email
                 </th>
+                <th>Action</th>
             </tr>
 
-            <!-- render 1 -->
             <tbody class="box-tbody">
                 @foreach (var item in Model)
                 {
@@ -69,9 +71,12 @@
                             <button class="btn-detail" onclick="navigateTo('Detail', @item.ProviderId)">
                                 Detail
                             </button>
-                            <button class="btn-delete" onclick="deleteStaff(@item.ProviderId)">
-                                Delete
-                            </button>
+                            @if(isAdmin)
+                            {
+                                <button class="btn-delete" onclick="deleteStaff(@item.ProviderId)">
+                                    Delete
+                                </button>
+                            }
                         </td>
                     </tr>
                 }

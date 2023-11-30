@@ -30,6 +30,20 @@ namespace DoAn.Areas.Admin.Controllers
         public async Task<IActionResult> Create(Producttype registrationModel)
         {
             var apiUrl = "https://localhost:7109/api/ProductTypeApi/create";
+            var checkProductTupe = db.Producttypes.FirstOrDefault(x => x.Name == registrationModel.Name); 
+            if(checkProductTupe != null)
+            {
+                ModelState.AddModelError("Name", "Name tồn tại rồi đừng thêm nữa");
+                return View(registrationModel);
+            }
+            if(string.IsNullOrEmpty(registrationModel.Name))
+            {
+                ModelState.AddModelError("Name", "Name cannot be empty");
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(registrationModel);
+            }
             var json = JsonConvert.SerializeObject(registrationModel);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 

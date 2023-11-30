@@ -209,30 +209,28 @@ namespace DoAn.Areas.Admin.Controllers
         {
             var apiUrl = "https://localhost:7109/api/ProductApi/create";
             int createdByUserId;
-
             var userIdSessionValue = HttpContext.Session.GetString("UserId");
-
             if (!string.IsNullOrEmpty(userIdSessionValue) && int.TryParse(userIdSessionValue, out createdByUserId))
             {
                 registrationModel.CreatedBy = createdByUserId;
             }
-            if (db.Products.Any(p => p.Name == registrationModel.Name))
+            if(db.Products.Any(p => p.Name == registrationModel.Name))
             {
                 ModelState.AddModelError("Name", "Name already exists");
             }
-            if (string.IsNullOrEmpty(registrationModel.Name))
+            if(string.IsNullOrEmpty(registrationModel.Name))
             {
                 ModelState.AddModelError("Name", "Name cannot be empty");
             }
-            if (string.IsNullOrEmpty(registrationModel.Description))
+            if(string.IsNullOrEmpty(registrationModel.Description))
             {
                 ModelState.AddModelError("Description", "Description cannot be empty");
             }
-            if (string.IsNullOrEmpty(registrationModel.Price.ToString()))
+            if(string.IsNullOrEmpty(registrationModel.Price.ToString()))
             {
                 ModelState.AddModelError("Price", "Price cannot be empty");
             }
-            if (registrationModel.Price <= 0)
+            if(registrationModel.Price <= 0)
             {
                 ModelState.AddModelError("Price", "Price must be greater than 0");
             }
@@ -240,24 +238,22 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("Quantity", "Quantity cannot be empty");
             }
-            if (registrationModel.Quantity <= 0)
+            if(registrationModel.Quantity <= 0)
             {
                 ModelState.AddModelError("Quantity", "Quantity must be greater than 0");
             }
-            if (string.IsNullOrEmpty(Request.Form["ProductTypeId"]))
+            if(string.IsNullOrEmpty(Request.Form["ProductTypeId"]))
             {
                 ModelState.AddModelError("ProductTypeId", "ProductTypeId is required.");
             }
-            if (string.IsNullOrEmpty(Request.Form["ProviderId"]))
+            if(string.IsNullOrEmpty(Request.Form["ProviderId"]))
             {
                 ModelState.AddModelError("ProviderId", "ProviderId is required.");
             }
-
             if (!ModelState.IsValid)
             {
                 var ProductType = db.Producttypes.ToList();
                 var providers = db.Providers.ToList();
-
                 ViewBag.ProductType = new SelectList(ProductType, "ProductTypeId", "Name");
                 ViewBag.providers = new SelectList(providers, "ProviderId", "Name");
 

@@ -129,7 +129,24 @@ namespace DoAn.Areas.Admin.Controllers
         {
             var apiUrl = "https://localhost:7109/api/BlogCategoryApi/create";
             int createdByUserId;
-
+            var checkBlogCatetory = db.BlogCategories.FirstOrDefault(x => x.Title ==  registrationModel.Title); 
+            if (checkBlogCatetory != null)
+            {
+                ModelState.AddModelError("Title", "Title đã tồn tại vui lòng thêm title khác");
+                return View(registrationModel);
+            }
+            if(string.IsNullOrEmpty(registrationModel.Title))
+            {
+                ModelState.AddModelError("Title", "Title cannot be empty");
+            }
+            if (string.IsNullOrEmpty(registrationModel.Description))
+            {
+                ModelState.AddModelError("Description", "Description cannot be empty");
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(registrationModel);
+            }
             var json = JsonConvert.SerializeObject(registrationModel);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
