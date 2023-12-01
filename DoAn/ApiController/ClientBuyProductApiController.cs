@@ -166,9 +166,8 @@ namespace DoAn.ApiController
                 {
                     return BadRequest("Not enough stock available.");
                 }
-
                 product.Quantity -= quantityToBuy;
-
+                product.Sold += 1;
                 var newBill = new Bill
                 {
                     Date = DateTime.UtcNow,
@@ -190,7 +189,7 @@ namespace DoAn.ApiController
                 _dbContext.Billdetails.Add(newBillDetail);
                 await _dbContext.SaveChangesAsync();
 
-                await SendBookingNotificationEmail(client.Email, newBillDetail, product, client);
+                //await SendBookingNotificationEmail(client.Email, newBillDetail, product, client);
 
                 var tongtien = quantityToBuy * product.Price;
                 var responseMessage = $"Product bought successfully. Bill Detail ID: {newBillDetail.BillId}. Total Cost: {tongtien}.";

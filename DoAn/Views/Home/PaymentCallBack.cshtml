@@ -1,0 +1,21 @@
+﻿@model ProGCoder_MomoAPI.Models.Momo.MomoExecuteResponseModel
+
+@{
+    ViewData["Title"] = "Home Page";
+    var postUrl = "tich-hop-thanh-toan-momo-voi-asp-net-core-7d5e4hP";
+}
+
+<div class="text-center">
+    <div class="container">
+        <h1 class="text-success">Thanh Toán Thành Công</h1>
+        <p>Order ID: <strong>@Model.OrderId</strong></p>
+        <p>Amount: <strong>@Model.Amount</strong></p>
+        <p>Order Info: <strong>@Model.OrderInfo</strong></p>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        
+    });
+</script>

@@ -126,6 +126,7 @@ public partial class DlctContext : DbContext
 
             entity.HasOne(d => d.Staff).WithMany(p => p.BlogPosts)
                 .HasForeignKey(d => d.StaffId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_BLOG_POSTS_STAFF");
         });
 
@@ -160,6 +161,7 @@ public partial class DlctContext : DbContext
 
             entity.HasOne(d => d.Combo).WithMany(p => p.Bookings)
                 .HasForeignKey(d => d.ComboId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_BOOKING_COMBO");
 
             entity.HasOne(d => d.Staff).WithMany(p => p.Bookings)
@@ -454,6 +456,7 @@ public partial class DlctContext : DbContext
 
             entity.HasOne(d => d.Branch).WithMany(p => p.Staff)
                 .HasForeignKey(d => d.BranchId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_STAFF_BRANCH");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Staff)

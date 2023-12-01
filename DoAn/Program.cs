@@ -5,13 +5,16 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
-
+using DoAn.Services;
+using ProGCoder_MomoAPI.Models.Momo;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
 builder.Services.AddDbContext<DlctContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BookingCatToc")));
+builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
+builder.Services.AddScoped<IMomoService, MomoService>();
 
 
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();

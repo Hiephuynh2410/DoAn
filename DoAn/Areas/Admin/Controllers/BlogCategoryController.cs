@@ -17,7 +17,7 @@ namespace DoAn.Areas.Admin.Controllers
             _httpClient = new HttpClient();
         }
 
-        //Delete
+        //Delete 
         public async Task<IActionResult> Delete(int BlogCategoryId)
         {
             if (HttpContext.Session.GetString("UserId") == null)

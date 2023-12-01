@@ -29,6 +29,8 @@ public partial class Product
 
     public int? UpdatedBy { get; set; }
 
+    public int? Sold { get; set; } = 0;
+
     public virtual ICollection<Billdetail> Billdetails { get; set; } = new List<Billdetail>();
 
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
