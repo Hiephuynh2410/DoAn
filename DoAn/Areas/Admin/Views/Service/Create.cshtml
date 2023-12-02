@@ -26,6 +26,7 @@
             <div class="form-group">
                 <label asp-for="ServiceTypeId" class="control-label"></label>
                 @Html.DropDownList("ServiceTypeId", (SelectList)ViewBag.serviceTypes, "Select a serviceTypes", new { @class = "form-control" })
+                <span asp-validation-for="ServiceTypeId" class="text-danger"></span>
 
             </div>
             <div class="form-group">

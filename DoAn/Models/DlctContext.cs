@@ -88,7 +88,6 @@ public partial class DlctContext : DbContext
 
             entity.HasOne(d => d.Bill).WithMany(p => p.Billdetails)
                 .HasForeignKey(d => d.BillId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_BILLDETAIL_BILL");
 
             entity.HasOne(d => d.Product).WithMany(p => p.Billdetails)
@@ -313,6 +312,7 @@ public partial class DlctContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.ProductTypeId).HasColumnName("Product_type_id");
             entity.Property(e => e.ProviderId).HasColumnName("Provider_id");
+            entity.Property(e => e.Sold).HasDefaultValueSql("((0))");
             entity.Property(e => e.UpdatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("Updated_at");

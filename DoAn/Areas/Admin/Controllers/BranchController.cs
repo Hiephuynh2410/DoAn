@@ -63,8 +63,8 @@ namespace DoAn.Areas.Admin.Controllers
         public async Task<IActionResult> Create(Branch registrationModel)
         {
             var apiUrl = "https://localhost:7109/api/BranchApi/create";
-
-            var checkBranch = db.Branches.FirstOrDefault(b => b.Address == registrationModel.Address);
+            var branchName = registrationModel.Address?.Trim();
+            var checkBranch = db.Branches.FirstOrDefault(b => b.Address == branchName);
             if(checkBranch != null)
             {
                 ModelState.AddModelError("Address", "Address with this name already exists.");

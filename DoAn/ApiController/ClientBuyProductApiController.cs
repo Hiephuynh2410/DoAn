@@ -166,8 +166,10 @@ namespace DoAn.ApiController
                 {
                     return BadRequest("Not enough stock available.");
                 }
+
                 product.Quantity -= quantityToBuy;
                 product.Sold += 1;
+
                 var newBill = new Bill
                 {
                     Date = DateTime.UtcNow,

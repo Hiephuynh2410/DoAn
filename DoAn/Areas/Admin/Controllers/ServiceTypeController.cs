@@ -166,6 +166,21 @@ namespace DoAn.Areas.Admin.Controllers
         public async Task<IActionResult> Create(Servicetype registrationModel)
         {
             var apiUrl = "https://localhost:7109/api/ServicesTypeApi/create";
+            var serviceName = registrationModel.Name?.Trim();
+            var checkSer = db.Servicetypes.FirstOrDefault(x => x.Name == serviceName);
+            if (checkSer != null)
+            {
+                ModelState.AddModelError("Name", "Servicetypes with this name already exists.");
+                return View(registrationModel);
+            }
+            if (string.IsNullOrEmpty(registrationModel.Name))
+            {
+                ModelState.AddModelError("Name", "Name cannot be empty.");
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(registrationModel);
+            }
             var json = JsonConvert.SerializeObject(registrationModel);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 

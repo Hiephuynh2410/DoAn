@@ -53,7 +53,12 @@ namespace DoAn.Areas.Admin.Controllers
         public async Task<IActionResult> create(BlogPost registrationModel)
         {
             var apiUrl = "https://localhost:7109/api/BlogApi/create";
-
+            var checkNameAlready = db.BlogPosts.FirstOrDefault(x => x.Titile == registrationModel.Titile);
+            if (checkNameAlready != null)
+            {
+                ModelState.AddModelError("Titile", "Titile with this name already exists.");
+                return View(registrationModel);
+            }
             if (string.IsNullOrEmpty(registrationModel.Titile))
             {
                 ModelState.AddModelError("Titile", "Title cannot be empty.");

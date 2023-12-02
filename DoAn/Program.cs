@@ -13,6 +13,7 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 
 builder.Services.AddDbContext<DlctContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BookingCatToc")));
+
 builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
 builder.Services.AddScoped<IMomoService, MomoService>();
 

@@ -43,6 +43,7 @@ namespace DoAn.ApiController
 
             if (result == PasswordVerificationResult.Success)
             {
+                HttpContext.Session.SetString("UserId", client.ClientId.ToString());
                 var loginSuccessResponse = new
                 {
                     userID = client.ClientId,

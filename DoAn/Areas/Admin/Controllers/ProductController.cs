@@ -214,7 +214,13 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 registrationModel.CreatedBy = createdByUserId;
             }
-            if(db.Products.Any(p => p.Name == registrationModel.Name))
+            var check = db.Products.FirstOrDefault(x => x.Name == registrationModel.Name);
+            if (check != null)
+            {
+                ModelState.AddModelError("Name", "product with this name already exists.");
+                return View(registrationModel);
+            }
+            if (db.Products.Any(p => p.Name == registrationModel.Name))
             {
                 ModelState.AddModelError("Name", "Name already exists");
             }

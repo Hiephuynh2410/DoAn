@@ -29,7 +29,7 @@ public partial class Product
 
     public int? UpdatedBy { get; set; }
 
-    public int? Sold { get; set; } = 0;
+    public int? Sold { get; set; }
 
     public virtual ICollection<Billdetail> Billdetails { get; set; } = new List<Billdetail>();
 

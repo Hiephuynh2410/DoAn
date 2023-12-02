@@ -54,9 +54,14 @@ namespace DoAn.Areas.Admin.Controllers
         public async Task<IActionResult> Create(Service registrationModel)
         {
             var apiUrl = "https://localhost:7109/api/ServiceApi/create";
-            if (string.IsNullOrEmpty(registrationModel.Name) && string.IsNullOrEmpty(registrationModel.Name))
+            if (string.IsNullOrEmpty(registrationModel.Name) && string.IsNullOrEmpty(registrationModel.Price.ToString()))
             {
                 ModelState.AddModelError("Name", "cannot be empty.");
+                ModelState.AddModelError("Price", "cannot be empty.");
+            }
+            if (registrationModel.Price <= 0)
+            {
+                ModelState.AddModelError("Price", "Price must be greater than 0.");
             }
 
             if (string.IsNullOrEmpty(Request.Form["ServiceTypeId"]))

@@ -74,7 +74,9 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 registrationModel.CreatedBy = createdByUserId;
             }
-            var checkCombo = db.Combos.FirstOrDefault(x => x.Name == registrationModel.Name);
+            var ComboName = registrationModel.Name?.Trim();
+
+            var checkCombo = db.Combos.FirstOrDefault(x => x.Name == ComboName);
             if (checkCombo != null)
             {
                 ModelState.AddModelError("Name", "Combo with this name already exists.");
