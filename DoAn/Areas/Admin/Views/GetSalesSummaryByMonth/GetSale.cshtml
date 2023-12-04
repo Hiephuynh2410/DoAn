@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Best Selling Products";
+}
+
+<h2 style="padding: 5rem">Best Selling Products</h2>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<canvas id="salesChart" width="800" height="400"></canvas>
+@section scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var bestSellingProducts = @Html.Raw(Json.Serialize(ViewBag.BestSellingProducts));
+            console.log(bestSellingProducts);
+
+            var productNames = bestSellingProducts.map(p => p.productName);
+            console.log(productNames);
+
+            var totalQuantities = bestSellingProducts.map(p => p.totalQuantity);
+            console.log(totalQuantities);
+
+            var ctx = document.getElementById('salesChart').getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: productNames,
+                    datasets: [{
+                        label: 'Total Quantity Sold',
+                        data: totalQuantities,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}

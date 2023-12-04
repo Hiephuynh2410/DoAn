@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace DoAn.Models;
 using Microsoft.EntityFrameworkCore;
-
-namespace DoAn.Models;
 
 public partial class DlctContext : DbContext
 {
+
     public DlctContext()
     {
     }
@@ -404,6 +402,7 @@ public partial class DlctContext : DbContext
 
             entity.HasOne(d => d.ServiceType).WithMany(p => p.Services)
                 .HasForeignKey(d => d.ServiceTypeId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_SERVICE_ServiceType");
         });
 
