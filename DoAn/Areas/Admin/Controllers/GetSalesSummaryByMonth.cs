@@ -53,7 +53,7 @@ namespace DoAn.Areas.Admin.Controllers
             }
 
             ViewBag.BestSellingProducts = bestSellingProducts;
-
+            ViewBag.BestSellingProductName = bestSellingProducts.FirstOrDefault()?.ProductName;
             return View();
         }
 

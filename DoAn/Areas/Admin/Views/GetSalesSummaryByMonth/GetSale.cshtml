@@ -2,7 +2,6 @@
     ViewData["Title"] = "Best Selling Products";
 }
 
-
 <div style="padding-top:7rem">
     <div class="wrapper">
         <div class="rectangle">
@@ -11,14 +10,9 @@
             <h1 class="price"><strong>@ViewBag.TotalRevenue</strong>VNĐ</h1>
         </div>
         <div class="rectangle1">
-            <i id="icon" class="fa-solid fa-chart-line"></i>
+            <i id="icon" class="fa-solid fa-bookmark"></i>
             <p class="total">Sản phẩm bán chạy nhất</p>
-            <h1 class="price"><strong></strong>VNĐ</h1>
-        </div>
-        <div class="rectangle3">
-            <i id="icon" class="fa-solid fa-chart-line"></i>
-            <p class="total">Tổng doanh thu sản phẩm</p>
-            <h1 class="price"><strong>@ViewBag.TotalRevenue</strong>VNĐ</h1>
+            <h1 class="price"><strong>@ViewBag.BestSellingProductName</strong></h1>
         </div>
     </div>
 </div>
@@ -66,7 +60,7 @@
     .wrapper {
         padding:0 2rem;
         display:flex;
-        justify-content:space-between;
+        justify-content:space-around;
     }
 
     .rectangle {
