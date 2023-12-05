@@ -2,23 +2,40 @@
     ViewData["Title"] = "Best Selling Products";
 }
 
-<h2 style="padding: 5rem">Best Selling Products</h2>
 
+<div style="padding-top:7rem">
+    <div class="wrapper">
+        <div class="rectangle">
+            <i id="icon" class="fa-solid fa-chart-line"></i>
+            <p class="total">Tổng doanh thu sản phẩm</p>
+            <h1 class="price"><strong>@ViewBag.TotalRevenue</strong>VNĐ</h1>
+        </div>
+        <div class="rectangle1">
+            <i id="icon" class="fa-solid fa-chart-line"></i>
+            <p class="total">Sản phẩm bán chạy nhất</p>
+            <h1 class="price"><strong></strong>VNĐ</h1>
+        </div>
+        <div class="rectangle3">
+            <i id="icon" class="fa-solid fa-chart-line"></i>
+            <p class="total">Tổng doanh thu sản phẩm</p>
+            <h1 class="price"><strong>@ViewBag.TotalRevenue</strong>VNĐ</h1>
+        </div>
+    </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <canvas id="salesChart" width="800" height="400"></canvas>
+
 @section scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             var bestSellingProducts = @Html.Raw(Json.Serialize(ViewBag.BestSellingProducts));
-            console.log(bestSellingProducts);
 
             var productNames = bestSellingProducts.map(p => p.productName);
-            console.log(productNames);
 
             var totalQuantities = bestSellingProducts.map(p => p.totalQuantity);
-            console.log(totalQuantities);
 
+             var date = bestSellingProducts.map(p => p.Date)
             var ctx = document.getElementById('salesChart').getContext('2d');
             var chart = new Chart(ctx, {
                 type: 'bar',
@@ -43,3 +60,75 @@
         });
     </script>
 }
+</div>
+
+<style>
+    .wrapper {
+        padding:0 2rem;
+        display:flex;
+        justify-content:space-between;
+    }
+
+    .rectangle {
+        position: relative;
+        display: flex;
+        border: none;
+        width: 250px;
+        height: 150px;
+        border-radius: 10px;
+        padding: 1rem;
+        background: linear-gradient(#f2709c, #ff9472);
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    .rectangle3 {
+        position: relative;
+        display: flex;
+        border: none;
+        width: 250px;
+        height: 150px;
+        border-radius: 10px;
+        padding: 1rem;
+        background: linear-gradient(#50C9C3, #96DEDA);
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .rectangle1 {
+        position: relative;
+        display: flex;
+        border: none;
+        width: 250px;
+        height: 150px;
+        border-radius: 10px;
+        padding: 1rem;
+        background: linear-gradient(#FFEEEE, #DDEFBB);
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+
+    #icon {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+    }
+
+    .total {
+        text-transform: uppercase;
+        font-size: 1rem;
+    }
+
+    .total,
+    .price {
+        text-align: center;
+    }
+</style>
