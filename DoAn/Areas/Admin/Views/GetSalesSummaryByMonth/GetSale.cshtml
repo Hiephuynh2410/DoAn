@@ -7,7 +7,7 @@
         <div class="rectangle">
             <i id="icon" class="fa-solid fa-chart-line"></i>
             <p class="total">Tổng doanh thu sản phẩm</p>
-            <h1 class="price"><strong>@ViewBag.TotalRevenue</strong>VNĐ</h1>
+            <h1 class="price"><strong>@ViewBag.TotalRevenue</strong> VNĐ</h1>
         </div>
         <div class="rectangle1">
             <i id="icon" class="fa-solid fa-bookmark"></i>
@@ -17,43 +17,89 @@
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class ="charts-container">
+    <div style="flex:1 1 20rem">
+        <canvas id="salesChart" style="background: white; box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;" width="550" height="450"></canvas>
+    </div>
+    <div style="flex:1 4 20rem">
+        <canvas id="pieChart" style="background: white; box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;" width="387" height="475"></canvas>
+    </div>
+    @section scripts {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var bestSellingProducts = @Html.Raw(Json.Serialize(ViewBag.BestSellingProducts));
 
-<canvas id="salesChart" width="800" height="400"></canvas>
+                var productNames = bestSellingProducts.map(p => p.productName);
+                var totalQuantities = bestSellingProducts.map(p => p.totalQuantity);
+                var date = bestSellingProducts.map(p => p.Date);
+                var backgroundColors = generateRandomColors(productNames.length);
 
-@section scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            var bestSellingProducts = @Html.Raw(Json.Serialize(ViewBag.BestSellingProducts));
-
-            var productNames = bestSellingProducts.map(p => p.productName);
-
-            var totalQuantities = bestSellingProducts.map(p => p.totalQuantity);
-
-             var date = bestSellingProducts.map(p => p.Date)
-            var ctx = document.getElementById('salesChart').getContext('2d');
-            var chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: productNames,
-                    datasets: [{
-                        label: 'Total Quantity Sold',
-                        data: totalQuantities,
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
+                var ctxSalesChart = document.getElementById('salesChart').getContext('2d');
+                var salesChart = new Chart(ctxSalesChart, {
+                    type: 'bar',
+                    data: {
+                        labels: productNames,
+                        datasets: [{
+                            label: 'Total Quantity Sold',
+                            data: totalQuantities,
+                            backgroundColor: backgroundColors,
+                            borderColor: backgroundColors.map(color => color.replace('0.2', '1')),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
                         }
                     }
+                });
+
+                var backgroundColors = generateRandomColors(productNames.length);
+                var ctxPieChart = document.getElementById('pieChart').getContext('2d');
+                var pieChart = new Chart(ctxPieChart, {
+                    type: 'pie',
+                    data: {
+                        labels: productNames,
+                        datasets: [{
+                            data: totalQuantities,
+                            backgroundColor: backgroundColors,
+                            borderColor: backgroundColors.map(color => color.replace('0.2', '1')),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'right',
+                                labels: {
+                                   
+                                    textAlign: 'justify',
+                                }
+                            }
+                        }
+                    }
+
+                });
+
+
+                function generateRandomColors(count) {
+                    var colors = [];
+                    for (var i = 0; i < count; i++) {
+                        var color = 'rgba(' +
+                            Math.floor(Math.random() * 256) + ',' +
+                            Math.floor(Math.random() * 256) + ',' +
+                            Math.floor(Math.random() * 256) + ',0.2)';
+                        colors.push(color);
+                    }
+                    return colors;
                 }
             });
-        });
-    </script>
-}
+        </script>
+    }
+
 </div>
 
 <style>
@@ -74,7 +120,7 @@
         background: linear-gradient(#f2709c, #ff9472);
         box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
         flex-direction: column;
-        align-items: center;
+        align-ite>ms: center;
         justify-content: center;
     }
 
@@ -124,5 +170,11 @@
     .total,
     .price {
         text-align: center;
+    }
+
+    .charts-container {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 2rem;
     }
 </style>
