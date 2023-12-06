@@ -16,4 +16,5 @@ public partial class Bill
     public virtual ICollection<Billdetail> Billdetails { get; set; } = new List<Billdetail>();
 
     public virtual Client? Client { get; set; }
+
 }

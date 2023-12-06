@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using DoAn.Models;
+﻿using DoAn.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,12 +24,12 @@ namespace DoAn.Areas.Admin.Controllers
 
             var salesData = await _dbContext.Bills
                 .Include(b => b.Billdetails)
-                .ThenInclude(d => d.Product)
+                    .ThenInclude(d => d.Product)
                 .Where(b => b.CreatedAt.HasValue)
                 .ToListAsync();
 
             await GetTotalRevenue();
-
+            await GetProductAddCart();
             var bestSellingProducts = salesData
                 .SelectMany(b => b.Billdetails)
                 .GroupBy(d => d.ProductId)
@@ -42,7 +39,9 @@ namespace DoAn.Areas.Admin.Controllers
                     ProductName = x.First().Product?.Name ?? "Unknown",
                     TotalQuantity = x.Sum(d => d.Quantity ?? 0),
                     TotalRevenue = x.Sum(d => (d.Quantity ?? 0) * (d.Price ?? 0)),
-                    Date = x.First().Bill?.Date
+                    Date = x.First().Bill?.Date,
+                    CartQuantity = x.Sum(d => d.Product?.Carts.Sum(c => c.Quantity) ?? 0)
+
                 })
                 .OrderByDescending(entry => entry.TotalQuantity)
                 .ToList();
@@ -54,8 +53,30 @@ namespace DoAn.Areas.Admin.Controllers
 
             ViewBag.BestSellingProducts = bestSellingProducts;
             ViewBag.BestSellingProductName = bestSellingProducts.FirstOrDefault()?.ProductName;
+
             return View();
         }
+
+        public async Task<IActionResult> GetProductAddCart()
+        {
+            var productQuantities = await _dbContext.Carts
+                .GroupBy(c => c.ProductId)
+                .Select(x => new
+                {
+                    ProductId = x.Key,
+                    CartQuantity = x.Sum(c => c.Quantity)
+                })
+                .ToListAsync();
+
+            var productWithMaxCart = productQuantities
+                .OrderByDescending(p => p.CartQuantity)
+                .FirstOrDefault();
+
+            ViewBag.ProductWithMaxCart = productWithMaxCart;
+
+            return View(productQuantities);
+        }
+
 
         public async Task<IActionResult> GetTotalRevenue()
         {

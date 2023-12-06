@@ -191,7 +191,7 @@ namespace DoAn.ApiController
                 _dbContext.Billdetails.Add(newBillDetail);
                 await _dbContext.SaveChangesAsync();
 
-                //await SendBookingNotificationEmail(client.Email, newBillDetail, product, client);
+                await SendBookingNotificationEmail(client.Email, newBillDetail, product, client);
 
                 var tongtien = quantityToBuy * product.Price;
                 var responseMessage = $"Product bought successfully. Bill Detail ID: {newBillDetail.BillId}. Total Cost: {tongtien}.";
@@ -393,6 +393,46 @@ namespace DoAn.ApiController
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpGet("GetBestSellingProduct")]
+        public async Task<IActionResult> GetBestSellingProduct()
+        {
+            try
+            {
+                var bestSellingProduct = await _dbContext.Products
+                    .OrderByDescending(p => p.Sold)
+                    .FirstOrDefaultAsync();
+
+                if (bestSellingProduct == null)
+                {
+                    return NotFound("No products found.");
+                }
+
+                var result = new
+                {
+                    ProductId = bestSellingProduct.ProductId,
+                    Name = bestSellingProduct.Name,
+                    Description = bestSellingProduct.Description,
+                    Price = bestSellingProduct.Price,
+                    Quantity = bestSellingProduct.Quantity,
+                    ProductTypeId = bestSellingProduct.ProductTypeId,
+                    Image = bestSellingProduct.Image,
+                    ProviderId = bestSellingProduct.ProviderId,
+                    CreatedAt = bestSellingProduct.CreatedAt,
+                    CreatedBy = bestSellingProduct.CreatedBy,
+                    UpdatedAt = bestSellingProduct.UpdatedAt,
+                    UpdatedBy = bestSellingProduct.UpdatedBy,
+                    Sold = bestSellingProduct.Sold
+                };
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
     }
 }
 
