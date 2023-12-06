@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 using DoAn.Services;
 using ProGCoder_MomoAPI.Models.Momo;
-using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
@@ -18,8 +17,6 @@ builder.Services.AddDbContext<DlctContext>(options =>
 
 builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
 builder.Services.AddScoped<IMomoService, MomoService>();
-
-//StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<String>();
 
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.AddControllersWithViews()
@@ -80,7 +77,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseCors("cor;sapp");
+app.UseCors("corsapp");
 app.UseRouting();
 app.UseSession();
 app.UseAuthentication();

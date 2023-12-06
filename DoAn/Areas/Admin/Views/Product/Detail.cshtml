@@ -4,59 +4,163 @@
     ViewData["Title"] = "Detail";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
-
 <h1>Detail</h1>
 
-<div>
-    <h4>Product</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Quantity)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Quantity)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Image)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Image)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ProductType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ProductType.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Provider)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Provider.Name)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a href="@Url.Action("Edit", "Product", new { productId = Model.ProductId})">Edit</a>|
+    <section class="edit-product">
+        <h3>This is a page Edit Product</h3>
+        @*<a to="/admin/manager" class="back-to-page">
+            <i class="fa-solid fa-chevron-left"></i> Trở lại
+        </a>*@
+        <div class="edit-container">
+            <form>
+                <div class="box-image">
+                <img src="@Model.Image" width="250px" alt="Product Image">
 
-    <a asp-action="Index">Back to List</a>
-</div>
+                </div>
+
+                <div class="wrap-info">
+                    <div class="box">
+                        <span>ID Sản phẩm</span>
+                    <input value="  @Model.ProductId" type="text" name="productId" disabled>
+                    </div>
+
+                    <div class="box">
+                        <span>Tên sản phẩm</span>
+                    <input value=" @Model.Name" type="text" name="productName" disabled>
+                    </div>
+
+                    <div class="box">
+                        <span>Loại</span>
+                    <input value="@Model.ProductType.Name" type="text" name="productName" disabled>
+                    <div class="box">
+                        <span>Nhà cung cấp: </span>
+                        <input value="@Model.Provider.Name" type="text" name="productName" disabled>
+
+                    </div>
+
+                    <div class="box">
+                        <span>Giá</span>
+                    <input value=" @Model.Price" type="text" name="productPrice" disabled>
+                    </div>
+
+                    <div class="box">
+                        <span>Số lượng</span>
+                    <input value="  @Model.Quantity " type="text" name="productTotalCurrent" disabled>
+                    </div>
+
+                    <div class="box">
+                        <span>Mô tả</span>
+                    <textarea v-model="productDescription" name="productDescription" disabled>@Model.Description</textarea>
+                    </div>
+                    </div>
+                <div>
+                    <a href="@Url.Action("Edit", "Product", new { productId = Model.ProductId})">Edit</a>|
+
+                    <a asp-action="Index">Back to List</a>
+                </div>
+
+                </div>
+            </form>
+        </div>
+    </section>
+
+
+<style>
+    .edit-product {
+        padding: 1rem 2%;
+    }
+     
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    .back-to-page {
+        display: inline-block;
+        padding: .5rem 1.5rem;
+        background: #e2dfdf;
+        border-radius: 1rem;
+        font-size: 1.4rem;
+        color: #333;
+    }
+    .back-to-page:hover  {
+        transform: scale(0.95);
+        transition: 0.3s linear;
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .1);
+    }
+    .edit-container {
+        display: flex;
+        margin-top: 2rem;
+    }  
+    form {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        margin: auto;
+        width: 100%;
+    }
+
+    .box-image {
+        flex: 1 1 42rem;
+        border: .1rem solid #dbdbdb;
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+     img {
+        margin: auto;
+        width: 100%;
+        border-radius: 1rem;
+    }
+
+    .icon-changeImage {
+        position: absolute;
+        bottom: .5rem;
+        right: .5rem;
+    }
+    
+    label {
+        font-size: 1.8rem;
+        cursor: pointer;
+        padding: 1rem 3.5rem;
+        background: #888;
+        color: #fff;
+        border-radius: 1rem;
+        cursor: pointer;
+    }
+
+
+    .wrap-info {
+        flex: 1 1 42rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+        gap: 2rem;
+    }
+    .box span {
+        display: block;
+        font-size: 1.4rem;
+        margin-bottom: .5rem
+    }
+
+    input,
+    select {
+        width: auto;
+        padding: .5rem 1.5rem;
+        border: .1rem solid #dbdbdb;
+        border-radius: .5rem;
+    }
+
+    textarea {
+        max-width: 58rem;
+        width: 100%;
+        height: 15rem;
+        padding: 1rem 1.5rem;
+        line-height: 1.8rem;
+        border: .1rem solid #dbdbdb;
+        border-radius: .5rem;
+    }
+
+</style>

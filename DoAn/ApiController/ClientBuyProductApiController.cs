@@ -401,31 +401,33 @@ namespace DoAn.ApiController
             {
                 var bestSellingProduct = await _dbContext.Products
                     .OrderByDescending(p => p.Sold)
-                    .FirstOrDefaultAsync();
+                    .Take(10)
+                    .ToListAsync();
 
-                if (bestSellingProduct == null)
+
+                if (bestSellingProduct == null || bestSellingProduct.Count == 0)
                 {
                     return NotFound("No products found.");
                 }
 
-                var result = new
+                var results = bestSellingProduct.Select(product => new
                 {
-                    ProductId = bestSellingProduct.ProductId,
-                    Name = bestSellingProduct.Name,
-                    Description = bestSellingProduct.Description,
-                    Price = bestSellingProduct.Price,
-                    Quantity = bestSellingProduct.Quantity,
-                    ProductTypeId = bestSellingProduct.ProductTypeId,
-                    Image = bestSellingProduct.Image,
-                    ProviderId = bestSellingProduct.ProviderId,
-                    CreatedAt = bestSellingProduct.CreatedAt,
-                    CreatedBy = bestSellingProduct.CreatedBy,
-                    UpdatedAt = bestSellingProduct.UpdatedAt,
-                    UpdatedBy = bestSellingProduct.UpdatedBy,
-                    Sold = bestSellingProduct.Sold
-                };
+                    ProductId = product.ProductId,
+                    Name = product.Name,
+                    Description = product.Description,
+                    Price = product.Price,
+                    Quantity = product.Quantity,
+                    ProductTypeId = product.ProductTypeId,
+                    Image = product.Image,
+                    ProviderId = product.ProviderId,
+                    CreatedAt = product.CreatedAt,
+                    CreatedBy = product.CreatedBy,
+                    UpdatedAt = product.UpdatedAt,
+                    UpdatedBy = product.UpdatedBy,
+                    Sold = product.Sold
+                });
 
-                return Ok(result);
+                return Ok(results);
             }
             catch (Exception ex)
             {

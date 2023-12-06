@@ -32,6 +32,7 @@
                 <th>Quanlity</th>
                 <th>Image</th>
                 <th>product Type</th>
+                <th>Sold</th>
                 <th>Provider</th>
                 <th>Create At</th>
                 <th>Update At</th>
@@ -62,6 +63,9 @@
                         </td>
                         <td>
                             @item.ProductType?.Name
+                        </td>
+                        <td>
+                            @item.Sold
                         </td>
                         <td>
                             @item.Provider?.Name
