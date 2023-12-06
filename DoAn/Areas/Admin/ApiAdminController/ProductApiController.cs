@@ -37,6 +37,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 s.UpdatedAt,
                 s.CreatedBy,
                 s.UpdatedBy,
+                s.Sold,
                 ProductType = new
                 {
                     Name = s.ProductType?.Name
