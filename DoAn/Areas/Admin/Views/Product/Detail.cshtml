@@ -5,64 +5,60 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 <h1>Detail</h1>
+<section class="edit-product">
+    <h3>This is a Detail Product</h3>
+    <div class="edit-container">
+        <form>
+            <div class="box-image">
+            <img src="@Model.Image" width="250px" alt="Product Image">
 
-    <section class="edit-product">
-        <h3>This is a page Edit Product</h3>
-        @*<a to="/admin/manager" class="back-to-page">
-            <i class="fa-solid fa-chevron-left"></i> Trở lại
-        </a>*@
-        <div class="edit-container">
-            <form>
-                <div class="box-image">
-                <img src="@Model.Image" width="250px" alt="Product Image">
+            </div>
+
+            <div class="wrap-info">
+                <div class="box">
+                    <span>ID Sản phẩm</span>
+                <input value="  @Model.ProductId" type="text" name="productId" disabled>
+                </div>
+
+                <div class="box">
+                    <span>Tên sản phẩm</span>
+                <input value=" @Model.Name" type="text" name="productName" disabled>
+                </div>
+
+                <div class="box">
+                    <span>Loại</span>
+                <input value="@Model.ProductType.Name" type="text" name="productName" disabled>
+                <div class="box">
+                    <span>Nhà cung cấp: </span>
+                    <input value="@Model.Provider.Name" type="text" name="productName" disabled>
 
                 </div>
 
-                <div class="wrap-info">
-                    <div class="box">
-                        <span>ID Sản phẩm</span>
-                    <input value="  @Model.ProductId" type="text" name="productId" disabled>
-                    </div>
-
-                    <div class="box">
-                        <span>Tên sản phẩm</span>
-                    <input value=" @Model.Name" type="text" name="productName" disabled>
-                    </div>
-
-                    <div class="box">
-                        <span>Loại</span>
-                    <input value="@Model.ProductType.Name" type="text" name="productName" disabled>
-                    <div class="box">
-                        <span>Nhà cung cấp: </span>
-                        <input value="@Model.Provider.Name" type="text" name="productName" disabled>
-
-                    </div>
-
-                    <div class="box">
-                        <span>Giá</span>
-                    <input value=" @Model.Price" type="text" name="productPrice" disabled>
-                    </div>
-
-                    <div class="box">
-                        <span>Số lượng</span>
-                    <input value="  @Model.Quantity " type="text" name="productTotalCurrent" disabled>
-                    </div>
-
-                    <div class="box">
-                        <span>Mô tả</span>
-                    <textarea v-model="productDescription" name="productDescription" disabled>@Model.Description</textarea>
-                    </div>
-                    </div>
-                <div>
-                    <a href="@Url.Action("Edit", "Product", new { productId = Model.ProductId})">Edit</a>|
-
-                    <a asp-action="Index">Back to List</a>
+                <div class="box">
+                    <span>Giá</span>
+                <input value=" @Model.Price" type="text" name="productPrice" disabled>
                 </div>
 
+                <div class="box">
+                    <span>Số lượng</span>
+                <input value="  @Model.Quantity " type="text" name="productTotalCurrent" disabled>
                 </div>
-            </form>
+
+                <div class="box">
+                    <span>Mô tả</span>
+                <textarea v-model="productDescription" name="productDescription" disabled>@Model.Description</textarea>
+                </div>
+                </div>
+            <div>
+                <a href="@Url.Action("Edit", "Product", new { productId = Model.ProductId})">Edit</a>|
+
+                <a asp-action="Index">Back to List</a>
+            </div>
+
+            </div>
+        </form>
         </div>
-    </section>
+</section>
 
 
 <style>

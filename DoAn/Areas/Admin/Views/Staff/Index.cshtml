@@ -42,52 +42,61 @@
             </tr>
 
             <tbody  class="box-tbody">
-                @foreach (var item in Model)
+                 @if (Model != null)
                 {
-                    @if(item.IsDisabled == false)
-                    {
-                        <tr class="item-infoList">
-                            <td>@item.StaffId</td>
-
-                            <td>@item.Name</td>
-                            <td>@item.Username</td>
-                            <td>@item.Phone</td>
-                            <td>
-                                <img src="@item.Avatar" alt="">
-                            </td>
-                            <td>@item.Email</td>
-                            <td>@item.Address</td>
-                            <td>
-                                @if (item.Status == true)
-                                {
-                                    <p style="color: green">Active</p>
-                                }
-                                else
-                                {
-                                    <p style="color: red">Non-Active</p>
-                                }
-                            </td>
-                            <td>@item.CreatedAt?.ToString("dd/MM/yyyy")</td>
-                            <td>@item.UpdatedAt?.ToString("dd/MM/yyyy")</td>
-                            <td>@item.CreatedBy</td>
-                            <td>@item.UpdatedBy</td>
-                            <td>@item.Branch?.Address</td>
-                            <td>@item.Role?.Name</td>
-                            <td>
-                                <button class="button-38" role="button" onclick="navigateTo('Sendmail', @item.StaffId)">
-                                    sendMail
-                                </button>
-                                <button class="btn-edit" onclick="navigateTo('Edit', @item.StaffId)">
-                                    Edit
-                                </button>
-
-                                <button class="btn-delete" onclick="deleteStaff(@item.StaffId)">
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
-                    }
                     
+                    @foreach (var item in Model)
+                    {
+                        @if(item.IsDisabled == false)
+                        {
+                            <tr class="item-infoList">
+                                <td>@item.StaffId</td>
+
+                                <td>@item.Name</td>
+                                <td>@item.Username</td>
+                                <td>@item.Phone</td>
+                                <td>
+                                    <img src="@item.Avatar" alt="">
+                                </td>
+                                <td>@item.Email</td>
+                                <td>@item.Address</td>
+                                <td>
+                                    @if (item.Status == true)
+                                    {
+                                        <p style="color: green">Active</p>
+                                    }
+                                    else
+                                    {
+                                        <p style="color: red">Non-Active</p>
+                                    }
+                                </td>
+                                <td>@item.CreatedAt?.ToString("dd/MM/yyyy")</td>
+                                <td>@item.UpdatedAt?.ToString("dd/MM/yyyy")</td>
+                                <td>@item.CreatedBy</td>
+                                <td>@item.UpdatedBy</td>
+                                <td>@item.Branch?.Address</td>
+                                <td>@item.Role?.Name</td>
+                                <td>
+                                    <button class="button-38" role="button" onclick="navigateTo('Sendmail', @item.StaffId)">
+                                        sendMail
+                                    </button>
+                                    <button class="btn-edit" onclick="navigateTo('Edit', @item.StaffId)">
+                                        Edit
+                                    </button>
+
+                                    <button class="btn-delete" onclick="deleteStaff(@item.StaffId)">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    
+                    }
+                } else
+                {
+                    <tr style="text-align:center">
+                        <td colspan="14" style="color:Red">No products found.</td>
+                    </tr>
                 }
             </tbody>
         </table>   

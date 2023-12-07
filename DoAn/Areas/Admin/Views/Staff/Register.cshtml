@@ -115,11 +115,10 @@
                 var files = fileUpload.files;
                 var formData = new FormData();
                 formData.append('file', files[0]);
-
                 $.ajax(
                     {
                         type: 'POST',
-                        url: '@Url.Action("ProcessUpload", "Staff")',
+                        url: '/Admin/Staff/ProcessUpload',
                         contentType: false,
                         processData: false,
                         data: formData,

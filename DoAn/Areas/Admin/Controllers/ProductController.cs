@@ -26,23 +26,18 @@ namespace DoAn.Areas.Admin.Controllers
                 return Json("No file uploaded");
             }
 
-            string uploadDirectory = @"C:\images";
-
-            if (!Directory.Exists(uploadDirectory))
-            {
-                Directory.CreateDirectory(uploadDirectory);
-            }
-
-            string fileName = Path.GetFileName(file.FileName);
-            string filePath = Path.Combine(uploadDirectory, fileName);
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 file.CopyTo(stream);
             }
 
-            return Json("/images/" + fileName);
+            string imageUrl = "/images/" + fileName;
+            return Json(imageUrl);
         }
+
 
 
 
@@ -124,6 +119,11 @@ namespace DoAn.Areas.Admin.Controllers
                     {
                         var responseContent = await response.Content.ReadAsStringAsync();
                         productList = JsonConvert.DeserializeObject<List<Product>>(responseContent);
+                        if (productList == null || productList.Count == 0)
+                        {
+                            ViewBag.ErrorMessage = "No products found for the given keyword.";
+                            return View("Index");
+                        }
                     }
                     else
                     {
@@ -213,12 +213,6 @@ namespace DoAn.Areas.Admin.Controllers
             if (!string.IsNullOrEmpty(userIdSessionValue) && int.TryParse(userIdSessionValue, out createdByUserId))
             {
                 registrationModel.CreatedBy = createdByUserId;
-            }
-            var check = db.Products.FirstOrDefault(x => x.Name == registrationModel.Name);
-            if (check != null)
-            {
-                ModelState.AddModelError("Name", "product with this name already exists.");
-                return View(registrationModel);
             }
             if (db.Products.Any(p => p.Name == registrationModel.Name))
             {

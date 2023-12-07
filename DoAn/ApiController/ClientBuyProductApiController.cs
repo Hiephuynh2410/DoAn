@@ -212,7 +212,7 @@ namespace DoAn.ApiController
             {
                 var message = new MimeMessage();
 
-                message.From.Add(new MailboxAddress("New Booking", "huynhhiepvan1998@gmail.com"));
+                message.From.Add(new MailboxAddress("PurchaseConfirm", "huynhhiepvan1998@gmail.com"));
                 message.Subject = "Purchase Confirmation";
 
                 message.Body = new TextPart("html")

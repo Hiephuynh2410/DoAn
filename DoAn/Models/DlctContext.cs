@@ -1,9 +1,11 @@
-﻿namespace DoAn.Models;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+
+namespace DoAn.Models;
 
 public partial class DlctContext : DbContext
 {
-
     public DlctContext()
     {
     }
@@ -90,7 +92,6 @@ public partial class DlctContext : DbContext
 
             entity.HasOne(d => d.Product).WithMany(p => p.Billdetails)
                 .HasForeignKey(d => d.ProductId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_BILLDETAIL_PRODUCT1");
         });
 
@@ -208,12 +209,10 @@ public partial class DlctContext : DbContext
 
             entity.HasOne(d => d.Product).WithMany(p => p.Carts)
                 .HasForeignKey(d => d.ProductId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CART_PRODUCT");
 
             entity.HasOne(d => d.User).WithMany(p => p.Carts)
                 .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CART_CILENT");
         });
 
@@ -318,6 +317,7 @@ public partial class DlctContext : DbContext
 
             entity.HasOne(d => d.ProductType).WithMany(p => p.Products)
                 .HasForeignKey(d => d.ProductTypeId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_PRODUCT_PRODUCTTYPE");
 
             entity.HasOne(d => d.Provider).WithMany(p => p.Products)

@@ -30,21 +30,23 @@
                 var bestSellingProducts = @Html.Raw(Json.Serialize(ViewBag.BestSellingProducts));
                 var productNames = bestSellingProducts.map(p => p.productName);
 
+                var shortenedProductNames = productNames.map(name => name.length > 10 ? name.substring(0, 10) + '...' : name);
+
                 var totalQuantities = bestSellingProducts.map(p => p.totalQuantity);
 
                 var date = bestSellingProducts.map(p => p.Date);
 
                 var backgroundColors = generateRandomColors(productNames.length);
-                
+
                 var cartQuantities = bestSellingProducts.map(p => p.cartQuantity);
 
                 var addToCart = @Html.Raw(Json.Serialize(ViewBag.ProductWithMaxCart));
-                    
+
                 var ctxSalesChart = document.getElementById('salesChart').getContext('2d');
                 var salesChart = new Chart(ctxSalesChart, {
                     type: 'bar',
                     data: {
-                        labels: productNames,
+                        labels: shortenedProductNames,
                         datasets: [
                             {
                                 label: 'Total Quantity Sold',
@@ -59,6 +61,14 @@
                         scales: {
                             y: {
                                 beginAtZero: true
+                            },
+                            x: {
+                                maxRotation: 0,
+                                minRotation: 0,
+                                autoSkip: true,
+                                autoSkipPadding: 10,
+                                maxTicksLimit: 10,
+                                fontSize: 10
                             }
                         }
                     }
@@ -83,15 +93,12 @@
                                 display: true,
                                 position: 'right',
                                 labels: {
-                                   
                                     textAlign: 'justify',
                                 }
                             }
                         }
                     }
-
                 });
-
 
                 function generateRandomColors(count) {
                     var colors = [];
@@ -107,6 +114,7 @@
             });
         </script>
     }
+
 
 </div>
 
