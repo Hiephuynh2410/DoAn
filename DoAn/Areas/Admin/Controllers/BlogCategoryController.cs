@@ -139,10 +139,6 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("Title", "Title cannot be empty");
             }
-            if (string.IsNullOrEmpty(registrationModel.Description))
-            {
-                ModelState.AddModelError("Description", "Description cannot be empty");
-            }
             if (!ModelState.IsValid)
             {
                 return View(registrationModel);

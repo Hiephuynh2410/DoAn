@@ -67,10 +67,7 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("Body", "Body cannot be empty.");
             }
-            if (string.IsNullOrEmpty(registrationModel.Thumbnail))
-            {
-                ModelState.AddModelError("Thumbnail", "Thumbnail cannot be empty.");
-            }
+           
             if (string.IsNullOrEmpty(Request.Form["StaffId"]))
             {
                 ModelState.AddModelError("StaffId", "Staff is required.");
