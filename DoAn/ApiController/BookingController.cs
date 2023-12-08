@@ -88,21 +88,16 @@ namespace DoAn.ApiController
                     var combo = await _dbContext.Combos.FindAsync(registrationModel.ComboId);
                     var branch = await _dbContext.Branches.FindAsync(registrationModel.BranchId);
                    
-                        if (staff == null || combo == null || branch == null)
-                        {
-                            var Check = new List<string>();
-                            if (staff == null) Check.Add("Staff");
-                            if (combo == null) Check.Add("Combo");
-                            if (branch == null) Check.Add("Branch");
+                    if (staff == null || combo == null || branch == null)
+                    {
+                        var Check = new List<string>();
+                        if (staff == null) Check.Add("Staff");
+                        if (combo == null) Check.Add("Combo");
+                        if (branch == null) Check.Add("Branch");
 
-                            return NotFound($"Thieu tp nay: {string.Join(", ", Check)}.");
-                        }
-
-                    //if (staff == null || combo == null || branch == null)
-                    //{
-                    //    return NotFound("Client, Staff, booking, or Combo not found.");
-                    //}
-
+                        return NotFound($"Thieu tp nay: {string.Join(", ", Check)}.");
+                    }
+                     
                     var newBooking = new Booking
                     {
                         Client = client,

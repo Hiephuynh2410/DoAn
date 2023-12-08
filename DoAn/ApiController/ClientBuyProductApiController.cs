@@ -355,12 +355,51 @@ namespace DoAn.ApiController
             }
         }
 
-        [HttpPut("UpdateCart/{userId}/{productId}/{quantity}")]
-        public async Task<IActionResult> UpdateCart(int userId, int productId, int quantity)
+        //[HttpPut("UpdateCart/{userId}/{productId}/{quantity}")]
+        //public async Task<IActionResult> UpdateCart(int userId, int productId, int quantity)
+        //{
+        //    try
+        //    {
+        //        if (userId <= 0 || productId <= 0 || quantity <= 0)
+        //        {
+        //            return BadRequest("Invalid request parameters.");
+        //        }
+
+        //        var existingCartItem = await _dbContext.Carts
+        //            .Include(c => c.Product)
+        //            .Include(c => c.User)
+        //            .Where(c => c.UserId == userId && c.ProductId == productId)
+        //            .FirstOrDefaultAsync();
+
+        //        if (existingCartItem == null)
+        //        {
+        //            return NotFound("CartItem not found.");
+        //        }
+
+        //        if (quantity > existingCartItem.Product.Quantity)
+        //        {
+        //            return BadRequest("khong con sp");
+        //        }
+
+        //        existingCartItem.Quantity += quantity;
+
+        //        var updatedTotalAmount = existingCartItem.TotalAmount;
+        //        await _dbContext.SaveChangesAsync();
+
+        //        return Ok($"Cart updated successfully. Updated Total Amount: {updatedTotalAmount}");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
+
+        [HttpPut("UpdateCart/{userId}/{productId}")]
+        public async Task<IActionResult> UpdateCartIncrease(int userId, int productId)
         {
             try
             {
-                if (userId <= 0 || productId <= 0 || quantity <= 0)
+                if (userId <= 0 || productId <= 0)
                 {
                     return BadRequest("Invalid request parameters.");
                 }
@@ -376,12 +415,12 @@ namespace DoAn.ApiController
                     return NotFound("CartItem not found.");
                 }
 
-                if (quantity > existingCartItem.Product.Quantity)
-                {
-                    return BadRequest("khong con sp");
-                }
+                existingCartItem.Quantity += 1;
 
-                existingCartItem.Quantity += quantity;
+                if (existingCartItem.Quantity > existingCartItem.Product.Quantity)
+                {
+                    return BadRequest("Not enough stock available.");
+                }
 
                 var updatedTotalAmount = existingCartItem.TotalAmount;
                 await _dbContext.SaveChangesAsync();
@@ -393,6 +432,46 @@ namespace DoAn.ApiController
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpPut("UpdateCartDecrease/{userId}/{productId}")]
+        public async Task<IActionResult> UpdateCartDecrease(int userId, int productId)
+        {
+            try
+            {
+                if (userId <= 0 || productId <= 0)
+                {
+                    return BadRequest("Invalid request parameters.");
+                }
+
+                var existingCartItem = await _dbContext.Carts
+                    .Include(c => c.Product)
+                    .Include(c => c.User)
+                    .Where(c => c.UserId == userId && c.ProductId == productId)
+                    .FirstOrDefaultAsync();
+
+                if (existingCartItem == null)
+                {
+                    return NotFound("CartItem not found.");
+                }
+
+                existingCartItem.Quantity -= 1;
+
+                if (existingCartItem.Quantity < 1)
+                {
+                    existingCartItem.Quantity = 1; 
+                }
+
+                var updatedTotalAmount = existingCartItem.TotalAmount;
+                await _dbContext.SaveChangesAsync();
+
+                return Ok($"Cart updated successfully. Updated Total Amount: {updatedTotalAmount}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
 
         [HttpGet("GetBestSellingProduct")]
         public async Task<IActionResult> GetBestSellingProduct()
