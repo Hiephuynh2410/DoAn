@@ -419,7 +419,7 @@ namespace DoAn.ApiController
 
                 if (existingCartItem.Quantity > existingCartItem.Product.Quantity)
                 {
-                    return BadRequest("Not enough stock available.");
+                    return BadRequest("Không đủ sản phẩm trong giỏ hàng.");
                 }
 
                 var updatedTotalAmount = existingCartItem.TotalAmount;
@@ -456,9 +456,9 @@ namespace DoAn.ApiController
 
                 existingCartItem.Quantity -= 1;
 
-                if (existingCartItem.Quantity < 1)
+                if (existingCartItem.Quantity < existingCartItem.Product.Quantity)
                 {
-                    existingCartItem.Quantity = 1; 
+                    return BadRequest("Không đủ sản phẩm trong giỏ hàng.");
                 }
 
                 var updatedTotalAmount = existingCartItem.TotalAmount;
