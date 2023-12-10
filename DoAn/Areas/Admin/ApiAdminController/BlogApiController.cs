@@ -166,7 +166,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
 
             return Ok(blogpostsWithFullInfo);
         }
-        [HttpGet("{blogPostId}")]
+        [HttpGet("GetBlogById/{blogPostId}")]
         public async Task<IActionResult> GetBlogPostById(int blogPostId)
         {
             var blogpost = await _dbContext.BlogPosts
