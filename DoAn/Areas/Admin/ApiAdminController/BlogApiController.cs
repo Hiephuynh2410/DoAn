@@ -166,6 +166,82 @@ namespace DoAn.Areas.Admin.ApiAdminController
 
             return Ok(blogpostsWithFullInfo);
         }
+        [HttpGet("{blogPostId}")]
+        public async Task<IActionResult> GetBlogPostById(int blogPostId)
+        {
+            var blogpost = await _dbContext.BlogPosts
+                .Include(s => s.BlogCategory)
+                .Include(s => s.Staff)
+                .FirstOrDefaultAsync(s => s.BlogPostId == blogPostId);
+
+            if (blogpost == null)
+            {
+                return NotFound();
+            }
+
+            var blogpostWithFullInfo = new
+            {
+                blogpost.BlogPostId,
+                blogpost.Titile,
+                blogpost.Body,
+                blogpost.Thumbnail,
+                blogpost.DateTime,
+                blogpost.BlogCategoryId,
+                blogpost.StaffId,
+                Staff = new
+                {
+                    blogpost.Staff.StaffId,
+                    blogpost.Staff.Name
+                },
+                BlogCategory = new
+                {
+                    blogpost.BlogCategory.BlogCategoryId,
+                    blogpost.BlogCategory.Title,
+                    blogpost.BlogCategory.Description
+                },
+            };
+
+            return Ok(blogpostWithFullInfo);
+        }
+
+        [HttpGet("byCategory/{blogCategoryId}")]
+        public async Task<IActionResult> GetBlogsByCategory(int blogCategoryId)
+        {
+            var blogposts = await _dbContext.BlogPosts
+                .Include(s => s.BlogCategory)
+                .Include(s => s.Staff)
+                .Where(s => s.BlogCategoryId == blogCategoryId)
+                .ToListAsync();
+
+            if (blogposts == null || blogposts.Count == 0)
+            {
+                return NotFound();
+            }
+
+            var blogsByCategory = blogposts.Select(s => new
+            {
+                s.BlogPostId,
+                s.Titile,
+                s.Body,
+                s.Thumbnail,
+                s.DateTime,
+                s.BlogCategoryId,
+                s.StaffId,
+                Staff = new
+                {
+                    s.Staff.StaffId,
+                    s.Staff.Name
+                },
+                BlogCategory = new
+                {
+                    s.BlogCategory.BlogCategoryId,
+                    s.BlogCategory.Title,
+                    s.BlogCategory.Description
+                },
+            }).ToList();
+
+            return Ok(blogsByCategory);
+        }
 
     }
 }

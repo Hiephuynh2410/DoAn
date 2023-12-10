@@ -57,7 +57,9 @@
 
                         <td>@item.Titile</td>
                         <td>@item.Body</td>
-                        <td>@item.Thumbnail</td>
+                        <td>
+                            <img src="@item.Thumbnail"></img>
+                        </td>
                         <td>@item.DateTime?.ToString("dd/MM/yyyy")</td>
                         <td>@item.BlogCategory?.Title</td>
                         <td>@item.Staff?.Name</td>

@@ -100,8 +100,8 @@ public partial class DlctContext : DbContext
             entity.ToTable("BLOG_CATEGORIES");
 
             entity.Property(e => e.BlogCategoryId).HasColumnName("Blog_category_id");
-            entity.Property(e => e.Description).HasColumnType("text");
-            entity.Property(e => e.Title).HasMaxLength(50);
+            entity.Property(e => e.Description).HasMaxLength(500);
+            entity.Property(e => e.Title).HasMaxLength(500);
         });
 
         modelBuilder.Entity<BlogPost>(entity =>
@@ -110,12 +110,12 @@ public partial class DlctContext : DbContext
 
             entity.Property(e => e.BlogPostId).HasColumnName("Blog_post_id");
             entity.Property(e => e.BlogCategoryId).HasColumnName("Blog_category_id");
-            entity.Property(e => e.Body).HasColumnType("text");
+            entity.Property(e => e.Body).HasMaxLength(500);
             entity.Property(e => e.DateTime)
                 .HasColumnType("datetime")
                 .HasColumnName("Date_time");
             entity.Property(e => e.StaffId).HasColumnName("Staff_id");
-            entity.Property(e => e.Thumbnail).HasColumnType("text");
+            entity.Property(e => e.Thumbnail).HasMaxLength(250);
             entity.Property(e => e.Titile).HasMaxLength(100);
 
             entity.HasOne(d => d.BlogCategory).WithMany(p => p.BlogPosts)

@@ -18,9 +18,10 @@
                 <span asp-validation-for="Body" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Thumbnail" class="control-label"></label>
-                <input asp-for="Thumbnail" class="form-control" />
-                <span asp-validation-for="Thumbnail" class="text-danger"></span>
+                <input type="file" name="fileUpload" id="fileUpload" hidden accept="image/*" style="display:none;" />
+                <input type="button" id="btnUpload" value="Chọn ảnh" class="btn btn-danger" />
+                <input asp-for="Thumbnail" id="Thumbnail" class="form-control" />
+                <img style="width:44%" class="wrapper-img" hidden src="" id="pictureUpload" />
             </div>
             <div class="form-group">
                 <label asp-for="BlogCategoryId" class="control-label"></label>
@@ -44,3 +45,38 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+@section upload
+    {
+    <script>
+        $(function () {
+            $('#btnUpload').click(function () {
+                $('#fileUpload').trigger('click');
+            });
+        });
+        $('#fileUpload').change(function () {
+            if (window.FormData !== undefined) {
+                var fileUpload = $('#fileUpload').get(0);
+                var files = fileUpload.files;
+                var formData = new FormData();
+                formData.append('file', files[0]);
+
+                $.ajax(
+                    {
+                        type: 'POST',
+                        url: '@Url.Action("ProcessUpload", "Blog")',
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (urlImage) {
+                            $('#pictureUpload').attr('src', urlImage);
+                            $('#Thumbnail').val(urlImage);
+                        },
+                        error: function (err) {
+                            alert('Error ', err.statusText);
+                        }
+                    });
+            }
+        });
+    </script>
+    }

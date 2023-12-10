@@ -95,6 +95,13 @@ app.UseEndpoints(endpoints =>
         pattern: "{controller=Client}/{action=Index}/{id?}"
     );
 
+    endpoints.MapControllerRoute(
+        name: "showPassword",
+        pattern: "Admin/Staff/showPassword",
+        defaults: new { controller = "Staff", action = "showPassword" }
+    
+        );
+
     endpoints.MapHub<ChatHub>("/chat");
 
     endpoints.MapGet("/", async context =>

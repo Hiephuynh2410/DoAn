@@ -39,6 +39,23 @@ namespace DoAn.Areas.Admin.Controllers
             }
         }
 
+        //button choose image
+        [HttpPost]
+        public IActionResult ProcessUpload(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return Json("No file uploaded");
+            }
+            string fileName = Path.GetFileName(file.FileName);
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyTo(stream);
+            }
+            return Json("/images/" + fileName);
+        }
+
         //register
         public IActionResult create()
         {
@@ -53,12 +70,7 @@ namespace DoAn.Areas.Admin.Controllers
         public async Task<IActionResult> create(BlogPost registrationModel)
         {
             var apiUrl = "https://localhost:7109/api/BlogApi/create";
-            var checkNameAlready = db.BlogPosts.FirstOrDefault(x => x.Titile == registrationModel.Titile);
-            if (checkNameAlready != null)
-            {
-                ModelState.AddModelError("Titile", "Titile with this name already exists.");
-                return View(registrationModel);
-            }
+           
             if (string.IsNullOrEmpty(registrationModel.Titile))
             {
                 ModelState.AddModelError("Titile", "Title cannot be empty.");

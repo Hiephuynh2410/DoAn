@@ -17,8 +17,9 @@
                             </a>
                             <p class="text-center">Your Social Campaigns</p>
                            <div class="img-wrap" style="align-items: center; display: flex; justify-content: center;">
-                                <input type="file" name="fileUpload" id="fileUpload" accept="image/*" style="display:none;" />
-                                <img style="width: 100px; border-radius: 50%; height: 100px; object-fit: cover" class="wrapper-img" src="~/images/img.jpg" id="pictureUpload" />
+                                    <input asp-for="Avatar" id="Thumbnail" hidden class="form-control" />
+                                    <input type="file" name="fileUpload" id="fileUpload" accept="image/*" style="display:none;" />
+                                    <img style="width: 100px; border-radius: 50%; height: 100px; object-fit: cover" class="wrapper-img" src="~/images/img.jpg" id="pictureUpload" />
                             </div>
                             <form asp-action="Register">
                                 <div style="display:flex">
@@ -50,7 +51,7 @@
                                         <div class="form-group">
                                             <div class="d-flex align-items-center">
                                                 <label for="Avatar" class="form-label">Avatar</label>
-                                                <input asp-for="Name" class="form-control flex-grow-1 visually-hidden" />
+                                                <input asp-for="Avatar" class="form-control flex-grow-1 visually-hidden" />
                                                 <input type="button" id="btnUpload" value="Chọn ảnh" class="btn btn-primary rounded-2 ml-2" />
                                             </div>
                                         </div>
@@ -100,6 +101,7 @@
         </div>
     </div>
 </div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 @section upload
     {
@@ -115,10 +117,11 @@
                 var files = fileUpload.files;
                 var formData = new FormData();
                 formData.append('file', files[0]);
+
                 $.ajax(
                     {
                         type: 'POST',
-                        url: '/Admin/Staff/ProcessUpload',
+                        url: '@Url.Action("ProcessUpload", "Staff")',
                         contentType: false,
                         processData: false,
                         data: formData,
@@ -134,6 +137,7 @@
         });
     </script>
     }
+
 
 <style>
     .wrapper-img {
