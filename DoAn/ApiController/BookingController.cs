@@ -127,20 +127,20 @@ namespace DoAn.ApiController
                         Message = "Registration successful",
                         BookingId = newBooking.BookingId,
                         ClientId = newBooking.ClientId,
-                        StaffId = newBooking.StaffId,
                         Staff = new 
                         {
+                            StaffId = newBooking.Staff?.StaffId,
                             Name = newBooking.Staff?.Name,
                             Phone = newBooking.Staff?.Phone,
                         },
-                        ComboId = newBooking.ComboId,
                         Combo = new
                         {
+                            ComboId = newBooking.Combo?.ComboId,
                             Address = newBooking.Combo?.Name
                         },
-                        BranchId = newBooking.BranchId,
                         Branch = new
                         {
+                            BranchId = newBooking.Branch?.BranchId,
                             Address = newBooking.Branch?.Address,
                             Hotline = newBooking.Branch?.Hotline
                         },

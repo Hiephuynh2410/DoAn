@@ -194,7 +194,7 @@ namespace DoAn.ApiController
                 await SendBookingNotificationEmail(client.Email, newBillDetail, product, client);
 
                 var tongtien = quantityToBuy * product.Price;
-                var responseMessage = $"Product bought successfully. Bill Detail ID: {newBillDetail.BillId}. Total Cost: {tongtien}.";
+                var responseMessage = $"Product bought successfully. Bill Detail ID: {newBillDetail.BillId}. Total Cost: {tongtien}. Purchase Time: {newBill.CreatedAt}";
 
                 return Ok(responseMessage);
             }
