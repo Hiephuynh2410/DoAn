@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿    using System;
+    using System.Collections.Generic;
 
-namespace DoAn.Models;
+    namespace DoAn.Models;
 
-public partial class Bill
-{
-    public int BillId { get; set; }
+    public partial class Bill
+    {
+        public int BillId { get; set; }
 
-    public DateTime? CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
-    public DateTime Date { get; set; }
+        public DateTime Date { get; set; }
 
-    public int? ClientId { get; set; }
+        public int? ClientId { get; set; }
 
-    public virtual ICollection<Billdetail> Billdetails { get; set; } = new List<Billdetail>();
+        public virtual ICollection<Billdetail> Billdetails { get; set; } = new List<Billdetail>();
 
-    public virtual Client? Client { get; set; }
-}
+        public virtual Client? Client { get; set; }
+    }

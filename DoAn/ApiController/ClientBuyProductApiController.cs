@@ -474,6 +474,33 @@ namespace DoAn.ApiController
             }
         }
 
+        [HttpGet("GetAllBillDetails/{userId}")]
+        public async Task<IActionResult> GetAllBillDetails(int userId)
+        {
+            if (userId <= 0)
+            {
+                return BadRequest("Invalid user ID.");
+            }
+            var billDetailsClient = await _dbContext.Billdetails
+                .Include(x => x.Bill)
+                .Include(x => x.Product)
+                .Where(x => x.Bill.ClientId == userId).ToListAsync();
+
+            if (billDetailsClient == null || billDetailsClient.Count == 0)
+            {
+                return NotFound("Khong tim thay billdetail.");
+            }
+            var results = billDetailsClient.Select(billDetail => new
+            {
+                BillId = billDetail.BillId,
+                ProductId = billDetail.ProductId,
+                Quantity = billDetail.Quantity,
+                Price = billDetail.Price,
+                ProductName = billDetail.Product.Name,
+
+            });
+            return Ok(results);
+        }
     }
 }
 
