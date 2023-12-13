@@ -497,7 +497,7 @@ namespace DoAn.ApiController
                 Quantity = billDetail.Quantity,
                 Price = billDetail.Price,
                 ProductName = billDetail.Product.Name,
-
+                CreatedAt = DateTime.Now
             });
             return Ok(results);
         }
@@ -513,6 +513,9 @@ namespace DoAn.ApiController
                 }
 
                 var bookings = await _dbContext.Bookings
+                    .Include(x => x.Combo)
+                    .Include(x => x.Branch)
+                    .Include(x=> x.Staff)
                     .Include(b => b.Bookingdetails)
                    .Where(b => b.ClientId == userId && b.Status == true)
                     .ToListAsync();
@@ -525,14 +528,29 @@ namespace DoAn.ApiController
                 var bookingDetails = bookings.Select(booking => new
                 {
                     BookingId = booking.BookingId,
+                    Staff = new
+                    {
+                        StaffId = booking.Staff?.StaffId,
+                        Name = booking.Staff?.Name,
+                        Phone = booking.Staff?.Phone,
+                    },
+                    Combo = new
+                    {
+                        ComboId = booking.Combo?.ComboId,
+                        Name = booking.Combo?.Name
+                    },
+                    Branch = new
+                    {
+                        BranchId = booking.Branch?.BranchId,
+                        Address = booking.Branch?.Address,
+                        Hotline = booking.Branch?.Hotline
+                    },
                     Name = booking.Name,
                     Phone = booking.Phone,
                     DateTime = booking.DateTime,
                     Note = booking.Note,
                     Status = booking.Status,
-                    ComboId = booking.ComboId,
                     CreatedAt = booking.CreatedAt,
-                    BranchId = booking.BranchId,
                 }).ToList();
 
                 return Ok(bookingDetails);
