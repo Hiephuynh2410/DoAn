@@ -501,6 +501,48 @@ namespace DoAn.ApiController
             });
             return Ok(results);
         }
+
+        [HttpGet("GetBooking/{userId}")]
+        public async Task<IActionResult> GetBooking(int userId)
+        {
+            try
+            {
+                if (userId <= 0)
+                {
+                    return BadRequest("Invalid user ID.");
+                }
+
+                var bookings = await _dbContext.Bookings
+                    .Include(b => b.Bookingdetails)
+                   .Where(b => b.ClientId == userId && b.Status == true)
+                    .ToListAsync();
+
+                if (bookings == null || bookings.Count == 0)
+                {
+                    return NotFound("No bookings found for the user.");
+                }
+
+                var bookingDetails = bookings.Select(booking => new
+                {
+                    BookingId = booking.BookingId,
+                    Name = booking.Name,
+                    Phone = booking.Phone,
+                    DateTime = booking.DateTime,
+                    Note = booking.Note,
+                    Status = booking.Status,
+                    ComboId = booking.ComboId,
+                    CreatedAt = booking.CreatedAt,
+                    BranchId = booking.BranchId,
+                }).ToList();
+
+                return Ok(bookingDetails);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
     }
 }
 
