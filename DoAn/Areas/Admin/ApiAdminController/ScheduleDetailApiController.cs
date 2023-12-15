@@ -1,6 +1,8 @@
 ﻿using DoAn.Models;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MimeKit;
 using System.Globalization;
 
 namespace DoAn.Areas.Admin.ApiAdminController
@@ -118,17 +120,18 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 var staff = await db.Staff.FindAsync(inputModel.StaffId);
                 var schedule = await db.Schedules.FindAsync(inputModel.ScheduleId);
 
+                // Check if there is any existing schedule detail for the same staff, schedule, and date
                 var existingDetail = await db.Scheduledetails
                     .FirstOrDefaultAsync(sd =>
                         sd.StaffId == inputModel.StaffId &&
                         sd.ScheduleId == inputModel.ScheduleId &&
-                        sd.Schedule.Time == inputModel.Schedule.Time);
+                        sd.Date == inputModel.Date);
 
                 if (existingDetail != null)
                 {
                     return BadRequest(new
                     {
-                        Message = "A schedule detail already exists for the selected Staff, Schedule, and Time."
+                        Message = "A schedule detail already exists for the selected Staff, Schedule, and Date."
                     });
                 }
 
@@ -144,6 +147,9 @@ namespace DoAn.Areas.Admin.ApiAdminController
 
                 db.Scheduledetails.Add(createModel);
                 await db.SaveChangesAsync();
+
+                await SendEmailNotificationAsync(staff.Name, staff.Email, createModel);
+
 
                 var registrationSuccessResponse = new
                 {
@@ -168,6 +174,40 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     Message = "An unexpected error occurred. Please try again later."
                 });
             }
+        }
+
+        private async Task SendEmailNotificationAsync(string recipientName, string recipientEmail, Scheduledetail scheduleDetail)
+        {
+            var message = new MimeMessage();
+
+            message.From.Add(new MailboxAddress("Admin", "huynhhiepvan1998@gmail.com"));
+            message.Subject = "Upcoming Work Schedule Notification";
+
+            message.Body = new TextPart("html")
+            {
+                Text = $"<html><body>" +
+                       $"<p><strong>Lịch làm việc của bạn: </strong></p>" +
+                       $"<p><strong>Staff Name:</strong> {recipientName}</p>" +
+                       $"<p><strong>Schedule Time:</strong> {scheduleDetail.Schedule?.Time}</p>" +
+                       $"<p><strong>Date:</strong> {scheduleDetail.Date?.ToString("dd/MM/yyyy")}</p>" +
+                       $"</body></html>"
+            };
+
+            try
+            {
+                using (var client = new SmtpClient())
+                {
+                    client.Connect("smtp.gmail.com", 587, false);
+                    client.Authenticate("huynhhiepvan1998@gmail.com", "nmqt ljyf skbz xcrs");
+
+                    message.To.Add(new MailboxAddress(recipientName, recipientEmail));
+
+                    await client.SendAsync(message);
+
+                    client.Disconnect(true);
+                }
+            } catch (Exception ex) { }
+           
         }
 
         [HttpPut("update")]

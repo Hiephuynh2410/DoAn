@@ -46,6 +46,8 @@ builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
 //auto send mail
 builder.Services.AddHostedService<ScheduledEmailService>();
 
+
+
 builder.Services.AddNotyf(config =>
 {
     config.DurationInSeconds = 10;
