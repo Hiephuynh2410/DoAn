@@ -41,7 +41,7 @@
                 <th>
                     Staff
                 </th>
-                <th>Status</th>
+               @* <th>Status</th>*@
                  @if (isAdmin)
                 {
                     <th>Action</th>
@@ -55,39 +55,37 @@
                 {
                     foreach (var item in Model)
                     {
-                        @if (item.Date > DateTime.Now)
-                        {
-                            <tr class="item-infoList">
+                     
+                        <tr class="item-infoList">
                              
-                                <td>
-                                    @(item.Date?.ToString("dd/MM/yyyy")) - @item.Schedule.Time
-                                </td>
-                                <td>
-                                    @item.Staff.Name
-                                </td>
-                                <td>
-                                    @if (item.Status == true)
-                                    {
-                                        <p style="color: green">active</p>
-                                    }
-                                    else
-                                    {
-                                        <p style="color: red">none</p>
-                                    }
-                                </td>
-                                <td>
-                                    @if (isAdmin)
-                                    {
-                                        @*@Html.ActionLink("Send Mail", "SendmailOutDated", new { staffId = item.StaffId }, new { @class = "btn-add " })*@
-                                        <button onclick="edit('@item.ScheduleId', '@item.StaffId')" class="btn-edit">Edit</button>
-                                        <button onclick="deleteItem('@item.ScheduleId', '@item.StaffId')" class="btn-delete">Delete</button>
-                                        @*@Html.ActionLink("Edit", "Edit", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId }, new { @class = "btn_css " })
-                                        @Html.ActionLink("Details", "Details", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId  }, new { @class = "btn_css " })
-                                        @Html.ActionLink("Delete", "Delete", new {ScheduleId = item.ScheduleId, StaffId = item.StaffId  }, new { @class = "btn_css " })*@
-                                    }
-                                </td>
-                            </tr>
-                        }
+                            <td>
+                                @(item.Date?.ToString("dd/MM/yyyy")) - @item.Schedule.Time
+                            </td>
+                            <td>
+                                @item.Staff.Name
+                            </td>
+                           @* <td>
+                                @if (item.Status == true)
+                                {
+                                    <p style="color: green">active</p>
+                                }
+                                else
+                                {
+                                    <p style="color: red">none</p>
+                                }
+                            </td>*@
+                            <td>
+                                @if (isAdmin)
+                                {
+                                    @*@Html.ActionLink("Send Mail", "SendmailOutDated", new { staffId = item.StaffId }, new { @class = "btn-add " })*@
+                                    <button onclick="edit('@item.ScheduleId', '@item.StaffId')" class="btn-edit">Edit</button>
+                                    <button onclick="deleteItem('@item.ScheduleId', '@item.StaffId')" class="btn-delete">Delete</button>
+                                    @*@Html.ActionLink("Edit", "Edit", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId }, new { @class = "btn_css " })
+                                    @Html.ActionLink("Details", "Details", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId  }, new { @class = "btn_css " })
+                                    @Html.ActionLink("Delete", "Delete", new {ScheduleId = item.ScheduleId, StaffId = item.StaffId  }, new { @class = "btn_css " })*@
+                                }
+                            </td>
+                        </tr>
                     }
                 }
             </tbody>

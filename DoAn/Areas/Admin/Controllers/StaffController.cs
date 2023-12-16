@@ -61,19 +61,29 @@ namespace DoAn.Areas.Admin.Controllers
             return View();
         }
 
-
         [HttpGet]
         public IActionResult Sendmail(int staffId)
         {
-            ViewBag.StaffId = staffId;
+            TempData["StaffId"] = staffId;
+            ViewBag.StaffId = staffId; 
             return View();
         }
-        //admin thich thì gửi mail ko thì thôi
 
         [HttpPost]
         public IActionResult Sendmail(Mails model)
         {
-            int staffId = int.Parse(Request.Form["staffId"]);
+            int staffId;
+
+            if (TempData.ContainsKey("StaffId") && TempData["StaffId"] != null)
+            {
+                staffId = (int)TempData["StaffId"];
+                TempData.Keep("StaffId");
+            }
+            else
+            {
+                return RedirectToAction("Error");
+            }
+
             var staffMember = db.Staff.FirstOrDefault(s => s.StaffId == staffId);
 
             if (staffMember != null)
@@ -97,6 +107,8 @@ namespace DoAn.Areas.Admin.Controllers
 
                     client.Disconnect(true);
                 }
+
+                TempData["StaffId"] = staffId;
             }
 
             return View();

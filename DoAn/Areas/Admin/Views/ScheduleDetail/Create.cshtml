@@ -26,7 +26,7 @@
                 <input asp-for="Date" class="form-control" type="date" />
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
-            <div class="mb-4">
+           @* <div class="mb-4">
                 <label for="Status" class="form-label">Status</label>
                 <div class="radio-buttons" style="display:flex; justify-content:space-around">
                     <label class="form-check-label">
@@ -37,7 +37,7 @@
                     </label>
                     <span class="error-indicator"></span>
                 </div>
-            </div>
+            </div>*@
             <input type="hidden" asp-for="StaffId" />
             <input type="hidden" asp-for="ScheduleId" />
             <input type="hidden" asp-for="Staff" />

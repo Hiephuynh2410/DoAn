@@ -142,6 +142,80 @@ namespace DoAn.ApiController
             }
         }
 
+        [HttpPost("BuyAllInCart/{userId}")]
+        public async Task<IActionResult> BuyAllInCart(int userId)
+        {
+            try
+            {
+                if (userId <= 0)
+                {
+                    return BadRequest("Invalid user ID.");
+                }
+
+                var cartItems = await _dbContext.Carts
+                    .Include(c => c.Product)
+                    .Include(c => c.User)
+                    .Where(c => c.UserId == userId)
+                    .ToListAsync();
+
+                if (cartItems == null || cartItems.Count == 0)
+                {
+                    return NotFound("Cart is empty.");
+                }
+
+                var totalCost = 0.0;
+
+                foreach (var cartItem in cartItems)
+                {
+                    // Assuming the cartItem.Quantity and cartItem.Product.Quantity are not null
+                    var quantityToBuy = cartItem.Quantity ?? 1;
+
+                    if (cartItem.Product.Quantity < quantityToBuy)
+                    {
+                        return BadRequest($"Not enough stock available for product with ID {cartItem.ProductId}.");
+                    }
+
+                    cartItem.Product.Quantity -= quantityToBuy;
+                    cartItem.Product.Sold += 1;
+
+                    var newBill = new Bill
+                    {
+                        Date = DateTime.UtcNow,
+                        ClientId = userId,
+                        CreatedAt = DateTime.Now,
+                    };
+
+                    _dbContext.Bills.Add(newBill);
+                    await _dbContext.SaveChangesAsync();
+
+                    var newBillDetail = new Billdetail
+                    {
+                        BillId = newBill.BillId,
+                        ProductId = cartItem.ProductId,
+                        Quantity = quantityToBuy,
+                        Price = quantityToBuy * cartItem.Product.Price
+                    };
+
+                    _dbContext.Billdetails.Add(newBillDetail);
+                    await _dbContext.SaveChangesAsync();
+
+                    totalCost += newBillDetail.Price.GetValueOrDefault();
+                }
+
+                _dbContext.Carts.RemoveRange(cartItems);
+                await _dbContext.SaveChangesAsync();
+
+                return Ok($"Products in the cart bought successfully. Total Cost: {totalCost}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
         [HttpPost("BuyNow")]
         public async Task<IActionResult> BuyNow([FromBody] Cart request)
         {
@@ -355,7 +429,7 @@ namespace DoAn.ApiController
             }
         }
 
-        [HttpPut("UpdateCart/{userId}/{productId}")]
+        [HttpPut("UpdateCartIncrease/{userId}/{productId}")]
         public async Task<IActionResult> UpdateCartIncrease(int userId, int productId)
         {
             try
@@ -393,7 +467,6 @@ namespace DoAn.ApiController
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
         [HttpPut("UpdateCartDecrease/{userId}/{productId}")]
         public async Task<IActionResult> UpdateCartDecrease(int userId, int productId)
         {
@@ -415,17 +488,29 @@ namespace DoAn.ApiController
                     return NotFound("CartItem not found.");
                 }
 
-                existingCartItem.Quantity -= 1;
-
-                if (existingCartItem.Quantity < existingCartItem.Product.Quantity)
+                if (existingCartItem.Quantity > 1)
                 {
-                    return BadRequest("Không đủ sản phẩm trong giỏ hàng.");
+                    existingCartItem.Quantity -= 1;
+
+                    if (existingCartItem.Quantity <= existingCartItem.Product.Quantity)
+                    {
+                        var updatedTotalAmount = existingCartItem.TotalAmount;
+                        await _dbContext.SaveChangesAsync();
+
+                        return Ok($"Cart updated successfully. Updated Total Amount: {updatedTotalAmount}");
+                    }
+                    else
+                    {
+                        return BadRequest("Không đủ sản phẩm trong giỏ hàng.");
+                    }
                 }
+                else
+                {
+                    _dbContext.Carts.Remove(existingCartItem);
+                    await _dbContext.SaveChangesAsync();
 
-                var updatedTotalAmount = existingCartItem.TotalAmount;
-                await _dbContext.SaveChangesAsync();
-
-                return Ok($"Cart updated successfully. Updated Total Amount: {updatedTotalAmount}");
+                    return Ok("CartItem removed successfully.");
+                }
             }
             catch (Exception ex)
             {
@@ -560,6 +645,7 @@ namespace DoAn.ApiController
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
 
     }
 }
