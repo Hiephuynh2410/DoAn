@@ -236,11 +236,15 @@ namespace DoAn.Areas.Admin.ApiAdminController
                             .ToList()
                     });
                 }
+                var staff = await db.Staff.FindAsync(updatedModel.StaffId);
+                var schedule = await db.Schedules.FindAsync(updatedModel.ScheduleId);
 
                 existingScheduleDetail.Date = updatedModel.Date;
                 existingScheduleDetail.Status = updatedModel.Status;
 
                 await db.SaveChangesAsync();
+
+                await SendEmailAsync(staff.Name, staff.Email, existingScheduleDetail);
 
                 var scheduleDetailIds = await db.Scheduledetails
                     .Select(sd => new { sd.ScheduleId, sd.StaffId })
@@ -256,6 +260,42 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 });
             }
         }
+        private async Task SendEmailAsync(string recipientName, string recipientEmail, Scheduledetail scheduleDetail)
+        {
+            var message = new MimeMessage();
+
+            message.From.Add(new MailboxAddress("Admin", "huynhhiepvan1998@gmail.com"));
+            message.Subject = "Upcoming Work Schedule Notification";
+
+            message.Body = new TextPart("html")
+            {
+                Text = $"<html><body>" +
+                       $"<p><strong>Lịch làm việc của bạn đã được chỉnh sửa ! </strong></p>" +
+                       $"<p><strong>Staff Name:</strong> {recipientName}</p>" +
+                       $"<p><strong>Schedule Time:</strong> {scheduleDetail.Schedule?.Time}</p>" +
+                       $"<p><strong>Date:</strong> {scheduleDetail.Date?.ToString("dd/MM/yyyy")}</p>" +
+                       $"</body></html>"
+            };
+
+            try
+            {
+                using (var client = new SmtpClient())
+                {
+                    client.Connect("smtp.gmail.com", 587, false);
+                    client.Authenticate("huynhhiepvan1998@gmail.com", "nmqt ljyf skbz xcrs");
+
+                    message.To.Add(new MailboxAddress(recipientName, recipientEmail));
+
+                    await client.SendAsync(message);
+
+                    client.Disconnect(true);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
 
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteScheduleDetail([FromQuery] int staffId, [FromQuery] int scheduleId)

@@ -167,7 +167,6 @@ namespace DoAn.ApiController
 
                 foreach (var cartItem in cartItems)
                 {
-                    // Assuming the cartItem.Quantity and cartItem.Product.Quantity are not null
                     var quantityToBuy = cartItem.Quantity ?? 1;
 
                     if (cartItem.Product.Quantity < quantityToBuy)
@@ -214,7 +213,6 @@ namespace DoAn.ApiController
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
 
         [HttpPost("BuyNow")]
         public async Task<IActionResult> BuyNow([FromBody] Cart request)
