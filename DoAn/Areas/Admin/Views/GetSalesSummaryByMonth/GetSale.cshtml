@@ -7,12 +7,12 @@
         <div class="rectangle">
             <i id="icon" class="fa-solid fa-chart-line"></i>
             <p class="total">Tổng doanh thu sản phẩm</p>
-            <h1 class="price"><strong>@ViewBag.TotalRevenue</strong> VNĐ</h1>
+            <h1 class="price"><strong>@ViewBag.TotalRevenue</strong></h1>
         </div>
         <div class="rectangle1">
             <i id="icon" class="fa-solid fa-bookmark"></i>
             <p class="total">Sản phẩm bán chạy nhất</p>
-            <h1 class="price"><strong>@ViewBag.BestSellingProductName</strong></h1>
+            <h1 class="name"><strong>@ViewBag.BestSellingProductName</strong></h1>
         </div>
     </div>
 </div>
@@ -26,6 +26,20 @@
     </div>
     @section scripts {
         <script>
+            var totalRevenueElement = document.querySelector('.price strong');
+            var formattedTotalRevenue = parseInt(@ViewBag.TotalRevenue).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+            totalRevenueElement.textContent = formattedTotalRevenue;
+
+            var bestSellingProductNameElement = document.querySelector('.name');
+            var bestSellingProductName = '@Html.Raw(ViewBag.BestSellingProductName)';
+            var maxLength = 20; 
+
+            if (bestSellingProductName.length > maxLength) {
+                bestSellingProductName = bestSellingProductName.substring(0, maxLength) + '...';
+            }
+
+            bestSellingProductNameElement.textContent = bestSellingProductName;
+
             document.addEventListener("DOMContentLoaded", function () {
                 var bestSellingProducts = @Html.Raw(Json.Serialize(ViewBag.BestSellingProducts));
                 var productNames = bestSellingProducts.map(p => p.productName);
@@ -89,7 +103,6 @@
                     }
                 });
 
-
                 var backgroundColors = generateRandomColors(productNames.length);
                 var ctxPieChart = document.getElementById('pieChart').getContext('2d');
                 var pieChart = new Chart(ctxPieChart, {
@@ -105,6 +118,20 @@
                     },
                     options: {
                         plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        var label = context.dataset.label || '';
+
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        label += productNames[context.dataIndex] + ':\nTotal: ' + context.formattedValue;
+
+                                        return label;
+                                    }
+                                }
+                            },
                             legend: {
                                 display: true,
                                 position: 'right',

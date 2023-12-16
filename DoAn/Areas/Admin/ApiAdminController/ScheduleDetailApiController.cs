@@ -120,7 +120,6 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 var staff = await db.Staff.FindAsync(inputModel.StaffId);
                 var schedule = await db.Schedules.FindAsync(inputModel.ScheduleId);
 
-                // Check if there is any existing schedule detail for the same staff, schedule, and date
                 var existingDetail = await db.Scheduledetails
                     .FirstOrDefaultAsync(sd =>
                         sd.StaffId == inputModel.StaffId &&

@@ -78,7 +78,7 @@
                                 <td>
                                     @if (isAdmin)
                                     {
-                                        @Html.ActionLink("Send Mail", "SendmailOutDated", new { staffId = item.StaffId }, new { @class = "btn-add " })
+                                        @*@Html.ActionLink("Send Mail", "SendmailOutDated", new { staffId = item.StaffId }, new { @class = "btn-add " })*@
                                         <button onclick="edit('@item.ScheduleId', '@item.StaffId')" class="btn-edit">Edit</button>
                                         <button onclick="deleteItem('@item.ScheduleId', '@item.StaffId')" class="btn-delete">Delete</button>
                                         @*@Html.ActionLink("Edit", "Edit", new { ScheduleId = item.ScheduleId, StaffId = item.StaffId }, new { @class = "btn_css " })

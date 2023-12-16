@@ -196,6 +196,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
             staff.Name = updateModel.Name;
             staff.Username = updateModel.Username;
             staff.Phone = updateModel.Phone;
+            staff.Email = updateModel.Email;
             staff.Address = updateModel.Address;
             staff.Avatar = updateModel.Avatar;
             staff.Status = updateModel.Status;
