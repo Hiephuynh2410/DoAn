@@ -142,8 +142,8 @@ namespace DoAn.ApiController
             }
         }
 
-        [HttpPost("BuyAllInCart/{userId}")]
-        public async Task<IActionResult> BuyAllInCart(int userId)
+        [HttpPost("BuyAllCart/{userId}")]
+        public async Task<IActionResult> BuyAllCart(int userId)
         {
             try
             {
@@ -175,7 +175,7 @@ namespace DoAn.ApiController
                     }
 
                     cartItem.Product.Quantity -= quantityToBuy;
-                    cartItem.Product.Sold += quantityToBuy; 
+                    cartItem.Product.Sold += quantityToBuy;
 
                     var newBill = new Bill
                     {
@@ -201,9 +201,13 @@ namespace DoAn.ApiController
                     totalCost += newBillDetail.Price.GetValueOrDefault();
                 }
 
-
                 _dbContext.Carts.RemoveRange(cartItems);
                 await _dbContext.SaveChangesAsync();
+
+                // Sending email
+                var client = await _dbContext.Clients.FindAsync(userId);
+                await SendPurchaseConfirmationEmail(client.Email, client.Name, totalCost, cartItems);
+
 
                 return Ok($"Products in the cart bought successfully. Total Cost: {totalCost}");
             }
@@ -212,6 +216,78 @@ namespace DoAn.ApiController
                 Console.WriteLine($"Exception: {ex.Message}");
                 Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        private async Task SendPurchaseConfirmationEmail(string clientEmail, string customerName, double totalCost, List<Cart> cartItems)
+        {
+            try
+            {
+                var message = new MimeMessage();
+
+                message.From.Add(new MailboxAddress("PurchaseConfirm", "huynhhiepvan1998@gmail.com"));
+                message.Subject = "Purchase Confirmation";
+
+                var bodyBuilder = new BodyBuilder();
+
+                bodyBuilder.HtmlBody = $@"
+            <!DOCTYPE html PUBLIC ""-//W3C//DTD XHTML 1.0 Transitional//EN"" ""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"">
+            <html xmlns=""http://www.w3.org/1999/xhtml"">
+            <head>
+              
+                <title>Xác nhận thanh toán</title>
+            </head>
+            <body>
+             
+                <p>
+                    Thân Mến  {customerName},
+                </p>
+                <p>
+                     Cảm ơn bạn đã mua hàng của chúng tôi! Dưới đây là thông tin sản phảm bạn đã mua:
+                </p>
+                <p>
+                   Chi tiết đơn hàng
+                </p>
+                <ul>
+        ";
+
+                foreach (var cartItem in cartItems)
+                {
+                    bodyBuilder.HtmlBody += $@"
+                <li>
+                    <strong>Sản phẩm:</strong> {cartItem.Product.Name}<br />
+                    <strong>Số Lượng:</strong> {cartItem.Quantity}<br />
+                </li>
+            ";
+                }
+
+                bodyBuilder.HtmlBody += $@"
+                </ul>
+                <p>
+                    Tổng Cộng: {totalCost}
+                </p>
+               
+            </body>
+            </html>
+        ";
+
+                message.Body = bodyBuilder.ToMessageBody();
+
+                using (var smtpClient = new SmtpClient())
+                {
+                    smtpClient.Connect("smtp.gmail.com", 587, false);
+                    smtpClient.Authenticate("huynhhiepvan1998@gmail.com", "nmqt ljyf skbz xcrs");
+
+                    message.To.Add(new MailboxAddress(clientEmail, clientEmail));
+
+                    await smtpClient.SendAsync(message);
+
+                    smtpClient.Disconnect(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error sending email: " + ex.Message);
             }
         }
 
@@ -264,7 +340,7 @@ namespace DoAn.ApiController
                 _dbContext.Billdetails.Add(newBillDetail);
                 await _dbContext.SaveChangesAsync();
 
-                //await SendBookingNotificationEmail(client.Email, newBillDetail, product, client);
+                await SendBookingNotificationEmail(client.Email, newBillDetail, product, client);
 
                 var tongtien = quantityToBuy * product.Price;
                 var responseMessage = $"Product bought successfully. Bill Detail ID: {newBillDetail.BillId}. Total Cost: {tongtien}. Purchase Time: {newBill.CreatedAt}";
