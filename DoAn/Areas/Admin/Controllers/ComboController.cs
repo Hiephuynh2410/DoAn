@@ -58,6 +58,8 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Index", "Combo"));
+
                 return RedirectToAction("Login", "Staff");
             }
             return View();
@@ -123,6 +125,8 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Delete", "Combo", new { comboId }));
+
                 return RedirectToAction("Login", "Staff");
             }
             var apiUrl = $"https://localhost:7109/api/ComboApi/delete/{comboId}";
@@ -151,9 +155,9 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Edit", "Combo", new { comboId }));
                 return RedirectToAction("Login", "Staff");
             }
-
             var combo = db.Combos.Find(comboId);
             if (combo == null)
             {
@@ -202,6 +206,7 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Detail", "Combo", new { comboId }));
                 return RedirectToAction("Login", "Staff");
             }
             var apiUrl = $"https://localhost:7109/api/ComboApi/detail/{comboId}";

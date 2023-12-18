@@ -22,6 +22,8 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Index", "BlogCategory", new { BlogCategoryId }));
+
                 return RedirectToAction("Login", "Staff");
             }
             var apiUrl = $"https://localhost:7109/api/BlogCategoryApi/delete/{BlogCategoryId}";
@@ -50,6 +52,8 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Index", "BlogCategory", new { BlogCategoryId }));
+
                 return RedirectToAction("Login", "Staff");
             }
             var apiUrl = $"https://localhost:7109/api/BlogCategoryApi/detail/{BlogCategoryId}";
@@ -74,6 +78,8 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Index", "BlogCategory", new { BlogCategoryId }));
+
                 return RedirectToAction("Login", "Staff");
             }
 
@@ -120,6 +126,8 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Index", "BlogCategory"));
+
                 return RedirectToAction("Login", "Staff");
             }
             return View();

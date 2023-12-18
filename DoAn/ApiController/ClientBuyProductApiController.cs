@@ -522,6 +522,7 @@ namespace DoAn.ApiController
             try
             {
                 var bestSellingProduct = await _dbContext.Products
+                   .Where(p => p.Sold > 0) 
                     .OrderByDescending(p => p.Sold)
                     .Take(10)
                     .ToListAsync();

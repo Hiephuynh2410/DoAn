@@ -28,6 +28,7 @@
                                 <p class="text-center">Your Social Campaigns</p>
                                 @using (Html.BeginForm("Login", "Staff", FormMethod.Post))
                                 {
+
                                     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
                                     <div class="mb-3">
                                         <label for="exampleInputEmail1" class="form-label">Username</label>

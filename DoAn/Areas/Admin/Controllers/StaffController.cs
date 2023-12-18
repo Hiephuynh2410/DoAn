@@ -181,7 +181,18 @@ namespace DoAn.Areas.Admin.Controllers
                         HttpContext.Session.SetString("UserId", nv.StaffId.ToString());
                         HttpContext.Session.SetString("Role", nv.RoleId.ToString());
                         HttpContext.Session.SetString("Name", nv.Name);
-                        return RedirectToAction("Index", "Home");
+                        string returnUrl = HttpContext.Session.GetString("ReturnUrl");
+
+                        if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                        {
+                            HttpContext.Session.Remove("ReturnUrl");
+
+                            return Redirect(returnUrl);
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
                     }
                     else
                     {
@@ -203,6 +214,12 @@ namespace DoAn.Areas.Admin.Controllers
         //register
         public IActionResult Register()
         {
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Index", "Staff"));
+
+                return RedirectToAction("Login", "Staff");
+            }
             var roles = db.Roles.ToList();
             var branches = db.Branches.ToList();
             ViewBag.Roles = new SelectList(roles, "RoleId", "Name");
@@ -303,13 +320,13 @@ namespace DoAn.Areas.Admin.Controllers
             }
         }
 
-
-
         ////Delete
         public async Task<IActionResult> Delete(int staffId)
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Index", "Staff"));
+
                 return RedirectToAction("Login", "Staff");
             }
 
@@ -366,7 +383,6 @@ namespace DoAn.Areas.Admin.Controllers
             }
         }
 
-
         // Search
         public async Task<IActionResult> SearchStaff(string keyword)
         {
@@ -404,12 +420,13 @@ namespace DoAn.Areas.Admin.Controllers
             return View("Index", staffList);
         }
 
-
         [HttpGet]
         public IActionResult Edit(int staffId)
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Index", "Staff"));
+
                 return RedirectToAction("Login", "Staff");
             }
             var staff = db.Staff
@@ -502,6 +519,8 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Index", "Staff"));
+
                 return RedirectToAction("Login", "Staff");
             }
             var apiUrl = $"https://localhost:7109/api/AdminApi/detail/{staffId}";

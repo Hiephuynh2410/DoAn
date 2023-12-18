@@ -59,6 +59,14 @@ namespace DoAn.Areas.Admin.Controllers
         //register
         public IActionResult create()
         {
+
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Index", "Blog"));
+
+                return RedirectToAction("Login", "Staff");
+            }
+
             var blogcategory = db.BlogCategories.ToList();
             var staffs = db.Staff.ToList();
             ViewBag.blogcategory = new SelectList(blogcategory, "BlogCategoryId", "Title");
@@ -145,6 +153,8 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Index", "Blog"));
+
                 return RedirectToAction("Login", "Staff");
             }
             var Blog = db.BlogPosts
@@ -258,6 +268,8 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Index", "Blog"));
+
                 return RedirectToAction("Login", "Staff");
             }
             var apiUrl = $"https://localhost:7109/api/BlogApi/delete/{blogPostId}";

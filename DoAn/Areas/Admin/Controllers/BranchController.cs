@@ -57,6 +57,12 @@ namespace DoAn.Areas.Admin.Controllers
         //Create
         public IActionResult Create()
         {
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Index", "Branch"));
+
+                return RedirectToAction("Login", "Staff");
+            }
             return View();
         }
         [HttpPost]
@@ -108,6 +114,12 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(int branchId)
         {
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Index", "Branch"));
+
+                return RedirectToAction("Login", "Staff");
+            }
             var branch = db.Branches.Find(branchId);
             if (branch == null)
             {
@@ -148,6 +160,12 @@ namespace DoAn.Areas.Admin.Controllers
         //Delete
         public async Task<IActionResult> Delete(int branchId)
         {
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Index", "Branch"));
+
+                return RedirectToAction("Login", "Staff");
+            }
             var apiUrl = $"https://localhost:7109/api/BranchApi/delete/{branchId}";
 
             var response = await _httpClient.DeleteAsync(apiUrl);
@@ -172,6 +190,12 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Detail(int branchId)
         {
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Index", "Branch"));
+
+                return RedirectToAction("Login", "Staff");
+            }
             var apiUrl = $"https://localhost:7109/api/BranchApi/detail/{branchId}";
 
             var apiResponse = await _httpClient.GetAsync(apiUrl);
