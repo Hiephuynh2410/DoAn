@@ -29,7 +29,8 @@ namespace DoAn.Areas.Admin.Controllers
                 .ToListAsync();
 
             await GetTotalRevenue();
-            await GetProductAddCart();
+            //await GetProductAddCart();
+            
             var bestSellingProducts = salesData
                 .SelectMany(b => b.Billdetails)
                 .GroupBy(d => d.ProductId)
@@ -57,25 +58,25 @@ namespace DoAn.Areas.Admin.Controllers
             return View();
         }
 
-        public async Task<IActionResult> GetProductAddCart()
-        {
-            var productQuantities = await _dbContext.Carts
-                .GroupBy(c => c.ProductId)
-                .Select(x => new
-                {
-                    ProductId = x.Key,
-                    CartQuantity = x.Sum(c => c.Quantity)
-                })
-                .ToListAsync();
+        //public async Task<IActionResult> GetProductAddCart()
+        //{
+        //    var productQuantities = await _dbContext.Carts
+        //        .GroupBy(c => c.ProductId)
+        //        .Select(x => new
+        //        {
+        //            ProductId = x.Key,
+        //            CartQuantity = x.Sum(c => c.Quantity)
+        //        })
+        //        .ToListAsync();
 
-            var productWithMaxCart = productQuantities
-                .OrderByDescending(p => p.CartQuantity)
-                .FirstOrDefault();
+        //    var productWithMaxCart = productQuantities
+        //        .OrderByDescending(p => p.CartQuantity)
+        //        .FirstOrDefault();
 
-            ViewBag.ProductWithMaxCart = productWithMaxCart;
+        //    ViewBag.ProductWithMaxCart = productWithMaxCart;
 
-            return View(productQuantities);
-        }
+        //    return View(productQuantities);
+        //}
 
 
         public async Task<IActionResult> GetTotalRevenue()

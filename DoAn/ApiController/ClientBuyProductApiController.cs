@@ -175,7 +175,7 @@ namespace DoAn.ApiController
                     }
 
                     cartItem.Product.Quantity -= quantityToBuy;
-                    cartItem.Product.Sold += 1;
+                    cartItem.Product.Sold += quantityToBuy; 
 
                     var newBill = new Bill
                     {
@@ -200,6 +200,7 @@ namespace DoAn.ApiController
 
                     totalCost += newBillDetail.Price.GetValueOrDefault();
                 }
+
 
                 _dbContext.Carts.RemoveRange(cartItems);
                 await _dbContext.SaveChangesAsync();
@@ -263,7 +264,7 @@ namespace DoAn.ApiController
                 _dbContext.Billdetails.Add(newBillDetail);
                 await _dbContext.SaveChangesAsync();
 
-                await SendBookingNotificationEmail(client.Email, newBillDetail, product, client);
+                //await SendBookingNotificationEmail(client.Email, newBillDetail, product, client);
 
                 var tongtien = quantityToBuy * product.Price;
                 var responseMessage = $"Product bought successfully. Bill Detail ID: {newBillDetail.BillId}. Total Cost: {tongtien}. Purchase Time: {newBill.CreatedAt}";
@@ -522,7 +523,7 @@ namespace DoAn.ApiController
             try
             {
                 var bestSellingProduct = await _dbContext.Products
-                   .Where(p => p.Sold > 0) 
+                    .Where(p => p.Sold > 0) 
                     .OrderByDescending(p => p.Sold)
                     .Take(10)
                     .ToListAsync();
