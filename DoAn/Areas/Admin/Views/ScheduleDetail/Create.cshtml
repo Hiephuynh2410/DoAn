@@ -23,7 +23,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" type="date" />
+                <input asp-for="Date" class="form-control" type="date" id="Date" />
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
            @* <div class="mb-4">
@@ -53,3 +53,12 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+<script>
+    function setMinDate() {
+        var today = new Date().toISOString().split('T')[0];
+        document.getElementById('Date').min = today;
+    }
+
+    window.onload = setMinDate;
+</script>

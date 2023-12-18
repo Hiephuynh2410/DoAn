@@ -30,19 +30,26 @@ namespace DoAn.Areas.Admin.Controllers
         public async Task<IActionResult> Create(Schedule registrationModel)
         {
             var apiUrl = "https://localhost:7109/api/ScheduleApi/create";
-            if (registrationModel.Time == null || registrationModel.Time.Value.TotalSeconds < 0)
-            {
-                ModelState.AddModelError("Time", "Time cannot be empty or less than 0.");
-            }
+
+
             var existingTime = await db.Schedules.AnyAsync(s => s.Time == registrationModel.Time);
-            if (existingTime)
+
+            if (registrationModel.Time == null ||
+                registrationModel.Time.Value < TimeSpan.Zero ||
+                registrationModel.Time.Value >= TimeSpan.FromDays(1))
+            {
+                ModelState.AddModelError("Time", "Time must be between 00:00:00.0000000 and 23:59:59.9999999.");
+            }
+            else if (existingTime)
             {
                 ModelState.AddModelError("Time", "Time already exists in the database.");
             }
+
             if (!ModelState.IsValid)
             {
                 return View(registrationModel);
             }
+
 
             var json = JsonConvert.SerializeObject(registrationModel);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -113,20 +120,19 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int scheduleId, Schedule updateModel)
         {
-            if (updateModel.Time == null || updateModel.Time.Value.TotalSeconds < 0)
+
+
+            if (updateModel.Time == null ||
+                updateModel.Time.Value < TimeSpan.Zero ||
+                updateModel.Time.Value >= TimeSpan.FromDays(1))
             {
-                ModelState.AddModelError("Time", "Time cannot be empty or less than 0.");
-            }
-            var existingTime = await db.Schedules.AnyAsync(s => s.Time == updateModel.Time);
-            if (existingTime)
-            {
-                ModelState.AddModelError("Time", "Time already exists in the database.");
+                ModelState.AddModelError("Time", "Time must be between 00:00:00.0000000 and 23:59:59.9999999.");
             }
             if (!ModelState.IsValid)
             {
                 return View(updateModel);
             }
-           
+
             var apiUrl = $"https://localhost:7109/api/ScheduleApi/update/{scheduleId}";
 
             var json = JsonConvert.SerializeObject(updateModel);
