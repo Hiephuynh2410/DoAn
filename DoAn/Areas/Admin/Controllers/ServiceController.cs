@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using System.Text;
 using NuGet.Protocol;
+using Microsoft.CodeAnalysis;
 
 namespace DoAn.Areas.Admin.Controllers
 {
@@ -42,6 +43,8 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Create", "Service"));
+
                 return RedirectToAction("Login", "Staff");
             }
             var serviceTypes = db.Servicetypes.ToList();
@@ -127,6 +130,8 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Edit", "Service", new {serviceId}));
+
                 return RedirectToAction("Login", "Staff");
             }
             var service = db.Services
@@ -196,6 +201,12 @@ namespace DoAn.Areas.Admin.Controllers
         //Delete
         public async Task<IActionResult> Delete(int serviceId)
         {
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Delete", "Service", new { serviceId }));
+
+                return RedirectToAction("Login", "Staff");
+            }
             var apiUrl = $"https://localhost:7109/api/ServiceApi/delete/{serviceId}";
 
             var response = await _httpClient.DeleteAsync(apiUrl);
@@ -222,6 +233,8 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Detail", "Service", new { serviceId }));
+
                 return RedirectToAction("Login", "Staff");
             }
             var apiUrl = $"https://localhost:7109/api/ServiceApi/detail/{serviceId}";

@@ -27,7 +27,6 @@
     <div class="table-infoStaff">
         <table class="table-List">
             <tr class="title-infoList">
-
                 <th>Id</th>
                 <th>Name</th>
                 <th>Description</th>
@@ -46,7 +45,6 @@
             <tbody class="box-tbody">
                 @if (Model != null)
                 {
-                    
                     @foreach (var item in Model)
                     {
                         <tr class="item-infoList">
@@ -81,15 +79,17 @@
                             <td>@item.CreatedBy</td>
                             <td>@item.UpdatedBy</td>
                             <td>
-                                <button class="btn-edit" onclick="navigateTo('Edit', @item.ProductId)">
-                                    Edit
-                                </button>
-                                <button class="btn-detail" onclick="navigateTo('Detail', @item.ProductId)">
-                                    Detail
-                                </button>
-                                <button class="btn-delete" onclick="deleteStaff(@item.ProductId)">
-                                    Delete
-                                </button>
+                                <div class="button-container">
+                                    <button class="btn-edit" onclick="navigateTo('Edit', @item.ProductId)">
+                                        Edit
+                                    </button>
+                                    <button class="btn-detail" onclick="navigateTo('Detail', @item.ProductId)">
+                                        Detail
+                                    </button>
+                                    <button class="btn-delete" onclick="deleteStaff(@item.ProductId)">
+                                        Delete
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     }
@@ -126,3 +126,43 @@
         }
     }
 </script>
+<style>
+    .button-container {
+        display: flex;
+    }
+
+    .btn-edit,
+    .btn-detail,
+    .btn-delete {
+        margin-right: 5px;
+        padding: 8px 16px;
+        text-align: center;
+        text-decoration: none;
+        font-size: 14px;
+        cursor: pointer;
+        border: none;
+        border-radius: 4px;
+    }
+
+    .table-List {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+    }
+
+    .title-infoList th,
+    .item-infoList td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .title-infoList th {
+        background-color: #008678;
+        color: #fff;
+    }
+
+    .item-infoList td {
+        background-color: #fff;
+    }
+</style>

@@ -1,5 +1,6 @@
 ﻿using DoAn.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Text;
@@ -23,6 +24,8 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Create", "Provider"));
+
                 return RedirectToAction("Login", "Staff");
             }
             return View();
@@ -135,6 +138,8 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Delete", "Provider", new { providerId }));
+
                 return RedirectToAction("Login", "Staff");
             }
             var apiUrl = $"https://localhost:7109/api/ProviderApi/delete/{providerId}";
@@ -161,6 +166,12 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(int providerId)
         {
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Edit", "Provider", new {providerId}));
+
+                return RedirectToAction("Login", "Staff");
+            }
             var provider = db.Providers.Find(providerId);
             if (provider == null)
             {
@@ -171,10 +182,6 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int providerId, Provider updateModel)
         {
-            if (HttpContext.Session.GetString("UserId") == null)
-            {
-                return RedirectToAction("Login", "Staff");
-            }
             if (!ModelState.IsValid)
             {
                 return View(updateModel);
@@ -208,6 +215,8 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Detail", "Provider", new { providerId }));
+
                 return RedirectToAction("Login", "Staff");
             }
             var apiUrl = $"https://localhost:7109/api/ProviderApi/detail/{providerId}";

@@ -6,6 +6,7 @@ using MimeKit;
 using Newtonsoft.Json;
 using System.Text;
 using MailKit.Net.Smtp;
+using Microsoft.CodeAnalysis;
 
 namespace DoAn.Areas.Admin.Controllers
 {
@@ -152,6 +153,7 @@ namespace DoAn.Areas.Admin.Controllers
 
         public IActionResult Create()
         {
+          
             var staffList = db.Staff.ToList();
             var scheduleList = db.Schedules.ToList();
 
@@ -245,6 +247,7 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult edit(int scheduleId, int staffId)
         {
+          
             var staffList = db.Staff.ToList();
             var scheduleList = db.Schedules.ToList();
 

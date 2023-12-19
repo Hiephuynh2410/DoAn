@@ -9,57 +9,64 @@
 
 <h4>Product</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
+<section class="edit-product">
+    <div class="edit-container">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ProductId" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Quantity" class="control-label"></label>
-                <input asp-for="Quantity" class="form-control" />
-                <span asp-validation-for="Quantity" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label for="product_type">product_type:</label>
-                @Html.DropDownList("ProductTypeId", (SelectList)ViewBag.ProductType, "Select a Type", new { @class = "form-control" })
-            </div>
-            <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input type="file" name="fileUpload" id="fileUpload" accept="image/*" style="display:none;" />
-                <input type="button" id="btnUpload" value="Chọn ảnh" class="btn btn-danger" />
-                <img style="width: 44%" class="wrapper-img" src="@Model.Image" id="pictureUpload" />
+            <div class="box-image">
+                <img style="width: 250px" class="wrapper-img" src="@Model.Image" id="pictureUpload" />
                 <input type="hidden" asp-for="Image" />
+               
             </div>
 
-            <div class="form-group">
-                <label for="providers">providers:</label>
-                @Html.DropDownList("ProviderId", (SelectList)ViewBag.providers, "Select a Type", new { @class = "form-control" })
-            </div>
-            <div class="form-group">
+            <div class="wrap-info">
+                <div class="box">
+                    <span>Tên sản phẩm</span>
+                        <input asp-for="Name" type="text" name="productName" >
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                    <div class="box">
+                        <span>Loại</span>
+                        @Html.DropDownList("ProductTypeId", (SelectList)ViewBag.ProductType, "Select a Type", new { @class = "form-control" })
+                    <div class="box">
+                        <span>Nhà cung cấp: </span>
+                        @Html.DropDownList("ProviderId", (SelectList)ViewBag.providers, "Select a Type", new { @class = "form-control" })
+                    </div>
+
+                    <div class="box">
+                        <span>Giá</span>
+                        <input asp-for="Price"  />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+
+                    <div class="box">
+                        <span>Số lượng</span>
+                        <input asp-for="Quantity" />
+
+                        <span asp-validation-for="Quantity" class="text-danger"></span>
+                    </div>
+
+                    <div class="box">
+                        <span>Mô tả</span>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                            <textarea asp-for="Description"></textarea>
+                    </div>
+                    <div class="box">
+                        <input type="file" name="fileUpload" id="fileUpload" accept="image/*" style="display:none;" />
+                        <input type="button" id="btnUpload" value="Chọn ảnh" class="btn btn-danger" />
+                    </div>
+                </div>
+            <div>
                 <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index">Back to List</a>
+            </div>
+
             </div>
         </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+        </div>
+</section>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 @section upload
@@ -98,3 +105,104 @@
     </script>
 }
 
+
+
+<style>
+    .edit-product {
+        padding: 1rem 2%;
+    }
+     
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    .back-to-page {
+        display: inline-block;
+        padding: .5rem 1.5rem;
+        background: #e2dfdf;
+        border-radius: 1rem;
+        font-size: 1.4rem;
+        color: #333;
+    }
+    .back-to-page:hover  {
+        transform: scale(0.95);
+        transition: 0.3s linear;
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .1);
+    }
+    .edit-container {
+        display: flex;
+        margin-top: 2rem;
+    }  
+    form {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        margin: auto;
+        width: 100%;
+    }
+
+    .box-image {
+        flex: 1 1 42rem;
+        border: .1rem solid #dbdbdb;
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+     img {
+        margin: auto;
+        width: 100%;
+        border-radius: 1rem;
+    }
+
+    .icon-changeImage {
+        position: absolute;
+        bottom: .5rem;
+        right: .5rem;
+    }
+    
+    label {
+        font-size: 1.8rem;
+        cursor: pointer;
+        padding: 1rem 3.5rem;
+        background: #888;
+        color: #fff;
+        border-radius: 1rem;
+        cursor: pointer;
+    }
+
+
+    .wrap-info {
+        flex: 1 1 42rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+        gap: 2rem;
+    }
+    .box span {
+        display: block;
+        font-size: 1.4rem;
+        margin-bottom: .5rem
+    }
+
+    input,
+    select {
+        width: auto;
+        padding: .5rem 1.5rem;
+        border: .1rem solid #dbdbdb;
+        border-radius: .5rem;
+    }
+
+    textarea {
+        max-width: 58rem;
+        width: 100%;
+        height: 15rem;
+        padding: 1rem 1.5rem;
+        line-height: 1.8rem;
+        border: .1rem solid #dbdbdb;
+        border-radius: .5rem;
+    }
+
+</style>

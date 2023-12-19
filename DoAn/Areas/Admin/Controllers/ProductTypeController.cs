@@ -1,5 +1,6 @@
 ﻿using DoAn.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Text;
@@ -22,6 +23,8 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Create", "ProductType"));
+
                 return RedirectToAction("Login", "Staff");
             }
             return View();
@@ -71,6 +74,8 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Delete", "ProductType", new { ProductTypeId }));
+
                 return RedirectToAction("Login", "Staff");
             }
             var apiUrl = $"https://localhost:7109/api/ProductTypeApi/delete/{ProductTypeId}";
@@ -99,6 +104,8 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Edit", "ProductType", new { ProductTypeId }));
+
                 return RedirectToAction("Login", "Staff");
             }
 
@@ -146,6 +153,8 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Detail", "ProductType", new { ProductTypeId }));
+
                 return RedirectToAction("Login", "Staff");
             }
             var apiUrl = $"https://localhost:7109/api/ProductTypeApi/detail/{ProductTypeId}";

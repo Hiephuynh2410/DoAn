@@ -231,45 +231,45 @@ namespace DoAn.ApiController
                 var bodyBuilder = new BodyBuilder();
 
                 bodyBuilder.HtmlBody = $@"
-            <!DOCTYPE html PUBLIC ""-//W3C//DTD XHTML 1.0 Transitional//EN"" ""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"">
-            <html xmlns=""http://www.w3.org/1999/xhtml"">
-            <head>
+                <!DOCTYPE html PUBLIC ""-//W3C//DTD XHTML 1.0 Transitional//EN"" ""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"">
+                <html xmlns=""http://www.w3.org/1999/xhtml"">
+                <head>
               
-                <title>Xác nhận thanh toán</title>
-            </head>
-            <body>
+                    <title>Xác nhận thanh toán</title>
+                </head>
+                <body>
              
-                <p>
-                    Thân Mến  {customerName},
-                </p>
-                <p>
-                     Cảm ơn bạn đã mua hàng của chúng tôi! Dưới đây là thông tin sản phảm bạn đã mua:
-                </p>
-                <p>
-                   Chi tiết đơn hàng
-                </p>
-                <ul>
-        ";
+                    <p>
+                        Thân Mến  {customerName},
+                    </p>
+                    <p>
+                         Cảm ơn bạn đã mua hàng của chúng tôi! Dưới đây là thông tin sản phảm bạn đã mua:
+                    </p>
+                    <p>
+                       Chi tiết đơn hàng
+                    </p>
+                    <ul>
+                ";
 
                 foreach (var cartItem in cartItems)
                 {
                     bodyBuilder.HtmlBody += $@"
-                <li>
-                    <strong>Sản phẩm:</strong> {cartItem.Product.Name}<br />
-                    <strong>Số Lượng:</strong> {cartItem.Quantity}<br />
-                </li>
-            ";
+                    <li>
+                        <strong>Sản phẩm:</strong> {cartItem.Product.Name}<br />
+                        <strong>Số Lượng:</strong> {cartItem.Quantity}<br />
+                    </li>
+                 ";
                 }
 
                 bodyBuilder.HtmlBody += $@"
                 </ul>
-                <p>
-                    Tổng Cộng: {totalCost}
-                </p>
+                    <p>
+                        Tổng Cộng: {totalCost}
+                    </p>
                
-            </body>
-            </html>
-        ";
+                    </body>
+                    </html>
+                ";
 
                 message.Body = bodyBuilder.ToMessageBody();
 

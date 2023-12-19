@@ -1,7 +1,9 @@
 ﻿using DoAn.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using NuGet.Protocol;
 using System.Net;
 using System.Text;
 
@@ -60,6 +62,8 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Delete", "ServiceType", new { Servicetypeid }));
+
                 return RedirectToAction("Login", "Staff");
             }
             var apiUrl = $"https://localhost:7109/api/ServicesTypeApi/delete/{Servicetypeid}";
@@ -86,8 +90,11 @@ namespace DoAn.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Detail(int Servicetypeid)
         {
+
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Detail", "ServiceType", new { Servicetypeid }));
+
                 return RedirectToAction("Login", "Staff");
             }
             var apiUrl = $"https://localhost:7109/api/ServicesTypeApi/detail/{Servicetypeid}";
@@ -112,9 +119,10 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Edit", "ServiceType", new { Servicetypeid }));
+
                 return RedirectToAction("Login", "Staff");
             }
-
             var Servicetype = db.Servicetypes.Find(Servicetypeid);
             if (Servicetype == null)
             {
@@ -158,6 +166,8 @@ namespace DoAn.Areas.Admin.Controllers
         {
             if (HttpContext.Session.GetString("UserId") == null)
             {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Create", "ServiceType"));
+
                 return RedirectToAction("Login", "Staff");
             }
             return View();
