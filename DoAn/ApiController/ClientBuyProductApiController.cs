@@ -763,6 +763,26 @@ namespace DoAn.ApiController
                     if (cartItem != null)
                     {
                         _dbContext.Carts.Remove(cartItem);
+
+                        var newBill = new Bill
+                        {
+                            Date = DateTime.UtcNow,
+                            ClientId = request.UserId,
+                            CreatedAt = DateTime.Now,
+                        };
+
+                        _dbContext.Bills.Add(newBill);
+                        await _dbContext.SaveChangesAsync();
+
+                        var newBillDetail = new Billdetail
+                        {
+                            BillId = newBill.BillId,
+                            ProductId = request.ProductId,
+                            Quantity = quantityToBuy,
+                            Price = quantityToBuy * product.Price
+                        };
+
+                        _dbContext.Billdetails.Add(newBillDetail);
                     }
                 }
 
@@ -780,7 +800,6 @@ namespace DoAn.ApiController
                 return StatusCode(500, "An internal server error occurred.");
             }
         }
-
 
 
     }
