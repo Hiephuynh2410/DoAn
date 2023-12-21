@@ -334,7 +334,7 @@ namespace DoAn.ApiController
                     BillId = newBill.BillId,
                     ProductId = request.ProductId,
                     Quantity = quantityToBuy,
-                    Price = quantityToBuy * product.Price 
+                    Price = quantityToBuy * product.Price
                 };
 
                 _dbContext.Billdetails.Add(newBillDetail);
@@ -462,8 +462,8 @@ namespace DoAn.ApiController
                     ProductName = cartItem.Product.Name,
                     ProductImage = cartItem.Product.Image,
                     Quantity = cartItem.Quantity,
-                    TotalAmount = cartItem.TotalAmount
-
+                    TotalAmount = cartItem.TotalAmount,
+                    Price = cartItem.Product.Price
                 }).ToList();
 
                 return Ok(cartDetails);
@@ -599,7 +599,7 @@ namespace DoAn.ApiController
             try
             {
                 var bestSellingProduct = await _dbContext.Products
-                    .Where(p => p.Sold > 0) 
+                    .Where(p => p.Sold > 0)
                     .OrderByDescending(p => p.Sold)
                     .Take(10)
                     .ToListAsync();
@@ -676,7 +676,7 @@ namespace DoAn.ApiController
                 var bookings = await _dbContext.Bookings
                     .Include(x => x.Combo)
                     .Include(x => x.Branch)
-                    .Include(x=> x.Staff)
+                    .Include(x => x.Staff)
                     .Include(b => b.Bookingdetails)
                    .Where(b => b.ClientId == userId && b.Status == true)
                     .ToListAsync();
@@ -721,6 +721,66 @@ namespace DoAn.ApiController
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpPost("BuyCartItems")]
+        public async Task<IActionResult> BuyCartItems([FromBody] List<Cart> items)
+        {
+            try
+            {
+                if (items == null || !items.Any())
+                {
+                    return BadRequest("Invalid request parameters.");
+                }
+
+                foreach (var request in items)
+                {
+                    if (request.UserId <= 0 || request.ProductId <= 0 || request.Quantity <= 0)
+                    {
+                        return BadRequest("Invalid request parameters.");
+                    }
+
+                    var product = await _dbContext.Products.FindAsync(request.ProductId);
+                    var client = await _dbContext.Clients.FindAsync(request.UserId);
+
+                    if (product == null || client == null)
+                    {
+                        return NotFound("Product or client not found.");
+                    }
+
+                    var quantityToBuy = request.Quantity;
+
+                    if (product.Quantity < quantityToBuy)
+                    {
+                        return BadRequest("Not enough stock available.");
+                    }
+
+                    product.Quantity -= quantityToBuy;
+
+                    var cartItem = await _dbContext.Carts
+                        .Where(c => c.UserId == request.UserId && c.ProductId == request.ProductId)
+                        .FirstOrDefaultAsync();
+
+                    if (cartItem != null)
+                    {
+                        _dbContext.Carts.Remove(cartItem);
+                    }
+                }
+
+                await _dbContext.SaveChangesAsync();
+
+                var responseMessage = "Products purchased successfully. Stock updated.";
+
+                return Ok(responseMessage);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+
+                return StatusCode(500, "An internal server error occurred.");
+            }
+        }
+
 
 
     }
