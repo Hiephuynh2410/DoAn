@@ -142,154 +142,84 @@ namespace DoAn.ApiController
             }
         }
 
-        [HttpPost("BuyAllCart/{userId}")]
-        public async Task<IActionResult> BuyAllCart(int userId)
-        {
-            try
-            {
-                if (userId <= 0)
-                {
-                    return BadRequest("Invalid user ID.");
-                }
+        //[HttpPost("BuyAllCart/{userId}")]
+        //public async Task<IActionResult> BuyAllCart(int userId)
+        //{
+        //    try
+        //    {
+        //        if (userId <= 0)
+        //        {
+        //            return BadRequest("Invalid user ID.");
+        //        }
 
-                var cartItems = await _dbContext.Carts
-                    .Include(c => c.Product)
-                    .Include(c => c.User)
-                    .Where(c => c.UserId == userId)
-                    .ToListAsync();
+        //        var cartItems = await _dbContext.Carts
+        //            .Include(c => c.Product)
+        //            .Include(c => c.User)
+        //            .Where(c => c.UserId == userId)
+        //            .ToListAsync();
 
-                if (cartItems == null || cartItems.Count == 0)
-                {
-                    return NotFound("Cart is empty.");
-                }
+        //        if (cartItems == null || cartItems.Count == 0)
+        //        {
+        //            return NotFound("Cart is empty.");
+        //        }
 
-                var totalCost = 0.0;
+        //        var totalCost = 0.0;
 
-                foreach (var cartItem in cartItems)
-                {
-                    var quantityToBuy = cartItem.Quantity ?? 1;
+        //        foreach (var cartItem in cartItems)
+        //        {
+        //            var quantityToBuy = cartItem.Quantity ?? 1;
 
-                    if (cartItem.Product.Quantity < quantityToBuy)
-                    {
-                        return BadRequest($"Not enough stock available for product with ID {cartItem.ProductId}.");
-                    }
+        //            if (cartItem.Product.Quantity < quantityToBuy)
+        //            {
+        //                return BadRequest($"Not enough stock available for product with ID {cartItem.ProductId}.");
+        //            }
 
-                    cartItem.Product.Quantity -= quantityToBuy;
-                    cartItem.Product.Sold += quantityToBuy;
+        //            cartItem.Product.Quantity -= quantityToBuy;
+        //            cartItem.Product.Sold += quantityToBuy;
 
-                    var newBill = new Bill
-                    {
-                        Date = DateTime.UtcNow,
-                        ClientId = userId,
-                        CreatedAt = DateTime.Now,
-                    };
+        //            var newBill = new Bill
+        //            {
+        //                Date = DateTime.UtcNow,
+        //                ClientId = userId,
+        //                CreatedAt = DateTime.Now,
+        //            };
 
-                    _dbContext.Bills.Add(newBill);
-                    await _dbContext.SaveChangesAsync();
+        //            _dbContext.Bills.Add(newBill);
+        //            await _dbContext.SaveChangesAsync();
 
-                    var newBillDetail = new Billdetail
-                    {
-                        BillId = newBill.BillId,
-                        ProductId = cartItem.ProductId,
-                        Quantity = quantityToBuy,
-                        Price = quantityToBuy * cartItem.Product.Price
-                    };
+        //            var newBillDetail = new Billdetail
+        //            {
+        //                BillId = newBill.BillId,
+        //                ProductId = cartItem.ProductId,
+        //                Quantity = quantityToBuy,
+        //                Price = quantityToBuy * cartItem.Product.Price
+        //            };
 
-                    _dbContext.Billdetails.Add(newBillDetail);
-                    await _dbContext.SaveChangesAsync();
+        //            _dbContext.Billdetails.Add(newBillDetail);
+        //            await _dbContext.SaveChangesAsync();
 
-                    totalCost += newBillDetail.Price.GetValueOrDefault();
-                }
+        //            totalCost += newBillDetail.Price.GetValueOrDefault();
+        //        }
 
-                _dbContext.Carts.RemoveRange(cartItems);
-                await _dbContext.SaveChangesAsync();
+        //        _dbContext.Carts.RemoveRange(cartItems);
+        //        await _dbContext.SaveChangesAsync();
 
-                // Sending email
-                var client = await _dbContext.Clients.FindAsync(userId);
-                await SendPurchaseConfirmationEmail(client.Email, client.Name, totalCost, cartItems);
+        //        // Sending email
+        //        var client = await _dbContext.Clients.FindAsync(userId);
+        //        await SendPurchaseConfirmationEmail(client.Email, client.Name, totalCost, cartItems);
 
 
-                return Ok($"Products in the cart bought successfully. Total Cost: {totalCost}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception: {ex.Message}");
-                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
+        //        return Ok($"Products in the cart bought successfully. Total Cost: {totalCost}");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"Exception: {ex.Message}");
+        //        Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
 
-        private async Task SendPurchaseConfirmationEmail(string clientEmail, string customerName, double totalCost, List<Cart> cartItems)
-        {
-            try
-            {
-                var message = new MimeMessage();
-
-                message.From.Add(new MailboxAddress("PurchaseConfirm", "huynhhiepvan1998@gmail.com"));
-                message.Subject = "Purchase Confirmation";
-
-                var bodyBuilder = new BodyBuilder();
-
-                bodyBuilder.HtmlBody = $@"
-                <!DOCTYPE html PUBLIC ""-//W3C//DTD XHTML 1.0 Transitional//EN"" ""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"">
-                <html xmlns=""http://www.w3.org/1999/xhtml"">
-                <head>
-              
-                    <title>Xác nhận thanh toán</title>
-                </head>
-                <body>
-             
-                    <p>
-                        Thân Mến  {customerName},
-                    </p>
-                    <p>
-                         Cảm ơn bạn đã mua hàng của chúng tôi! Dưới đây là thông tin sản phảm bạn đã mua:
-                    </p>
-                    <p>
-                       Chi tiết đơn hàng
-                    </p>
-                    <ul>
-                ";
-
-                foreach (var cartItem in cartItems)
-                {
-                    bodyBuilder.HtmlBody += $@"
-                    <li>
-                        <strong>Sản phẩm:</strong> {cartItem.Product.Name}<br />
-                        <strong>Số Lượng:</strong> {cartItem.Quantity}<br />
-                    </li>
-                 ";
-                }
-
-                bodyBuilder.HtmlBody += $@"
-                </ul>
-                    <p>
-                        Tổng Cộng: {totalCost}
-                    </p>
-               
-                    </body>
-                    </html>
-                ";
-
-                message.Body = bodyBuilder.ToMessageBody();
-
-                using (var smtpClient = new SmtpClient())
-                {
-                    smtpClient.Connect("smtp.gmail.com", 587, false);
-                    smtpClient.Authenticate("huynhhiepvan1998@gmail.com", "nmqt ljyf skbz xcrs");
-
-                    message.To.Add(new MailboxAddress(clientEmail, clientEmail));
-
-                    await smtpClient.SendAsync(message);
-
-                    smtpClient.Disconnect(true);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error sending email: " + ex.Message);
-            }
-        }
+       
 
         [HttpPost("BuyNow")]
         public async Task<IActionResult> BuyNow([FromBody] Cart request)
@@ -708,7 +638,7 @@ namespace DoAn.ApiController
                     },
                     Name = booking.Name,
                     Phone = booking.Phone,
-                    DateTime = booking.DateTime,
+                    DateTime = $"{booking.DateTime} {DateTime.UtcNow}",
                     Note = booking.Note,
                     Status = booking.Status,
                     CreatedAt = booking.CreatedAt,
@@ -721,7 +651,7 @@ namespace DoAn.ApiController
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
+       
         [HttpPost("BuyCartItems")]
         public async Task<IActionResult> BuyCartItems([FromBody] List<Cart> items)
         {
@@ -732,42 +662,48 @@ namespace DoAn.ApiController
                     return BadRequest("Invalid request parameters.");
                 }
 
-                foreach (var request in items)
+                double totalCost = 0.0; 
+
+                foreach (var cartRequest in items) 
                 {
-                    if (request.UserId <= 0 || request.ProductId <= 0 || request.Quantity <= 0)
+                    if (cartRequest.UserId <= 0 || cartRequest.ProductId <= 0 || cartRequest.Quantity <= 0)
                     {
                         return BadRequest("Invalid request parameters.");
                     }
 
-                    var product = await _dbContext.Products.FindAsync(request.ProductId);
-                    var client = await _dbContext.Clients.FindAsync(request.UserId);
+                    var product = await _dbContext.Products.FindAsync(cartRequest.ProductId);
+                    var client = await _dbContext.Clients.FindAsync(cartRequest.UserId);
 
                     if (product == null || client == null)
                     {
                         return NotFound("Product or client not found.");
                     }
 
-                    var quantityToBuy = request.Quantity;
-
-                    if (product.Quantity < quantityToBuy)
+                    var quantityToBuy = cartRequest.Quantity;
+                    product.Quantity -= quantityToBuy; 
+                    product.Sold += quantityToBuy;
+                    if (product.Quantity < 0) 
                     {
                         return BadRequest("Not enough stock available.");
                     }
 
-                    product.Quantity -= quantityToBuy;
 
-                    var cartItem = await _dbContext.Carts
-                        .Where(c => c.UserId == request.UserId && c.ProductId == request.ProductId)
+                    var existingCartItem = await _dbContext.Carts
+                        .Include(c => c.Product)
+                        .Where(c => c.UserId == cartRequest.UserId && c.ProductId == cartRequest.ProductId)
                         .FirstOrDefaultAsync();
 
-                    if (cartItem != null)
+
+                    if (existingCartItem != null)
                     {
-                        _dbContext.Carts.Remove(cartItem);
+                        var productInCartItem = existingCartItem.Product; 
+
+                        _dbContext.Carts.Remove(existingCartItem);
 
                         var newBill = new Bill
                         {
                             Date = DateTime.UtcNow,
-                            ClientId = request.UserId,
+                            ClientId = cartRequest.UserId,
                             CreatedAt = DateTime.Now,
                         };
 
@@ -777,18 +713,24 @@ namespace DoAn.ApiController
                         var newBillDetail = new Billdetail
                         {
                             BillId = newBill.BillId,
-                            ProductId = request.ProductId,
-                            Quantity = quantityToBuy,
+                            ProductId = cartRequest.ProductId,
+                            Quantity = cartRequest.Quantity,
                             Price = quantityToBuy * product.Price
                         };
 
                         _dbContext.Billdetails.Add(newBillDetail);
+
+                        totalCost += newBillDetail.Price.GetValueOrDefault();
                     }
                 }
 
                 await _dbContext.SaveChangesAsync();
 
-                var responseMessage = "Products purchased successfully. Stock updated.";
+                // Sending email
+                var clientForEmail = await _dbContext.Clients.FindAsync(items.First().UserId);
+                await SendPurchaseConfirmationEmail(clientForEmail.Email, clientForEmail.Name, totalCost, items);
+
+                var responseMessage = $"Products purchased successfully. Total Cost: {totalCost}. Stock updated.";
 
                 return Ok(responseMessage);
             }
@@ -800,7 +742,79 @@ namespace DoAn.ApiController
                 return StatusCode(500, "An internal server error occurred.");
             }
         }
+        private async Task SendPurchaseConfirmationEmail(string clientEmail, string customerName, double totalCost, List<Cart> cartItems)
+        {
+            try
+            {
+                var message = new MimeMessage();
 
+                message.From.Add(new MailboxAddress("PurchaseConfirm", "huynhhiepvan1998@gmail.com"));
+                message.Subject = "Purchase Confirmation";
+
+                var bodyBuilder = new BodyBuilder();
+
+                bodyBuilder.HtmlBody = $@"
+                <!DOCTYPE html PUBLIC ""-//W3C//DTD XHTML 1.0 Transitional//EN"" ""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"">
+                <html xmlns=""http://www.w3.org/1999/xhtml"">
+                <head>
+              
+                    <title>Xác nhận thanh toán</title>
+                </head>
+                <body>
+             
+                    <p>
+                        Thân Mến  {customerName},
+                    </p>
+                    <p>
+                         Cảm ơn bạn đã mua hàng của chúng tôi! Dưới đây là thông tin sản phảm bạn đã mua:
+                    </p>
+                    <p>
+                       Chi tiết đơn hàng
+                    </p>
+                    <ul>
+                ";
+
+                foreach (var cartItem in cartItems)
+                {
+                    var product = await _dbContext.Products.FindAsync(cartItem.ProductId);
+
+                    bodyBuilder.HtmlBody += $@"
+                    <li>
+                        <strong>Sản phẩm:</strong> {product?.Name}<br />
+                        <strong>Số Lượng:</strong> {cartItem.Quantity}<br />
+                    </li>
+                ";
+                }
+
+                bodyBuilder.HtmlBody += $@"
+                </ul>
+                    <p>
+                        Tổng Cộng: {totalCost}
+                    </p>
+               
+                    </body>
+                    </html>
+                ";
+
+                message.Body = bodyBuilder.ToMessageBody();
+
+                using (var smtpClient = new SmtpClient())
+                {
+                    smtpClient.Connect("smtp.gmail.com", 587, false);
+                    smtpClient.Authenticate("huynhhiepvan1998@gmail.com", "nmqt ljyf skbz xcrs");
+
+                    message.To.Add(new MailboxAddress(clientEmail, clientEmail));
+
+                    await smtpClient.SendAsync(message);
+
+                    smtpClient.Disconnect(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error sending email: " + ex.Message);
+            }
+        }
 
     }
 }
