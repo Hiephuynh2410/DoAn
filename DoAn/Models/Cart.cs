@@ -16,23 +16,31 @@ public partial class Cart
 
     public virtual Client User { get; set; } = null!;
     [NotMapped]
+
     public double? TotalAmount
+
     {
+
         get
         {
             if (Quantity.HasValue && Product != null)
+
             {
                 return Quantity.Value * Product.Price;
             }
 
             return null;
         }
+
         private set { }
     }
 
+
     public void UpdateTotalAmount()
+
     {
         if (Quantity.HasValue && Product != null)
+
         {
             TotalAmount = Quantity.Value * Product.Price;
         }

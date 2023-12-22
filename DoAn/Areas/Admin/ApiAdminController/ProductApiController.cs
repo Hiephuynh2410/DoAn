@@ -206,7 +206,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
                     productToUpdate.Provider = updatedProvider;
                 }
             }
-
+            productToUpdate.Image = updateModel.Image;
             productToUpdate.UpdatedAt = DateTime.Now;
             productToUpdate.UpdatedBy = updateModel.UpdatedBy;
             _dbContext.Entry(productToUpdate).State = EntityState.Modified;

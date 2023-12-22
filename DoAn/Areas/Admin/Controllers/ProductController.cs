@@ -227,7 +227,16 @@ namespace DoAn.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("Name", "Name already exists");
             }
-            if(string.IsNullOrEmpty(registrationModel.Name))
+            if (!string.IsNullOrEmpty(registrationModel.Name) && registrationModel.Name.Length > 255)
+            {
+                ModelState.AddModelError("Name", "Name cannot be more than 255 characters.");
+            }
+
+            if (!string.IsNullOrEmpty(registrationModel.Description) && registrationModel.Description.Length > 255)
+            {
+                ModelState.AddModelError("Description", "Description cannot be more than 255 characters.");
+            }
+            if (string.IsNullOrEmpty(registrationModel.Name))
             {
                 ModelState.AddModelError("Name", "Name cannot be empty");
             }

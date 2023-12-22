@@ -164,6 +164,7 @@ public partial class DlctContext : DbContext
 
             entity.HasOne(d => d.Staff).WithMany(p => p.Bookings)
                 .HasForeignKey(d => d.StaffId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_BOOKING_STAFF");
         });
 
