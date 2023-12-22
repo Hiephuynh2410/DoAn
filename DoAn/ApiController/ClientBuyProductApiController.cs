@@ -608,7 +608,7 @@ namespace DoAn.ApiController
                     .Include(x => x.Branch)
                     .Include(x => x.Staff)
                     .Include(b => b.Bookingdetails)
-                   .Where(b => b.ClientId == userId && b.Status == true)
+                   .Where(b => b.ClientId == userId && b.Status == false || b.Status == true)
                     .ToListAsync();
 
                 if (bookings == null || bookings.Count == 0)
@@ -638,7 +638,7 @@ namespace DoAn.ApiController
                     },
                     Name = booking.Name,
                     Phone = booking.Phone,
-                    DateTime = $"{booking.DateTime} {DateTime.UtcNow}",
+                    DateTime = booking.DateTime,
                     Note = booking.Note,
                     Status = booking.Status,
                     CreatedAt = booking.CreatedAt,
