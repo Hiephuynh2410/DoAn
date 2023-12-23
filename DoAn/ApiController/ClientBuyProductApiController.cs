@@ -588,7 +588,9 @@ namespace DoAn.ApiController
                 Quantity = billDetail.Quantity,
                 Price = billDetail.Price,
                 ProductName = billDetail.Product.Name,
-                CreatedAt = billDetail.Bill.Date
+                CreatedAt = billDetail.Bill.CreatedAt,
+                Date = billDetail.Bill.Date,
+
             });
             return Ok(results);
         }
