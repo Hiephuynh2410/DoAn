@@ -1,11 +1,12 @@
-﻿USE [master]
+﻿@*<p>
+    USE [master]
 GO
 /****** Object:  Database [DLCT]    Script Date: 12/24/2023 12:06:22 PM ******/
 CREATE DATABASE [DLCT]
-CONTAINMENT = NONE
-ON  PRIMARY
+ CONTAINMENT = NONE
+ ON  PRIMARY 
 ( NAME = N'DLCT', FILENAME = N'C:\Program Files (x86)\Microsoft SQL Server\MSSQL11.SQLEXPRESS\MSSQL\DATA\DLCT.mdf' , SIZE = 3136KB , MAXSIZE = UNLIMITED, FILEGROWTH = 1024KB )
-LOG ON
+ LOG ON 
 ( NAME = N'DLCT_log', FILENAME = N'C:\Program Files (x86)\Microsoft SQL Server\MSSQL11.SQLEXPRESS\MSSQL\DATA\DLCT_log.ldf' , SIZE = 784KB , MAXSIZE = 2048GB , FILEGROWTH = 10%)
 GO
 ALTER DATABASE [DLCT] SET COMPATIBILITY_LEVEL = 110
@@ -15,63 +16,63 @@ begin
 EXEC [DLCT].[dbo].[sp_fulltext_database] @action = 'enable'
 end
 GO
-ALTER DATABASE [DLCT] SET ANSI_NULL_DEFAULT OFF
+ALTER DATABASE [DLCT] SET ANSI_NULL_DEFAULT OFF 
 GO
-ALTER DATABASE [DLCT] SET ANSI_NULLS OFF
+ALTER DATABASE [DLCT] SET ANSI_NULLS OFF 
 GO
-ALTER DATABASE [DLCT] SET ANSI_PADDING OFF
+ALTER DATABASE [DLCT] SET ANSI_PADDING OFF 
 GO
-ALTER DATABASE [DLCT] SET ANSI_WARNINGS OFF
+ALTER DATABASE [DLCT] SET ANSI_WARNINGS OFF 
 GO
-ALTER DATABASE [DLCT] SET ARITHABORT OFF
+ALTER DATABASE [DLCT] SET ARITHABORT OFF 
 GO
-ALTER DATABASE [DLCT] SET AUTO_CLOSE ON
+ALTER DATABASE [DLCT] SET AUTO_CLOSE ON 
 GO
-ALTER DATABASE [DLCT] SET AUTO_CREATE_STATISTICS ON
+ALTER DATABASE [DLCT] SET AUTO_CREATE_STATISTICS ON 
 GO
-ALTER DATABASE [DLCT] SET AUTO_SHRINK OFF
+ALTER DATABASE [DLCT] SET AUTO_SHRINK OFF 
 GO
-ALTER DATABASE [DLCT] SET AUTO_UPDATE_STATISTICS ON
+ALTER DATABASE [DLCT] SET AUTO_UPDATE_STATISTICS ON 
 GO
-ALTER DATABASE [DLCT] SET CURSOR_CLOSE_ON_COMMIT OFF
+ALTER DATABASE [DLCT] SET CURSOR_CLOSE_ON_COMMIT OFF 
 GO
-ALTER DATABASE [DLCT] SET CURSOR_DEFAULT  GLOBAL
+ALTER DATABASE [DLCT] SET CURSOR_DEFAULT  GLOBAL 
 GO
-ALTER DATABASE [DLCT] SET CONCAT_NULL_YIELDS_NULL OFF
+ALTER DATABASE [DLCT] SET CONCAT_NULL_YIELDS_NULL OFF 
 GO
-ALTER DATABASE [DLCT] SET NUMERIC_ROUNDABORT OFF
+ALTER DATABASE [DLCT] SET NUMERIC_ROUNDABORT OFF 
 GO
-ALTER DATABASE [DLCT] SET QUOTED_IDENTIFIER OFF
+ALTER DATABASE [DLCT] SET QUOTED_IDENTIFIER OFF 
 GO
-ALTER DATABASE [DLCT] SET RECURSIVE_TRIGGERS OFF
+ALTER DATABASE [DLCT] SET RECURSIVE_TRIGGERS OFF 
 GO
-ALTER DATABASE [DLCT] SET  ENABLE_BROKER
+ALTER DATABASE [DLCT] SET  ENABLE_BROKER 
 GO
-ALTER DATABASE [DLCT] SET AUTO_UPDATE_STATISTICS_ASYNC OFF
+ALTER DATABASE [DLCT] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
 GO
-ALTER DATABASE [DLCT] SET DATE_CORRELATION_OPTIMIZATION OFF
+ALTER DATABASE [DLCT] SET DATE_CORRELATION_OPTIMIZATION OFF 
 GO
-ALTER DATABASE [DLCT] SET TRUSTWORTHY OFF
+ALTER DATABASE [DLCT] SET TRUSTWORTHY OFF 
 GO
-ALTER DATABASE [DLCT] SET ALLOW_SNAPSHOT_ISOLATION OFF
+ALTER DATABASE [DLCT] SET ALLOW_SNAPSHOT_ISOLATION OFF 
 GO
-ALTER DATABASE [DLCT] SET PARAMETERIZATION SIMPLE
+ALTER DATABASE [DLCT] SET PARAMETERIZATION SIMPLE 
 GO
-ALTER DATABASE [DLCT] SET READ_COMMITTED_SNAPSHOT OFF
+ALTER DATABASE [DLCT] SET READ_COMMITTED_SNAPSHOT OFF 
 GO
-ALTER DATABASE [DLCT] SET HONOR_BROKER_PRIORITY OFF
+ALTER DATABASE [DLCT] SET HONOR_BROKER_PRIORITY OFF 
 GO
-ALTER DATABASE [DLCT] SET RECOVERY SIMPLE
+ALTER DATABASE [DLCT] SET RECOVERY SIMPLE 
 GO
-ALTER DATABASE [DLCT] SET  MULTI_USER
+ALTER DATABASE [DLCT] SET  MULTI_USER 
 GO
-ALTER DATABASE [DLCT] SET PAGE_VERIFY CHECKSUM
+ALTER DATABASE [DLCT] SET PAGE_VERIFY CHECKSUM  
 GO
-ALTER DATABASE [DLCT] SET DB_CHAINING OFF
+ALTER DATABASE [DLCT] SET DB_CHAINING OFF 
 GO
-ALTER DATABASE [DLCT] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF )
+ALTER DATABASE [DLCT] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
 GO
-ALTER DATABASE [DLCT] SET TARGET_RECOVERY_TIME = 0 SECONDS
+ALTER DATABASE [DLCT] SET TARGET_RECOVERY_TIME = 0 SECONDS 
 GO
 USE [DLCT]
 GO
@@ -81,13 +82,13 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[BILL](
-[Bill_id] [int] IDENTITY(1,1) NOT NULL,
-[Created_at] [datetime] NULL,
-[Date] [datetime] NOT NULL,
-[Client_id] [int] NULL,
-CONSTRAINT [PK_BILL] PRIMARY KEY CLUSTERED
+	[Bill_id] [int] IDENTITY(1,1) NOT NULL,
+	[Created_at] [datetime] NULL,
+	[Date] [datetime] NOT NULL,
+	[Client_id] [int] NULL,
+ CONSTRAINT [PK_BILL] PRIMARY KEY CLUSTERED 
 (
-[Bill_id] ASC
+	[Bill_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
@@ -98,14 +99,14 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[BILLDETAIL](
-[Bill_id] [int] NOT NULL,
-[Product_id] [int] NOT NULL,
-[Quantity] [int] NULL,
-[Price] [float] NULL,
-CONSTRAINT [PK_BILLDETAIL] PRIMARY KEY CLUSTERED
+	[Bill_id] [int] NOT NULL,
+	[Product_id] [int] NOT NULL,
+	[Quantity] [int] NULL,
+	[Price] [float] NULL,
+ CONSTRAINT [PK_BILLDETAIL] PRIMARY KEY CLUSTERED 
 (
-[Bill_id] ASC,
-[Product_id] ASC
+	[Bill_id] ASC,
+	[Product_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
@@ -116,12 +117,12 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[BLOG_CATEGORIES](
-[Blog_category_id] [int] IDENTITY(1,1) NOT NULL,
-[Title] [nvarchar](500) NULL,
-[Description] [nvarchar](500) NULL,
-CONSTRAINT [PK_BLOG_CATEGORIES] PRIMARY KEY CLUSTERED
+	[Blog_category_id] [int] IDENTITY(1,1) NOT NULL,
+	[Title] [nvarchar](500) NULL,
+	[Description] [nvarchar](500) NULL,
+ CONSTRAINT [PK_BLOG_CATEGORIES] PRIMARY KEY CLUSTERED 
 (
-[Blog_category_id] ASC
+	[Blog_category_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
@@ -132,16 +133,16 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[BLOG_POSTS](
-[Blog_post_id] [int] IDENTITY(1,1) NOT NULL,
-[Titile] [nvarchar](100) NULL,
-[Body] [nvarchar](500) NULL,
-[Thumbnail] [nvarchar](250) NULL,
-[Date_time] [datetime] NULL,
-[Blog_category_id] [int] NULL,
-[Staff_id] [int] NULL,
-CONSTRAINT [PK_BLOG_POSTS] PRIMARY KEY CLUSTERED
+	[Blog_post_id] [int] IDENTITY(1,1) NOT NULL,
+	[Titile] [nvarchar](100) NULL,
+	[Body] [nvarchar](500) NULL,
+	[Thumbnail] [nvarchar](250) NULL,
+	[Date_time] [datetime] NULL,
+	[Blog_category_id] [int] NULL,
+	[Staff_id] [int] NULL,
+ CONSTRAINT [PK_BLOG_POSTS] PRIMARY KEY CLUSTERED 
 (
-[Blog_post_id] ASC
+	[Blog_post_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
@@ -154,20 +155,20 @@ GO
 SET ANSI_PADDING ON
 GO
 CREATE TABLE [dbo].[BOOKING](
-[Booking_id] [int] IDENTITY(1,1) NOT NULL,
-[Client_id] [int] NULL,
-[Staff_id] [int] NULL,
-[Name] [nvarchar](100) NULL,
-[Phone] [varchar](10) NULL,
-[Date_time] [datetime] NULL,
-[Note] [nvarchar](255) NULL,
-[Status] [bit] NULL,
-[Combo_id] [int] NULL,
-[Created_at] [datetime] NULL,
-[Branch_id] [int] NULL,
-CONSTRAINT [PK_BOOKING] PRIMARY KEY CLUSTERED
+	[Booking_id] [int] IDENTITY(1,1) NOT NULL,
+	[Client_id] [int] NULL,
+	[Staff_id] [int] NULL,
+	[Name] [nvarchar](100) NULL,
+	[Phone] [varchar](10) NULL,
+	[Date_time] [datetime] NULL,
+	[Note] [nvarchar](255) NULL,
+	[Status] [bit] NULL,
+	[Combo_id] [int] NULL,
+	[Created_at] [datetime] NULL,
+	[Branch_id] [int] NULL,
+ CONSTRAINT [PK_BOOKING] PRIMARY KEY CLUSTERED 
 (
-[Booking_id] ASC
+	[Booking_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
@@ -180,13 +181,13 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[BOOKINGDETAIL](
-[Booking_id] [int] NOT NULL,
-[Service_id] [int] NOT NULL,
-[Price] [float] NULL,
-CONSTRAINT [PK_BOOKINGDETAIL] PRIMARY KEY CLUSTERED
+	[Booking_id] [int] NOT NULL,
+	[Service_id] [int] NOT NULL,
+	[Price] [float] NULL,
+ CONSTRAINT [PK_BOOKINGDETAIL] PRIMARY KEY CLUSTERED 
 (
-[Booking_id] ASC,
-[Service_id] ASC
+	[Booking_id] ASC,
+	[Service_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
@@ -199,12 +200,12 @@ GO
 SET ANSI_PADDING ON
 GO
 CREATE TABLE [dbo].[BRANCH](
-[Branch_id] [int] IDENTITY(1,1) NOT NULL,
-[Address] [nvarchar](255) NULL,
-[Hotline] [varchar](10) NULL,
-CONSTRAINT [PK_BRANCH] PRIMARY KEY CLUSTERED
+	[Branch_id] [int] IDENTITY(1,1) NOT NULL,
+	[Address] [nvarchar](255) NULL,
+	[Hotline] [varchar](10) NULL,
+ CONSTRAINT [PK_BRANCH] PRIMARY KEY CLUSTERED 
 (
-[Branch_id] ASC
+	[Branch_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
@@ -217,13 +218,13 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[CART](
-[user_id] [int] NOT NULL,
-[Product_id] [int] NOT NULL,
-[Quantity] [int] NULL,
-CONSTRAINT [PK_CART] PRIMARY KEY CLUSTERED
+	[user_id] [int] NOT NULL,
+	[Product_id] [int] NOT NULL,
+	[Quantity] [int] NULL,
+ CONSTRAINT [PK_CART] PRIMARY KEY CLUSTERED 
 (
-[user_id] ASC,
-[Product_id] ASC
+	[user_id] ASC,
+	[Product_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
@@ -236,23 +237,23 @@ GO
 SET ANSI_PADDING ON
 GO
 CREATE TABLE [dbo].[CLIENT](
-[Client_id] [int] IDENTITY(1,1) NOT NULL,
-[Name] [nvarchar](255) NULL,
-[Username] [varchar](255) NULL,
-[Password] [varchar](255) NULL,
-[Phone] [varchar](10) NULL,
-[Avatar] [varchar](255) NULL,
-[Address] [nvarchar](255) NULL,
-[Email] [varchar](255) NULL,
-[Role_id] [int] NULL,
-[Created_at] [datetime] NULL,
-[Updated_at] [datetime] NULL,
-[Created_by] [nvarchar](255) NULL,
-[Updated_by] [nvarchar](255) NULL,
-[Status] [bit] NULL,
-CONSTRAINT [PK_CILENT] PRIMARY KEY CLUSTERED
+	[Client_id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](255) NULL,
+	[Username] [varchar](255) NULL,
+	[Password] [varchar](255) NULL,
+	[Phone] [varchar](10) NULL,
+	[Avatar] [varchar](255) NULL,
+	[Address] [nvarchar](255) NULL,
+	[Email] [varchar](255) NULL,
+	[Role_id] [int] NULL,
+	[Created_at] [datetime] NULL,
+	[Updated_at] [datetime] NULL,
+	[Created_by] [nvarchar](255) NULL,
+	[Updated_by] [nvarchar](255) NULL,
+	[Status] [bit] NULL,
+ CONSTRAINT [PK_CILENT] PRIMARY KEY CLUSTERED 
 (
-[Client_id] ASC
+	[Client_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
@@ -265,16 +266,16 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[COMBO](
-[Combo_id] [int] IDENTITY(1,1) NOT NULL,
-[Name] [nvarchar](255) NULL,
-[Price] [float] NULL,
-[Created_at] [datetime] NULL,
-[Created_by] [int] NULL,
-[Updated_at] [datetime] NULL,
-[Updated_by] [int] NULL,
-CONSTRAINT [PK_COMBO] PRIMARY KEY CLUSTERED
+	[Combo_id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](255) NULL,
+	[Price] [float] NULL,
+	[Created_at] [datetime] NULL,
+	[Created_by] [int] NULL,
+	[Updated_at] [datetime] NULL,
+	[Updated_by] [int] NULL,
+ CONSTRAINT [PK_COMBO] PRIMARY KEY CLUSTERED 
 (
-[Combo_id] ASC
+	[Combo_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
@@ -285,13 +286,13 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[COMBODETAIL](
-[Combo_id] [int] NOT NULL,
-[Service_id] [int] NOT NULL,
-[Price] [float] NULL,
-CONSTRAINT [PK_COMBODETAIL] PRIMARY KEY CLUSTERED
+	[Combo_id] [int] NOT NULL,
+	[Service_id] [int] NOT NULL,
+	[Price] [float] NULL,
+ CONSTRAINT [PK_COMBODETAIL] PRIMARY KEY CLUSTERED 
 (
-[Combo_id] ASC,
-[Service_id] ASC
+	[Combo_id] ASC,
+	[Service_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
@@ -302,22 +303,22 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[PRODUCT](
-[Product_id] [int] IDENTITY(1,1) NOT NULL,
-[Name] [nvarchar](255) NULL,
-[Description] [nvarchar](255) NULL,
-[Price] [float] NULL,
-[Quantity] [int] NULL,
-[Product_type_id] [int] NULL,
-[Image] [nvarchar](200) NULL,
-[Provider_id] [int] NULL,
-[Created_at] [datetime] NULL,
-[Created_by] [int] NULL,
-[Updated_at] [datetime] NULL,
-[Updated_by] [int] NULL,
-[Sold] [int] NULL CONSTRAINT [DF_PRODUCT_Sold]  DEFAULT ((0)),
-CONSTRAINT [PK_PRODUCT] PRIMARY KEY CLUSTERED
+	[Product_id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](255) NULL,
+	[Description] [nvarchar](255) NULL,
+	[Price] [float] NULL,
+	[Quantity] [int] NULL,
+	[Product_type_id] [int] NULL,
+	[Image] [nvarchar](200) NULL,
+	[Provider_id] [int] NULL,
+	[Created_at] [datetime] NULL,
+	[Created_by] [int] NULL,
+	[Updated_at] [datetime] NULL,
+	[Updated_by] [int] NULL,
+	[Sold] [int] NULL CONSTRAINT [DF_PRODUCT_Sold]  DEFAULT ((0)),
+ CONSTRAINT [PK_PRODUCT] PRIMARY KEY CLUSTERED 
 (
-[Product_id] ASC
+	[Product_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
@@ -328,11 +329,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[PRODUCTTYPE](
-[Product_type_id] [int] IDENTITY(1,1) NOT NULL,
-[Name] [nvarchar](255) NULL,
-CONSTRAINT [PK_PRODUCT TYPE] PRIMARY KEY CLUSTERED
+	[Product_type_id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](255) NULL,
+ CONSTRAINT [PK_PRODUCT TYPE] PRIMARY KEY CLUSTERED 
 (
-[Product_type_id] ASC
+	[Product_type_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
@@ -345,14 +346,14 @@ GO
 SET ANSI_PADDING ON
 GO
 CREATE TABLE [dbo].[PROVIDER](
-[Provider_id] [int] IDENTITY(1,1) NOT NULL,
-[Name] [nvarchar](255) NULL,
-[Address] [nvarchar](255) NULL,
-[Phone] [char](10) NULL,
-[Email] [nvarchar](255) NULL,
-CONSTRAINT [PK_PROVIDER] PRIMARY KEY CLUSTERED
+	[Provider_id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](255) NULL,
+	[Address] [nvarchar](255) NULL,
+	[Phone] [char](10) NULL,
+	[Email] [nvarchar](255) NULL,
+ CONSTRAINT [PK_PROVIDER] PRIMARY KEY CLUSTERED 
 (
-[Provider_id] ASC
+	[Provider_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
@@ -365,11 +366,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[ROLE](
-[Role_id] [int] IDENTITY(1,1) NOT NULL,
-[Name] [nvarchar](255) NULL,
-CONSTRAINT [PK_ROLE] PRIMARY KEY CLUSTERED
+	[Role_id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](255) NULL,
+ CONSTRAINT [PK_ROLE] PRIMARY KEY CLUSTERED 
 (
-[Role_id] ASC
+	[Role_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
@@ -380,11 +381,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[SCHEDULE](
-[Schedule_id] [int] IDENTITY(1,1) NOT NULL,
-[Time] [time](7) NULL,
-CONSTRAINT [PK_SCHEDULE] PRIMARY KEY CLUSTERED
+	[Schedule_id] [int] IDENTITY(1,1) NOT NULL,
+	[Time] [time](7) NULL,
+ CONSTRAINT [PK_SCHEDULE] PRIMARY KEY CLUSTERED 
 (
-[Schedule_id] ASC
+	[Schedule_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
@@ -395,14 +396,14 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[SCHEDULEDETAIL](
-[Schedule_id] [int] NOT NULL,
-[Staff_id] [int] NOT NULL,
-[Date] [date] NULL,
-[Status] [bit] NULL,
-CONSTRAINT [PK_SCHEDULE DETAIL] PRIMARY KEY CLUSTERED
+	[Schedule_id] [int] NOT NULL,
+	[Staff_id] [int] NOT NULL,
+	[Date] [date] NULL,
+	[Status] [bit] NULL,
+ CONSTRAINT [PK_SCHEDULE DETAIL] PRIMARY KEY CLUSTERED 
 (
-[Schedule_id] ASC,
-[Staff_id] ASC
+	[Schedule_id] ASC,
+	[Staff_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
@@ -413,18 +414,18 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[SERVICE](
-[Service_id] [int] IDENTITY(1,1) NOT NULL,
-[Name] [nvarchar](255) NULL,
-[Price] [float] NULL,
-[Status] [bit] NULL,
-[Service_type_id] [int] NULL,
-[Created_at] [datetime] NULL,
-[Created_by] [int] NULL,
-[Updated_at] [datetime] NULL,
-[Updated_by] [int] NULL,
-CONSTRAINT [PK_SERVICE] PRIMARY KEY CLUSTERED
+	[Service_id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](255) NULL,
+	[Price] [float] NULL,
+	[Status] [bit] NULL,
+	[Service_type_id] [int] NULL,
+	[Created_at] [datetime] NULL,
+	[Created_by] [int] NULL,
+	[Updated_at] [datetime] NULL,
+	[Updated_by] [int] NULL,
+ CONSTRAINT [PK_SERVICE] PRIMARY KEY CLUSTERED 
 (
-[Service_id] ASC
+	[Service_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
@@ -435,11 +436,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[SERVICETYPE](
-[Service_type_id] [int] IDENTITY(1,1) NOT NULL,
-[Name] [nvarchar](255) NULL,
-CONSTRAINT [PK_ServiceType] PRIMARY KEY CLUSTERED
+	[Service_type_id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](255) NULL,
+ CONSTRAINT [PK_ServiceType] PRIMARY KEY CLUSTERED 
 (
-[Service_type_id] ASC
+	[Service_type_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
@@ -452,54 +453,54 @@ GO
 SET ANSI_PADDING ON
 GO
 CREATE TABLE [dbo].[STAFF](
-[Staff_id] [int] IDENTITY(1,1) NOT NULL,
-[Name] [nvarchar](255) NULL,
-[Username] [varchar](255) NULL,
-[Password] [varchar](255) NULL,
-[Phone] [varchar](10) NULL,
-[Avatar] [varchar](255) NULL,
-[Address] [nvarchar](255) NULL,
-[Email] [varchar](255) NULL,
-[Status] [bit] NULL,
-[IsDisabled] [bit] NULL,
-[Role_id] [int] NULL,
-[Created_at] [datetime] NULL,
-[Updated_at] [datetime] NULL,
-[Created_by] [nvarchar](255) NULL,
-[Updated_by] [nvarchar](255) NULL,
-[Branch_id] [int] NULL,
-CONSTRAINT [PK_STAFF] PRIMARY KEY CLUSTERED
+	[Staff_id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](255) NULL,
+	[Username] [varchar](255) NULL,
+	[Password] [varchar](255) NULL,
+	[Phone] [varchar](10) NULL,
+	[Avatar] [varchar](255) NULL,
+	[Address] [nvarchar](255) NULL,
+	[Email] [varchar](255) NULL,
+	[Status] [bit] NULL,
+	[IsDisabled] [bit] NULL,
+	[Role_id] [int] NULL,
+	[Created_at] [datetime] NULL,
+	[Updated_at] [datetime] NULL,
+	[Created_by] [nvarchar](255) NULL,
+	[Updated_by] [nvarchar](255) NULL,
+	[Branch_id] [int] NULL,
+ CONSTRAINT [PK_STAFF] PRIMARY KEY CLUSTERED 
 (
-[Staff_id] ASC
+	[Staff_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 
 GO
 SET ANSI_PADDING OFF
 GO
-SET IDENTITY_INSERT [dbo].[BILL] ON
+SET IDENTITY_INSERT [dbo].[BILL] ON 
 
 INSERT [dbo].[BILL] ([Bill_id], [Created_at], [Date], [Client_id]) VALUES (101, CAST(N'2023-12-24 08:44:39.820' AS DateTime), CAST(N'2023-12-24 01:44:39.820' AS DateTime), 20)
 SET IDENTITY_INSERT [dbo].[BILL] OFF
 INSERT [dbo].[BILLDETAIL] ([Bill_id], [Product_id], [Quantity], [Price]) VALUES (101, 55, 1, 399000)
-SET IDENTITY_INSERT [dbo].[BLOG_CATEGORIES] ON
+SET IDENTITY_INSERT [dbo].[BLOG_CATEGORIES] ON 
 
 INSERT [dbo].[BLOG_CATEGORIES] ([Blog_category_id], [Title], [Description]) VALUES (4, N'Tất cả', N'Mọi thể loại bài viết')
 INSERT [dbo].[BLOG_CATEGORIES] ([Blog_category_id], [Title], [Description]) VALUES (5, N'Tóc tai', N'Bài viết liên quan đến tóc tai')
 INSERT [dbo].[BLOG_CATEGORIES] ([Blog_category_id], [Title], [Description]) VALUES (6, N'Chi nhánh', N'Bài viết liên quan đến chi nhánh')
 SET IDENTITY_INSERT [dbo].[BLOG_CATEGORIES] OFF
-SET IDENTITY_INSERT [dbo].[BLOG_POSTS] ON
+SET IDENTITY_INSERT [dbo].[BLOG_POSTS] ON 
 
 INSERT [dbo].[BLOG_POSTS] ([Blog_post_id], [Titile], [Body], [Thumbnail], [Date_time], [Blog_category_id], [Staff_id]) VALUES (19, N'Mới Nhất 2021: Shine Combo cắt gội 10 bước, giá chỉ 80k', N'Đặc trưng của kiểu tóc Side Part rủ là phần tóc', N'/images/30S9MT86-Xịt khử mùi Perspi-Guard Maximum Strength Antiperspirant 30ml.jpg', CAST(N'2023-12-10 14:27:20.207' AS DateTime), 4, 6)
 INSERT [dbo].[BLOG_POSTS] ([Blog_post_id], [Titile], [Body], [Thumbnail], [Date_time], [Blog_category_id], [Staff_id]) VALUES (20, N'Shine Combo siêu xịn ', N'Combo gồm các bước: ...', N'/images/sap-vuot-toc-dynamite-clay_master.png', CAST(N'2023-12-16 10:36:05.693' AS DateTime), 4, 9)
 SET IDENTITY_INSERT [dbo].[BLOG_POSTS] OFF
-SET IDENTITY_INSERT [dbo].[BOOKING] ON
+SET IDENTITY_INSERT [dbo].[BOOKING] ON 
 
 INSERT [dbo].[BOOKING] ([Booking_id], [Client_id], [Staff_id], [Name], [Phone], [Date_time], [Note], [Status], [Combo_id], [Created_at], [Branch_id]) VALUES (150, NULL, 6, N'moew moew', N'0767537243', CAST(N'2023-12-28 18:11:00.000' AS DateTime), N'cắt chỉ cho mình nhé arigato', 0, 20, CAST(N'2023-12-23 21:11:55.227' AS DateTime), 3)
 INSERT [dbo].[BOOKING] ([Booking_id], [Client_id], [Staff_id], [Name], [Phone], [Date_time], [Note], [Status], [Combo_id], [Created_at], [Branch_id]) VALUES (151, 16, 6, N'moew moew', N'0767537243', CAST(N'2023-12-29 17:12:00.000' AS DateTime), N'ccasc', 0, 21, CAST(N'2023-12-23 21:12:45.590' AS DateTime), 3)
 INSERT [dbo].[BOOKING] ([Booking_id], [Client_id], [Staff_id], [Name], [Phone], [Date_time], [Note], [Status], [Combo_id], [Created_at], [Branch_id]) VALUES (152, NULL, 6, N'moew moew', N'0767537243', CAST(N'2023-12-27 05:46:00.000' AS DateTime), N'cat toc', 1, 19, CAST(N'2023-12-24 08:47:18.130' AS DateTime), 3)
 SET IDENTITY_INSERT [dbo].[BOOKING] OFF
-SET IDENTITY_INSERT [dbo].[BRANCH] ON
+SET IDENTITY_INSERT [dbo].[BRANCH] ON 
 
 INSERT [dbo].[BRANCH] ([Branch_id], [Address], [Hotline]) VALUES (1, N'Quận 8', N'0903555605')
 INSERT [dbo].[BRANCH] ([Branch_id], [Address], [Hotline]) VALUES (3, N'Quận 9', N'0903555605')
@@ -508,7 +509,7 @@ INSERT [dbo].[BRANCH] ([Branch_id], [Address], [Hotline]) VALUES (6, N'Quận Ca
 SET IDENTITY_INSERT [dbo].[BRANCH] OFF
 INSERT [dbo].[CART] ([user_id], [Product_id], [Quantity]) VALUES (20, 55, 1)
 INSERT [dbo].[CART] ([user_id], [Product_id], [Quantity]) VALUES (20, 60, 1)
-SET IDENTITY_INSERT [dbo].[CLIENT] ON
+SET IDENTITY_INSERT [dbo].[CLIENT] ON 
 
 INSERT [dbo].[CLIENT] ([Client_id], [Name], [Username], [Password], [Phone], [Avatar], [Address], [Email], [Role_id], [Created_at], [Updated_at], [Created_by], [Updated_by], [Status]) VALUES (16, N'Phathuynh1', N'Phathuynh1234@', N'AQAAAAEAACcQAAAAECW4e58cJu6NYmDGTQh361/GSmrx4R5HjO9+F7U8apgtJJ2NuoZP82XNtcdm3guSaA==', N'0767537375', NULL, N'Quận 9', N'doremon8408@gmail.com', 3, CAST(N'2023-11-23 15:49:33.153' AS DateTime), CAST(N'2023-12-23 19:25:44.507' AS DateTime), NULL, NULL, NULL)
 INSERT [dbo].[CLIENT] ([Client_id], [Name], [Username], [Password], [Phone], [Avatar], [Address], [Email], [Role_id], [Created_at], [Updated_at], [Created_by], [Updated_by], [Status]) VALUES (17, N'khanh', N'Khan123@', N'AQAAAAEAACcQAAAAEOx4J8/KQXb4SxSV5giVxVT0HuI7XgwTga6fYO84/yPwp4skfyVGItqTfgEMIMAiEQ==', N'0767537373', NULL, N'Quận 8', N'asd123@gmail.com', 3, CAST(N'2023-11-26 21:59:35.347' AS DateTime), NULL, NULL, NULL, NULL)
@@ -516,7 +517,7 @@ INSERT [dbo].[CLIENT] ([Client_id], [Name], [Username], [Password], [Phone], [Av
 INSERT [dbo].[CLIENT] ([Client_id], [Name], [Username], [Password], [Phone], [Avatar], [Address], [Email], [Role_id], [Created_at], [Updated_at], [Created_by], [Updated_by], [Status]) VALUES (19, N'Nam Huỳnh', N'NamPeo@', N'AQAAAAEAACcQAAAAEMOiPX60FZdThjTflxhqIXYC8fdtEks7GSZrR00rV0Gl7r1goXTSErEAOPTuLe0iTw==', N'0334567891', N'', N'25/5e Nguyen Thi Thanh', N'dungvovan311@gmail.com', 3, CAST(N'2023-12-16 09:49:28.273' AS DateTime), NULL, NULL, NULL, NULL)
 INSERT [dbo].[CLIENT] ([Client_id], [Name], [Username], [Password], [Phone], [Avatar], [Address], [Email], [Role_id], [Created_at], [Updated_at], [Created_by], [Updated_by], [Status]) VALUES (20, N'hiephuynh', N'Hiephuynh123@', N'AQAAAAEAACcQAAAAEO+6DoTUAbeIOR8dtvBPuNAOfyh/IGKW6KIv58Ah7PrcGgA0wPHUji/52b2SvmGqNg==', N'0767537243', N'', N'chung cư ta quang bưu', N'huynhhiepvan1998@gmail.com', 3, CAST(N'2023-12-23 16:54:42.957' AS DateTime), NULL, NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[CLIENT] OFF
-SET IDENTITY_INSERT [dbo].[COMBO] ON
+SET IDENTITY_INSERT [dbo].[COMBO] ON 
 
 INSERT [dbo].[COMBO] ([Combo_id], [Name], [Price], [Created_at], [Created_by], [Updated_at], [Updated_by]) VALUES (16, N'Cắt tóc, gội Đầu', 70000, CAST(N'2023-11-29 20:55:53.833' AS DateTime), 6, CAST(N'2023-12-16 10:50:39.280' AS DateTime), 6)
 INSERT [dbo].[COMBO] ([Combo_id], [Name], [Price], [Created_at], [Created_by], [Updated_at], [Updated_by]) VALUES (17, N'Cắt tóc, cạo mặt', 60000, CAST(N'2023-11-29 20:56:13.063' AS DateTime), 6, CAST(N'2023-12-16 10:50:49.700' AS DateTime), 6)
@@ -524,7 +525,7 @@ INSERT [dbo].[COMBO] ([Combo_id], [Name], [Price], [Created_at], [Created_by], [
 INSERT [dbo].[COMBO] ([Combo_id], [Name], [Price], [Created_at], [Created_by], [Updated_at], [Updated_by]) VALUES (20, N'Cắt tóc, gội đầu, ráy tai', 80000, CAST(N'2023-12-16 10:51:55.410' AS DateTime), 6, NULL, NULL)
 INSERT [dbo].[COMBO] ([Combo_id], [Name], [Price], [Created_at], [Created_by], [Updated_at], [Updated_by]) VALUES (21, N'Cắt tóc, ráy tai, cạo mặt', 80000, CAST(N'2023-12-16 10:52:30.570' AS DateTime), 6, CAST(N'2023-12-16 10:52:38.630' AS DateTime), 6)
 SET IDENTITY_INSERT [dbo].[COMBO] OFF
-SET IDENTITY_INSERT [dbo].[PRODUCT] ON
+SET IDENTITY_INSERT [dbo].[PRODUCT] ON 
 
 INSERT [dbo].[PRODUCT] ([Product_id], [Name], [Description], [Price], [Quantity], [Product_type_id], [Image], [Provider_id], [Created_at], [Created_by], [Updated_at], [Updated_by], [Sold]) VALUES (55, N'Sáp vuốt tóc Glanzen Clay Wax - Vô địch giữ nếp tới 24 giờ', N'Được sản xuất bởi công nghệ hiện đại của Đức - vùng đất của những sản phẩm chất lượng hàng đầu thế giới, Glanzen Clay mang lại chất lượng cực tốt cho người sử dụng. Sản phẩm thách thức thời gian với độ giữ nếp tới 12h giờ, khả năng thấm hút dầu cực tốt. ', 399000, 183, 8, N'/images/wax vuốt tóc glanzen.jpg', 9, CAST(N'2023-12-07 10:53:14.110' AS DateTime), 6, CAST(N'2023-12-22 16:45:11.167' AS DateTime), 6, 1)
 INSERT [dbo].[PRODUCT] ([Product_id], [Name], [Description], [Price], [Quantity], [Product_type_id], [Image], [Provider_id], [Created_at], [Created_by], [Updated_at], [Updated_by], [Sold]) VALUES (58, N'Sáp Glanzen xanh - Glanzen Prime - Floral ', N'Luôn nằm trong Top những dòng sáp vuốt tóc bán chạy', 359000, 143, 8, N'/images/Glazen_xanh.jpg', 9, CAST(N'2023-12-07 11:00:02.067' AS DateTime), 6, CAST(N'2023-12-22 16:45:19.507' AS DateTime), 6, 0)
@@ -556,24 +557,24 @@ INSERT [dbo].[PRODUCT] ([Product_id], [Name], [Description], [Price], [Quantity]
 INSERT [dbo].[PRODUCT] ([Product_id], [Name], [Description], [Price], [Quantity], [Product_type_id], [Image], [Provider_id], [Created_at], [Created_by], [Updated_at], [Updated_by], [Sold]) VALUES (102, N'Native''s Coconut & Vanilla', N'Silicone miễn phí. Không chứa sulfat. Paraben miễn phí. Được làm chu đáo với 10 thành phần hoặc ít hơn. Được làm bằng (trái tim). An toàn. Giản dị. Hiệu quả. Được làm từ 10 thành phần chu đáo cho phép bạn nói lời tạm biệt với khô', 2000000, 100, 5, N'/images/6efc3968-cfbd-4c89-b3c8-ee409ceba84f.jpg', 8, CAST(N'2023-12-22 18:44:16.047' AS DateTime), 6, CAST(N'2023-12-22 23:30:23.753' AS DateTime), 6, 0)
 INSERT [dbo].[PRODUCT] ([Product_id], [Name], [Description], [Price], [Quantity], [Product_type_id], [Image], [Provider_id], [Created_at], [Created_by], [Updated_at], [Updated_by], [Sold]) VALUES (103, N'SACHAJUAN', N'Được thiết kế để dưỡng ẩm và dưỡng tóc màu - Bao gồm công nghệ Microemulsion - Làm giàu với các bộ lọc UV lâu dài để che chắn khỏi phai màu- Nuôi dưỡng, điều kiện và gỡ rối tóc', 2000000, 100, 5, N'/images/6a82c1cc-5021-45ca-a4ef-ae4f5b97e627.jpg', 8, CAST(N'2023-12-22 18:49:02.313' AS DateTime), 6, CAST(N'2023-12-22 23:30:13.843' AS DateTime), 6, 0)
 SET IDENTITY_INSERT [dbo].[PRODUCT] OFF
-SET IDENTITY_INSERT [dbo].[PRODUCTTYPE] ON
+SET IDENTITY_INSERT [dbo].[PRODUCTTYPE] ON 
 
 INSERT [dbo].[PRODUCTTYPE] ([Product_type_id], [Name]) VALUES (4, N'CHĂM SÓC DA MẶT')
 INSERT [dbo].[PRODUCTTYPE] ([Product_type_id], [Name]) VALUES (5, N'CHĂM SÓC TÓC')
 INSERT [dbo].[PRODUCTTYPE] ([Product_type_id], [Name]) VALUES (8, N'TẠO KIỂU TÓC')
 SET IDENTITY_INSERT [dbo].[PRODUCTTYPE] OFF
-SET IDENTITY_INSERT [dbo].[PROVIDER] ON
+SET IDENTITY_INSERT [dbo].[PROVIDER] ON 
 
 INSERT [dbo].[PROVIDER] ([Provider_id], [Name], [Address], [Phone], [Email]) VALUES (8, N'Dược phẩm Kim Anh', N'Quận 8', N'0903555605', N'KimAnh123@gmail.com')
 INSERT [dbo].[PROVIDER] ([Provider_id], [Name], [Address], [Phone], [Email]) VALUES (9, N'One Boutique', N'33 Man Thiện, Hiệp Phú, Quận 8, Tp.Hồ Chí Minh', N'0909094104', N'OneBouutique1@gmail.com')
 SET IDENTITY_INSERT [dbo].[PROVIDER] OFF
-SET IDENTITY_INSERT [dbo].[ROLE] ON
+SET IDENTITY_INSERT [dbo].[ROLE] ON 
 
 INSERT [dbo].[ROLE] ([Role_id], [Name]) VALUES (1, N'Admin')
 INSERT [dbo].[ROLE] ([Role_id], [Name]) VALUES (2, N'Staff')
 INSERT [dbo].[ROLE] ([Role_id], [Name]) VALUES (3, N'Client')
 SET IDENTITY_INSERT [dbo].[ROLE] OFF
-SET IDENTITY_INSERT [dbo].[SCHEDULE] ON
+SET IDENTITY_INSERT [dbo].[SCHEDULE] ON 
 
 INSERT [dbo].[SCHEDULE] ([Schedule_id], [Time]) VALUES (1, CAST(N'07:30:00' AS Time))
 INSERT [dbo].[SCHEDULE] ([Schedule_id], [Time]) VALUES (4, CAST(N'08:00:00' AS Time))
@@ -588,20 +589,20 @@ INSERT [dbo].[SCHEDULE] ([Schedule_id], [Time]) VALUES (18, CAST(N'13:00:00' AS 
 SET IDENTITY_INSERT [dbo].[SCHEDULE] OFF
 INSERT [dbo].[SCHEDULEDETAIL] ([Schedule_id], [Staff_id], [Date], [Status]) VALUES (1, 6, CAST(N'2023-12-24' AS Date), 1)
 INSERT [dbo].[SCHEDULEDETAIL] ([Schedule_id], [Staff_id], [Date], [Status]) VALUES (6, 9, CAST(N'2023-12-27' AS Date), 1)
-SET IDENTITY_INSERT [dbo].[SERVICE] ON
+SET IDENTITY_INSERT [dbo].[SERVICE] ON 
 
 INSERT [dbo].[SERVICE] ([Service_id], [Name], [Price], [Status], [Service_type_id], [Created_at], [Created_by], [Updated_at], [Updated_by]) VALUES (8, N'Ráy tai', 30000, 1, 1, CAST(N'2023-12-07 13:33:51.590' AS DateTime), 6, CAST(N'2023-12-16 10:45:18.833' AS DateTime), 6)
 INSERT [dbo].[SERVICE] ([Service_id], [Name], [Price], [Status], [Service_type_id], [Created_at], [Created_by], [Updated_at], [Updated_by]) VALUES (9, N'Gội đầu', 70000, 1, 7, CAST(N'2023-12-07 13:34:46.853' AS DateTime), 6, CAST(N'2023-12-16 10:44:50.360' AS DateTime), 6)
 INSERT [dbo].[SERVICE] ([Service_id], [Name], [Price], [Status], [Service_type_id], [Created_at], [Created_by], [Updated_at], [Updated_by]) VALUES (10, N'Mụn', 50000, 1, 8, CAST(N'2023-12-16 10:40:19.267' AS DateTime), 6, CAST(N'2023-12-16 10:43:17.997' AS DateTime), 6)
 SET IDENTITY_INSERT [dbo].[SERVICE] OFF
-SET IDENTITY_INSERT [dbo].[SERVICETYPE] ON
+SET IDENTITY_INSERT [dbo].[SERVICETYPE] ON 
 
 INSERT [dbo].[SERVICETYPE] ([Service_type_id], [Name]) VALUES (1, N'Ráy tai')
 INSERT [dbo].[SERVICETYPE] ([Service_type_id], [Name]) VALUES (7, N'Gội Đầu')
 INSERT [dbo].[SERVICETYPE] ([Service_type_id], [Name]) VALUES (8, N'Nặn Mụn')
 INSERT [dbo].[SERVICETYPE] ([Service_type_id], [Name]) VALUES (9, N'Cắt tóc')
 SET IDENTITY_INSERT [dbo].[SERVICETYPE] OFF
-SET IDENTITY_INSERT [dbo].[STAFF] ON
+SET IDENTITY_INSERT [dbo].[STAFF] ON 
 
 INSERT [dbo].[STAFF] ([Staff_id], [Name], [Username], [Password], [Phone], [Avatar], [Address], [Email], [Status], [IsDisabled], [Role_id], [Created_at], [Updated_at], [Created_by], [Updated_by], [Branch_id]) VALUES (6, N'Khánh', N'Khanhpeo123@', N'AQAAAAEAACcQAAAAEERBd+yXzjp49sFUevULrCVCC5J82DFyp9x8BknP6MH1dWwyJc7gYleJdEDmhSfCtA==', N'0383581802', N'/images/background.png', N'25/5d Nguyen Thi Thanh', N'huynhhiepvan1998@gmail.com', 1, 0, 1, CAST(N'2023-08-28 09:47:51.037' AS DateTime), CAST(N'2023-12-22 23:44:10.933' AS DateTime), N'Hiep', N'Khánh', 3)
 INSERT [dbo].[STAFF] ([Staff_id], [Name], [Username], [Password], [Phone], [Avatar], [Address], [Email], [Status], [IsDisabled], [Role_id], [Created_at], [Updated_at], [Created_by], [Updated_by], [Branch_id]) VALUES (9, N'Trọng Quý', N'TrongQuy111', N'AQAAAAEAACcQAAAAEA1mrQDRBxTj6Cllat/d/x9/JmUmpIgthmc9MBwbhQlLZSsemXHvaOVX4CTrUtxceA==', N'0334567891', N'/images/gom-kevin-murphy.jpg', N'Trần Hưng Đạo', N'huynhphatminh1998@gmail.com', 1, 0, 2, CAST(N'2023-12-16 09:00:15.970' AS DateTime), CAST(N'2023-12-24 08:43:15.113' AS DateTime), N'Hiep', N'Khánh', 1)
@@ -738,5 +739,7 @@ ALTER TABLE [dbo].[STAFF] CHECK CONSTRAINT [FK_STAFF_ROLE]
 GO
 USE [master]
 GO
-ALTER DATABASE [DLCT] SET  READ_WRITE
+ALTER DATABASE [DLCT] SET  READ_WRITE 
 GO
+
+    </p>*@

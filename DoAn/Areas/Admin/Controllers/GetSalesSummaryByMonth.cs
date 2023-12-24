@@ -18,7 +18,10 @@ namespace DoAn.Areas.Admin.Controllers
         {
             return View();
         }
-
+        public async Task<IActionResult> DB()
+        {
+            return View();
+        }
         public async Task<IActionResult> GetSale()
         {
 
