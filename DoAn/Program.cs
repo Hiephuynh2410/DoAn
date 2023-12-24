@@ -43,8 +43,8 @@ builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
     builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
 }));
 
-//auto send mail
-builder.Services.AddHostedService<ScheduledEmailService>();
+////auto send mail
+//builder.Services.AddHostedService<ScheduledEmailService>();
 
 
 

@@ -317,7 +317,6 @@ namespace DoAn.ApiController
 
                 var combo = await _dbContext.Combos.FindAsync(registrationModel.ComboId);
                 var branch = await _dbContext.Branches.FindAsync(registrationModel.BranchId);
-
                 var bookingDate = registrationModel.DateTime?.ToString("yyyy-MM-dd");
                 var currentTime = DateTime.Now.ToString("HH:mm");
 
@@ -348,7 +347,7 @@ namespace DoAn.ApiController
                                                                     <tr>
                                                                         <p style=""font-family: 'Roboto Condensed', sans-serif; font-size: 16px; color: #4a4a4a;""><strong>Name:</strong> {registrationModel.Name}</p>
                                                                         <p style=""font-family: 'Roboto Condensed', sans-serif; font-size: 16px; color: #4a4a4a;""><strong>Phone number:</strong>{registrationModel.Phone}</p>
-                                                                        <p style=""font-family: 'Roboto Condensed', sans-serif; font-size: 16px; color: #4a4a4a;""><strong>Booking date: </strong>{bookingDate} / {currentTime}</p>
+                                                                        <p style=""font-family: 'Roboto Condensed', sans-serif; font-size: 16px; color: #4a4a4a;""><strong>Booking date: </strong>{bookingDate} /  {currentTime}</p>
                                                                     </tr>
                                                                 </table>
                                                             </td>
