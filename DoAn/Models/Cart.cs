@@ -16,7 +16,6 @@ public partial class Cart
 
     public virtual Client User { get; set; } = null!;
     [NotMapped]
-
     public double? TotalAmount
 
     {

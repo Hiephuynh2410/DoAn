@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 using DoAn.Services;
 using ProGCoder_MomoAPI.Models.Momo;
+using DoAn.Areas.Admin.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
@@ -17,6 +18,10 @@ builder.Services.AddDbContext<DlctContext>(options =>
 
 builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
 builder.Services.AddScoped<IMomoService, MomoService>();
+
+
+//services
+builder.Services.AddServices();
 
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.AddControllersWithViews()

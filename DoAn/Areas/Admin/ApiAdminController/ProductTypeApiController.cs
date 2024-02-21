@@ -1,4 +1,5 @@
-﻿using DoAn.Models;
+﻿using DoAn.Areas.Admin.Services;
+using DoAn.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,26 +10,36 @@ namespace DoAn.Areas.Admin.ApiAdminController
     public class ProductTypeApiController : Controller
     {
         private readonly DlctContext _dbContext;
-
-        public ProductTypeApiController(DlctContext dbContext)
+        private readonly ProductTypeServices _productTypeServices;
+        public ProductTypeApiController(DlctContext dbContext, ProductTypeServices productTypeServices)
         {
             _dbContext = dbContext;
+            _productTypeServices = productTypeServices;
         }
-
-        [HttpGet]
+        [HttpGet] 
         public async Task<IActionResult> GetAllProductType()
         {
-            var productType = await _dbContext.Producttypes
-                .ToListAsync();
-
-            var productTypesWithFullInfo = productType.Select(s => new
-            {
-                s.ProductTypeId,
-                s.Name,
-            }).ToList();
-
-            return Ok(productTypesWithFullInfo);
+            var productTypeWithFullInfo = await _productTypeServices.GetAllProductTypes();
+            return Ok(productTypeWithFullInfo);
         }
+
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateProductsType(Producttype registrationModel)
+        {
+
+            var result = await _productTypeServices.CreateProductType(registrationModel);
+
+            if (result is OkObjectResult okResult)
+            {
+                return Ok(okResult.Value);
+            }
+            else if (result is BadRequestObjectResult badRequestObjectResult)
+            {
+                return BadRequest(badRequestObjectResult.Value);
+            }
+            return StatusCode(500, "Internal Server Error");
+        }
+
 
         [HttpGet("search")]
         public async Task<IActionResult> searchProductType(string keyword)
@@ -44,67 +55,57 @@ namespace DoAn.Areas.Admin.ApiAdminController
             return Ok(productTypesWithFullInfo);
         }
 
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateProductType(Producttype createModel)
+        [HttpPut("update/{productTypeId}")]
+        public async Task<IActionResult> UpdateProductTypesAsync(int productTypeId, Producttype producttype)
         {
-            if (ModelState.IsValid)
+
+            var result = await _productTypeServices.UpdateProductType(productTypeId, producttype);
+
+            if (result is OkObjectResult okResult)
             {
-                var ProductTypeExists = await _dbContext.Producttypes.AnyAsync(b => b.Name == createModel.Name);
-                if (ProductTypeExists)
+
+                return Ok(okResult.Value);
+
+            }
+            else if (result is NotFoundObjectResult notFoundResult)
+            {
+
+                return NotFound(notFoundResult.Value);
+
+            }
+            else
+            {
+
+                return StatusCode(500, "Internal Server Error");
+
+            }
+        }
+
+        [HttpDelete("deleteAll")]
+        public async Task<IActionResult> DeleteProductTypessAsync([FromBody] List<int> productTypeId)
+        {
+            try
+            {
+                foreach (var ProductTypeId in productTypeId)
                 {
-                    return BadRequest(new { Message = "Producttype already exists." });
+                    var result = await _productTypeServices.DeleteAllProductTypeAsync(ProductTypeId);
                 }
 
-                var newProductType = new Producttype
+                var deleteSuccessResponse = new
                 {
-                    Name = createModel.Name,
+                    Message = "ProductType deleted successfully"
                 };
 
-                _dbContext.Producttypes.Add(newProductType);
-                await _dbContext.SaveChangesAsync();
-
-                var registrationSuccessResponse = new
-                {
-                    Message = "Producttype registration successful",
-                    ProductTypeId = newProductType.ProductTypeId
-                };
-                return Ok(registrationSuccessResponse);
+                return new OkObjectResult(deleteSuccessResponse);
             }
-
-            var invalidDataErrorResponse = new
+            catch (Exception ex)
             {
-                Message = "Invalid ProductType data",
-                Errors = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList()
-            };
-            return BadRequest(invalidDataErrorResponse);
+                // Log the exception details
+                Console.Error.WriteLine($"Error deleting ProductType: {ex.Message}");
+                return new StatusCodeResult(500);
+            }
         }
 
-        [HttpPut("update/{ProductTypeId}")]
-        public async Task<IActionResult> UpdateProductTypeId(int ProductTypeId, Producttype updateModel)
-        {
-            var ProductType = await _dbContext.Producttypes.FindAsync(ProductTypeId);
-            if (ProductType == null)
-            {
-                return NotFound();
-            }
-
-            if (!string.IsNullOrWhiteSpace(updateModel.Name))
-            {
-                ProductType.Name = updateModel.Name;
-            }
-            _dbContext.Entry(ProductType).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
-
-            var updateSuccessResponse = new
-            {
-                Message = "ProductType updated successfully"
-            };
-
-            return Ok(updateSuccessResponse);
-        }
 
         [HttpDelete("delete/{ProductTypeId}")]
         public async Task<IActionResult> DeleteProductType(int ProductTypeId)
