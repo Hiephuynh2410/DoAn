@@ -1,4 +1,5 @@
-﻿using DoAn.Models;
+﻿using DoAn.Areas.Admin.Services;
+using DoAn.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,26 +10,18 @@ namespace DoAn.Areas.Admin.ApiAdminController
     public class ProviderApiController : Controller
     {
         private readonly DlctContext _dbContext;
-        public ProviderApiController(DlctContext dbContext)
+        private readonly ProviderServices _providerServices;
+
+        public ProviderApiController(DlctContext dbContext, ProviderServices providerServices)
         {
             _dbContext = dbContext;
+            _providerServices = providerServices;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllProviders()
         {
-            var provider = await _dbContext.Providers
-                .ToListAsync();
-
-            var providersWithFullInfo = provider.Select(s => new
-            {
-                s.ProviderId,
-                s.Name,
-                s.Address,
-                s.Email,
-                s.Phone
-            }).ToList();
-
+            var providersWithFullInfo = await _providerServices.GetAllProvider();
             return Ok(providersWithFullInfo);
         }
 
@@ -51,84 +44,46 @@ namespace DoAn.Areas.Admin.ApiAdminController
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateProvider(Provider createModel)
+        public async Task<IActionResult> CreateProviders(Provider registrationModel)
         {
-            if (ModelState.IsValid)
+
+            var result = await _providerServices.CreateProvider(registrationModel);
+
+            if (result is OkObjectResult okResult)
             {
-                var ProviderExists = await _dbContext.Providers.AnyAsync(b => b.Name == createModel.Name);
-                if (ProviderExists)
-                {
-                    return BadRequest(new { Message = "Provider already exists." });
-                }
-
-                var newProvider = new Provider
-                {
-                    Name = createModel.Name,
-                    Address = createModel.Address, 
-                    Email = createModel.Email, 
-                    Phone = createModel.Phone
-                };
-
-                _dbContext.Providers.Add(newProvider);
-                await _dbContext.SaveChangesAsync();
-
-                var registrationSuccessResponse = new
-                {
-                    Message = "Provider create successful",
-                    ProviderId = newProvider.ProviderId
-                };
-                return Ok(registrationSuccessResponse);
+                return Ok(okResult.Value);
             }
-
-            var invalidDataErrorResponse = new
+            else if (result is BadRequestObjectResult badRequestObjectResult)
             {
-                Message = "Invalid Provider data", 
-                Errors = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList()
-            };
-            return BadRequest(invalidDataErrorResponse);
+                return BadRequest(badRequestObjectResult.Value);
+            }
+            return StatusCode(500, "Internal Server Error");
         }
 
         [HttpPut("update/{providerId}")]
-        public async Task<IActionResult> UpdateProvider(int providerId, Provider updateModel)
+        public async Task<IActionResult> UpdateProvidersAsync(int providerId, Provider provider)
         {
-            var provider = await _dbContext.Providers.FindAsync(providerId);
-            if (provider == null)
+
+            var result = await _providerServices.UpdateProvider(providerId, provider);
+
+            if (result is OkObjectResult okResult)
             {
-                return NotFound();
+
+                return Ok(okResult.Value);
+
             }
-
-            if (!string.IsNullOrWhiteSpace(updateModel.Name))
+            else if (result is NotFoundObjectResult notFoundResult)
             {
-                provider.Name = updateModel.Name;
+
+                return NotFound(notFoundResult.Value);
+
             }
-
-            if (!string.IsNullOrWhiteSpace(updateModel.Address))
+            else
             {
-                provider.Address = updateModel.Address;
+
+                return StatusCode(500, "Internal Server Error");
+
             }
-
-            if (!string.IsNullOrWhiteSpace(updateModel.Phone))
-            {
-                provider.Phone = updateModel.Phone;
-            }
-
-            if (!string.IsNullOrWhiteSpace(updateModel.Email))
-            {
-                provider.Email = updateModel.Email;
-            }
-
-            _dbContext.Entry(provider).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
-
-            var updateSuccessResponse = new
-            {
-                Message = "Provider updated successfully"
-            };
-
-            return Ok(updateSuccessResponse);
         }
 
         [HttpDelete("delete/{providerId}")]
@@ -151,24 +106,29 @@ namespace DoAn.Areas.Admin.ApiAdminController
             return Ok(deleteSuccessResponse);
         }
 
-        [HttpGet("detail/{providerId}")]
-        public async Task<IActionResult> GetProviderDetail(int providerId)
+        [HttpDelete("deleteAll")]
+        public async Task<IActionResult> DeleteProviderAsync([FromBody] List<int> providerId)
         {
-            var provider = await _dbContext.Providers.FindAsync(providerId);
+            try
+            {
+                foreach (var ProviderId in providerId)
+                {
+                    var result = await _providerServices.DeleteAllProviderAsync(ProviderId);
+                }
 
-            if (provider == null)
-            {
-                return NotFound();
+
+                var deleteSuccessResponse = new
+                {
+                    Message = "Provider deleted successfully",
+                };
+
+                return new OkObjectResult(deleteSuccessResponse);
             }
-            var ProviderDetail = new
+            catch (Exception ex)
             {
-                provider.ProviderId,
-                provider.Name,
-                provider.Email,
-                provider.Phone,
-                provider.Address
-            };
-            return Json(ProviderDetail);
+                Console.Error.WriteLine($"Error deleting Provider: {ex.Message}");
+                return new StatusCodeResult(500);
+            }
         }
     }
 }

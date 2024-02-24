@@ -19,14 +19,14 @@ builder.Services.AddDbContext<DlctContext>(options =>
 builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
 builder.Services.AddScoped<IMomoService, MomoService>();
 
-
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSession();
 //services
 builder.Services.AddServices();
 
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.AddControllersWithViews()
     .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
-builder.Services.AddSession();
 builder.Services.AddLocalization(options =>
 {
     options.ResourcesPath = "Resouces";
@@ -89,7 +89,6 @@ app.UseRouting();
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllerRoute(

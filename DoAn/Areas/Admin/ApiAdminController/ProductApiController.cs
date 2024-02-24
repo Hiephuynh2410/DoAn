@@ -1,4 +1,5 @@
-﻿using DoAn.Models;
+﻿using DoAn.Areas.Admin.Services;
+using DoAn.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,45 +12,16 @@ namespace DoAn.Areas.Admin.ApiAdminController
     public class ProductApiController : Controller
     {
         private readonly DlctContext _dbContext;
-        public ProductApiController(DlctContext dbContext)
+        private readonly ProductServices _productServices;
+        public ProductApiController(DlctContext dbContext, ProductServices productServices)
         {
             _dbContext = dbContext;
+            _productServices = productServices;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()
         {
-            var products = await _dbContext.Products
-                .Include(s => s.ProductType)
-                .Include(s => s.Provider)
-                .ToListAsync();
-
-            var productsWithFullInfo = products.Select(s => new
-            {
-                s.ProductId,
-                s.Name,
-                s.Description,
-                s.Price,
-                s.Quantity,
-                s.Image,
-                s.ProductTypeId,
-                s.ProviderId,
-                s.CreatedAt,
-                s.UpdatedAt,
-                s.CreatedBy,
-                s.UpdatedBy,
-                s.Sold,
-                ProductType = new
-                {
-                    Name = s.ProductType?.Name
-                },
-                Provider = new
-                {
-                    s.Provider?.Name,
-                    s.Provider?.Address,
-                    s.Provider?.Email,
-                    s.Provider?.Phone
-                },
-            }).ToList();
+            var productsWithFullInfo = await _productServices.GetAllProduct();
 
             return Ok(productsWithFullInfo);
         }
@@ -99,125 +71,39 @@ namespace DoAn.Areas.Admin.ApiAdminController
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateProducts(Product registrationModel)
+        public async Task<IActionResult> CreateProductsAsync(Product registrationModel)
         {
-            if (ModelState.IsValid)
+            var result = await _productServices.CreateProductAsync(registrationModel);
+
+            if (result is OkObjectResult okResult)
             {
-                var productType = await _dbContext.Producttypes.FindAsync(registrationModel.ProductTypeId);
-                var provider = await _dbContext.Providers.FindAsync(registrationModel.ProviderId);
-
-                var newProduct = new Product
-                {
-                    Name = registrationModel.Name,
-                    Description = registrationModel.Description,
-                    Price = registrationModel.Price,
-                    Quantity = registrationModel.Quantity,
-                    Image = registrationModel.Image,
-                    CreatedAt = DateTime.Now,
-                    CreatedBy = registrationModel.CreatedBy,
-                    ProductType = productType,
-                    Provider = provider,
-                };
-
-                _dbContext.Products.Add(newProduct);
-                await _dbContext.SaveChangesAsync();
-                _dbContext.Entry(newProduct).Reference(s => s.ProductType).Load();
-                _dbContext.Entry(newProduct).Reference(s => s.Provider).Load();
-
-                var registrationSuccessResponse = new
-                {
-                    Message = "Product created successfully",
-                    ProductId = newProduct.ProductId,
-                    ProductType = new
-                    {
-                        Address = newProduct.ProductType?.Name
-                    },
-                    Provider = new
-                    {
-                        Name = newProduct.Provider?.Name,
-                        Address = newProduct.Provider?.Address,
-                        Phone = newProduct.Provider?.Phone,
-                        Email = newProduct.Provider?.Email
-                    }
-                };
-
-                return Ok(registrationSuccessResponse);
+                return Ok(okResult.Value);
+            }
+            else if (result is BadRequestObjectResult badRequestResult)
+            {
+                return BadRequest(badRequestResult.Value);
             }
 
-            var invalidDataErrorResponse = new
-            {
-                Message = "Invalid create data",
-                Errors = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList()
-            };
-
-            return BadRequest(invalidDataErrorResponse);
+            return StatusCode(500, "Internal Server Error");
         }
+
         [HttpPut("update/{productId}")]
-        public async Task<IActionResult> UpdateProducts(int productId, Product updateModel)
+        public async Task<IActionResult> UpdateProductsAsync(int productId, Product updateModel)
         {
-            var productToUpdate = await _dbContext.Products
-                .Include(p => p.ProductType)
-                .Include(p => p.Provider)
-                .FirstOrDefaultAsync(p => p.ProductId == productId);
-            if (productToUpdate == null)
+            var result = await _productServices.UpdateProductAsync(productId, updateModel);
+
+            if (result is OkObjectResult okResult)
             {
-                return NotFound();
+                return Ok(okResult.Value);
             }
-
-            if (!string.IsNullOrWhiteSpace(updateModel.Name))
+            else if (result is NotFoundObjectResult notFoundResult)
             {
-                productToUpdate.Name = updateModel.Name;
+                return NotFound(notFoundResult.Value);
             }
-
-            if (!string.IsNullOrWhiteSpace(updateModel.Description))
+            else
             {
-                productToUpdate.Description = updateModel.Description;
+                return StatusCode(500, "Internal Server Error");
             }
-
-            if (updateModel.Price.HasValue)
-            {
-                productToUpdate.Price = updateModel.Price;
-            }
-
-            if (updateModel.Quantity.HasValue)
-            {
-                productToUpdate.Quantity = updateModel.Quantity;
-            }
-
-          
-
-            if (updateModel.ProductTypeId.HasValue)
-            {
-                var updatedProductType = await _dbContext.Producttypes.FindAsync(updateModel.ProductTypeId);
-                if (updatedProductType != null)
-                {
-                    productToUpdate.ProductType = updatedProductType;
-                }
-            }
-
-            if (updateModel.ProviderId.HasValue)
-            {
-                var updatedProvider = await _dbContext.Providers.FindAsync(updateModel.ProviderId);
-                if (updatedProvider != null)
-                {
-                    productToUpdate.Provider = updatedProvider;
-                }
-            }
-            productToUpdate.Image = updateModel.Image;
-            productToUpdate.UpdatedAt = DateTime.Now;
-            productToUpdate.UpdatedBy = updateModel.UpdatedBy;
-            _dbContext.Entry(productToUpdate).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
-
-            var updateSuccessResponse = new
-            {
-                Message = "Product updated successfully"
-            };
-
-            return Ok(updateSuccessResponse);
         }
 
         [HttpDelete("delete/{productId}")]
@@ -240,6 +126,32 @@ namespace DoAn.Areas.Admin.ApiAdminController
 
             return Ok(deleteSuccessResponse);
         }
+
+        [HttpDelete("deleteAll")]
+        public async Task<IActionResult> DeleteProductsAsync([FromBody] List<int> productIds)
+        {
+            try
+            {
+                foreach (var productId in productIds)
+                {
+                    var result = await _productServices.DeleteAllProductAsync(productId);
+                }
+
+                var deleteSuccessResponse = new
+                {
+                    Message = "Products deleted successfully"
+                };
+
+                return new OkObjectResult(deleteSuccessResponse);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details
+                Console.Error.WriteLine($"Error deleting products: {ex.Message}");
+                return new StatusCodeResult(500);
+            }
+        }
+
         [HttpGet("detail/{productId}")]
         public async Task<IActionResult> GetProductDetail(int productId)
         {

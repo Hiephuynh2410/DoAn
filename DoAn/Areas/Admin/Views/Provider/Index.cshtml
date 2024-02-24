@@ -27,6 +27,9 @@
     <div class="table-infoStaff">
         <table class="table-List">
             <tr class="title-infoList">
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    <input type="checkbox" id="selectAll" />
+                </th>
                 <th>
                     Id
                 </th>
@@ -43,12 +46,17 @@
                     Email
                 </th>
                 <th>Action</th>
+                <button id="deleteSelected" class="btn btn-danger">Delete Selected</button>
+
             </tr>
 
             <tbody class="box-tbody">
                 @foreach (var item in Model)
                 {
                     <tr class="item-infoList">
+                        <td class="align-middle text-center">
+                            <input type="checkbox" class="productCheckbox" data-product-id="@item.ProviderId" />
+                        </td>
                         <td>
                             @item.ProviderId
                         </td>
@@ -65,17 +73,15 @@
                             @item.Email
                         </td>
                         <td>
-                            <button class="btn-edit" onclick="navigateTo('Edit', @item.ProviderId)">
+                            <a onclick="navigateTo('Edit', @item.ProviderId)" role="button" class="text-secondary btn font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
                                 Edit
-                            </button>
-                            <button class="btn-detail" onclick="navigateTo('Detail', @item.ProviderId)">
-                                Detail
-                            </button>
-                            @if(isAdmin)
+                            </a>
+                            
+                            @if (isAdmin)
                             {
-                                <button class="btn-delete" onclick="deleteStaff(@item.ProviderId)">
-                                    Delete
-                                </button>
+                                <a onclick="deleteStaff(@item.ProviderId)" role="button" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+                                    <i class="btn-outline-primary btn fa-solid fa-x"></i>
+                                </a>
                             }
                         </td>
                     </tr>
@@ -84,26 +90,5 @@
         </table>
     </div>
 </div>
-<script>
-    const searchInput = document.getElementById("searchInput");
-    const searchButton = document.getElementById("searchButton");
-
-    searchInput.addEventListener("input", function () {
-        if (searchInput.value.trim() === "") {
-            searchButton.disabled = true;
-        } else {
-            searchButton.disabled = false;
-        }
-    });
-
-    function navigateTo(action, ProviderId) {
-        window.location.href = `/Admin/Provider/${action}?ProviderId=${ProviderId}`;
-    }
-
-    function deleteStaff(ProviderId) {
-        if (confirm('Are you sure you want to delete this Provider?')) {
-            navigateTo('Delete', ProviderId);
-        }
-    }
-</script>
+<script src="~/assets/js/CRUD/CRUD_Provider.js" />
 

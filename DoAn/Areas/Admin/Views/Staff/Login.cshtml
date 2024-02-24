@@ -28,8 +28,9 @@
                                 <p class="text-center">Your Social Campaigns</p>
                                 @using (Html.BeginForm("Login", "Staff", FormMethod.Post))
                                 {
-
-                                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                                    
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+   
                                     <div class="mb-3">
                                         <label for="exampleInputEmail1" class="form-label">Username</label>
                                         @Html.TextBoxFor(model => model.Username, new { @class = "form-control", @autofocus = "autofocus", @placeholder = "Username....." })
@@ -38,10 +39,6 @@
                                     <div class="mb-4">
                                         <label for="exampleInputPassword1" class="form-label">Password</label>
                                         @Html.PasswordFor(model => model.Password, new { @class = "form-control", @placeholder = "Password....." })
-                                        <span style="color:red">
-                                            @ViewData["ErrorAccount"]
-                                            @ViewData["ErrorPass"]
-                                        </span>
                                     </div>
                                     <div class="d-flex align-items-center justify-content-between mb-4">
                                         <div class="form-check">

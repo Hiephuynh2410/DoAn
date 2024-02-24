@@ -4,7 +4,7 @@ var timeoutTimer;
 
 function startTimeoutTimer() {
     timeoutTimer = setTimeout(function() {
-        window.location.href = '/Admin/Login/Login'; 
+        window.location.href = '/Admin/Staff/Login'; 
     }, timeout);
 }
 

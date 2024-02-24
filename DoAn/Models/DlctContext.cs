@@ -130,7 +130,9 @@ public partial class DlctContext : DbContext
 
         modelBuilder.Entity<Booking>(entity =>
         {
-            entity.ToTable("BOOKING");
+            entity.HasKey(e => e.BookingId).HasName("PK_BOOKING");
+
+            entity.ToTable("BOOKINGS");
 
             entity.Property(e => e.BookingId).HasColumnName("Booking_id");
             entity.Property(e => e.BranchId).HasColumnName("Branch_id");
@@ -436,6 +438,7 @@ public partial class DlctContext : DbContext
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+            entity.Property(e => e.LastFailedLoginAttempts).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Password)
                 .HasMaxLength(255)

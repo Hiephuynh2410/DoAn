@@ -9,7 +9,14 @@ namespace DoAn.Areas.Admin.Services
     {
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+
             services.AddScoped<ProductTypeServices>();
+            services.AddScoped<ProviderServices>();
+            services.AddScoped<ProductServices>();
+            services.AddScoped<LoginServices>();
+            services.AddScoped<GenerateRandomKey>();
+
             return services;
         }
     }
