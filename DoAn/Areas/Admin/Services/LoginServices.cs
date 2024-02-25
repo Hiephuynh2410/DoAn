@@ -33,15 +33,21 @@ namespace DoAn.Areas.Admin.Services
             {
                 var emptyFieldsErrorResponse = new
                 {
-                    Message = "Không được để trống username password name phone Email đâu Cưng!",
+                    Message = "Không được để trống !",
                 };
                 return new BadRequestObjectResult(emptyFieldsErrorResponse);
             }
-
+            if (registrationModel.RoleId == null || registrationModel.BranchId == null)
+            {
+                var missingFieldsErrorResponse = new
+                {
+                    Message = "RoleId và BranchId không được để trống !",
+                };
+                return new BadRequestObjectResult(missingFieldsErrorResponse);
+            }
             var createdStaff = await _dlctContext.Staff
                 .Include(s => s.Role)
                 .FirstOrDefaultAsync(p => p.StaffId == registrationModel.StaffId || p.Username == registrationModel.Username);
-
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(registrationModel.Password);
 
             var newStaff = new Staff
@@ -54,14 +60,36 @@ namespace DoAn.Areas.Admin.Services
                 Avatar = registrationModel.Avatar,
                 Email = registrationModel.Email,
                 Status = registrationModel.Status,
+                IsDisabled = false,
                 CreatedAt = DateTime.Now,
                 CreatedBy = registrationModel.CreatedBy,
                 Role = createdStaff?.Role,
-            };
+                Branch = createdStaff?.Branch
+            }; 
+            if (registrationModel.RoleId != null)
+            {
+                var role = await _dlctContext.Roles.FindAsync(registrationModel.RoleId);
+                if (role == null)
+                {
+                    return new BadRequestObjectResult("Invalid RoleId provided.");
+                }
+                newStaff.Role = role;
+            }
+
+            if (registrationModel.BranchId != null)
+            {
+                var branch = await _dlctContext.Branches.FindAsync(registrationModel.BranchId);
+                if (branch == null)
+                {
+                    return new BadRequestObjectResult("Invalid BranchId provided.");
+                }
+                newStaff.Branch = branch;
+            }
 
             _dlctContext.Staff.Add(newStaff);
             await _dlctContext.SaveChangesAsync();
 
+            _dlctContext.Entry(newStaff).Reference(c => c.Branch).Load();
             _dlctContext.Entry(newStaff).Reference(c => c.Role).Load();
 
             var registrationSuccessResponse = new
@@ -76,7 +104,6 @@ namespace DoAn.Areas.Admin.Services
             };
             return new OkObjectResult(registrationSuccessResponse);
         }
-
 
         public async Task<IActionResult> Login(Staff loginModel)
         {
@@ -191,5 +218,7 @@ namespace DoAn.Areas.Admin.Services
 
             return new OkObjectResult(staffInfo);
         }
+
+        
     }
 }

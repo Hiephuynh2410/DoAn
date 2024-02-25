@@ -20,10 +20,12 @@ namespace DoAn.Areas.Admin.ApiAdminController
         private readonly DlctContext _dbContext;
 
         private readonly LoginServices _loginService;
-        public AdminApiController(DlctContext dbContext, LoginServices loginService)
+        private readonly StaffServives _staffServives;
+        public AdminApiController(DlctContext dbContext, LoginServices loginService, StaffServives staffServives)
         {
             _dbContext = dbContext;
             _loginService = loginService;
+            _staffServives = staffServives;
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetStaffById(int id)
@@ -32,11 +34,22 @@ namespace DoAn.Areas.Admin.ApiAdminController
             return result;
         }
 
+        [HttpGet] 
+        public async Task<IActionResult> GetALLStaff()
+        {
+            var staff = await _staffServives.GetAllStaff();
+            return Ok(staff);
+        }
 
         [HttpPost("register")]
         public async Task<IActionResult> RegisterStaffAsync(Staff registrationModel)
         {
             var result = await _loginService.RegisterClient(registrationModel);
+
+            if (result == null)
+            {
+                return StatusCode(500, "Internal Server Error");
+            }
 
             if (result is OkObjectResult okResult)
             {
@@ -49,6 +62,22 @@ namespace DoAn.Areas.Admin.ApiAdminController
 
             return StatusCode(500, "Internal Server Error");
         }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchStaff(string keyword)
+        {
+            var result = await _staffServives.searchStaff(keyword);
+
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest("Invalid search result.");
+            }
+        }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> LoginAsync(Staff loginModel)

@@ -13,6 +13,7 @@ namespace DoAn.Areas.Admin.Services
 
             services.AddScoped<ProductTypeServices>();
             services.AddScoped<ProviderServices>();
+            services.AddScoped<StaffServives>();
             services.AddScoped<ProductServices>();
             services.AddScoped<LoginServices>();
             services.AddScoped<GenerateRandomKey>();

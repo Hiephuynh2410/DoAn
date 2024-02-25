@@ -15,6 +15,15 @@
                             <a href="" class="text-nowrap logo-img text-center d-block py-3 w-100">
                                 <img src="~/images/logos/dark-logo.svg" width="180" alt="">
                             </a>
+                            @if (!ViewData.ModelState.IsValid)
+                            {
+                                <div class="text-danger">
+                                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                    {
+                                        <p>@error.ErrorMessage</p>
+                                    }
+                                </div>
+                            }
                             <p class="text-center">Your Social Campaigns</p>
                            <div class="img-wrap" style="align-items: center; display: flex; justify-content: center;">
                                     <input asp-for="Avatar" id="Thumbnail" hidden class="form-control" />
@@ -25,7 +34,6 @@
                                 <div style="display:flex">
 
                                     <div style="flex:1; margin:0 2rem">
-                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                         <div class="mb-3">
                                             <label for="exampleInputtext1" class="form-label">Name</label>
                                             <input asp-for="Name" class="form-control" />

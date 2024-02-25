@@ -28,6 +28,49 @@ namespace DoAn.Areas.Admin.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
+        public IActionResult Register()
+        {
+            var roles = _dlctContext.Roles.ToList();
+            var branches = _dlctContext.Branches.ToList();
+            ViewBag.Roles = new SelectList(roles, "RoleId", "Name");
+            ViewBag.Branches = new SelectList(branches, "BranchId", "Address");
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(Staff registrationModel)
+        {
+            var apiUrl = "https://localhost:7109/api/AdminApi/register";
+
+            var content = new StringContent(JsonConvert.SerializeObject(registrationModel), Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync(apiUrl, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var roles = _dlctContext.Roles.ToList();
+                var branches = _dlctContext.Branches.ToList();
+                ViewBag.Roles = new SelectList(roles, "RoleId", "Name");
+                ViewBag.Branches = new SelectList(branches, "BranchId", "Address");
+                var result = await response.Content.ReadAsStringAsync();
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                dynamic errorResponse = JsonConvert.DeserializeObject(errorContent);
+                string errorMessage = errorResponse.message;
+
+                ModelState.AddModelError(string.Empty, errorMessage);
+                var roles = _dlctContext.Roles.ToList();
+                var branches = _dlctContext.Branches.ToList();
+                ViewBag.Roles = new SelectList(roles, "RoleId", "Name");
+                ViewBag.Branches = new SelectList(branches, "BranchId", "Address");
+                return View(registrationModel);
+            }
+        }
+
         public async Task<IActionResult> Login(string username, string password)
         {
             var apiUrl = "https://localhost:7109/api/AdminApi/login";
@@ -62,6 +105,142 @@ namespace DoAn.Areas.Admin.Controllers
                 string errorMessage = errorResponse.message;
                 ModelState.AddModelError(string.Empty, errorMessage);
                 return View();
+            }
+        }
+
+        // Search
+        public async Task<IActionResult> SearchStaff(string keyword)
+        {
+            List<Staff> staffList;
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:7109/");
+                if (string.IsNullOrWhiteSpace(keyword))
+                {
+                    var response = await client.GetAsync("api/AdminApi");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        staffList = JsonConvert.DeserializeObject<List<Staff>>(responseContent);
+                    }
+                    else
+                    {
+                        return View("Index");
+                    }
+                }
+                else
+                {
+                    var response = await client.GetAsync($"api/AdminApi/search?keyword={keyword}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        staffList = JsonConvert.DeserializeObject<List<Staff>>(responseContent);
+                    }
+                    else
+                    {
+                        return View("Index");
+                    }
+                }
+            }
+            return View("Index", staffList);
+        }
+
+        
+
+        //button choose image
+        [HttpPost]
+        public IActionResult ProcessUpload(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return Json("No file uploaded");
+            }
+
+            string fileName = Path.GetFileName(file.FileName);
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyTo(stream);
+            }
+
+            return Json("/images/" + fileName);
+        }
+
+       
+        public IActionResult Chat()
+        {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("Username")))
+            {
+                return RedirectToAction("Login", "Staff");
+            }
+
+            var username = HttpContext.Session.GetString("Username");
+            var avatar = HttpContext.Session.GetString("Avatar");
+
+            ViewBag.Username = username;
+            ViewBag.Avatar = avatar;
+
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Sendmail(int staffId)
+        {
+            ViewBag.StaffId = staffId;
+            return View();
+        }
+        //admin thich thì gửi mail ko thì thôi
+
+        [HttpPost]
+        public IActionResult Sendmail(Mails model)
+        {
+            int staffId = int.Parse(Request.Form["staffId"]);
+            var staffMember =_dlctContext.Staff.FirstOrDefault(s => s.StaffId == staffId);
+
+            if (staffMember != null)
+            {
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress("Admin", "huynhhiepvan1998@gmail.com"));
+                message.Subject = model.Subject;
+                message.Body = new TextPart("plain")
+                {
+                    Text = model.Content
+                };
+
+                using (var client = new SmtpClient())
+                {
+                    client.Connect("smtp.gmail.com", 587, false);
+                    client.Authenticate("huynhhiepvan1998@gmail.com", "nmqt ljyf skbz xcrs");
+
+                    message.To.Add(new MailboxAddress(staffMember.Name, staffMember.Email));
+
+                    client.Send(message);
+
+                    client.Disconnect(true);
+                }
+            }
+
+            return View();
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var apiResponse = await _httpClient.GetAsync("https://localhost:7109/api/AdminApi/");
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                var responseContent = await apiResponse.Content.ReadAsStringAsync();
+                var staff = JsonConvert.DeserializeObject<List<Staff>>(responseContent);
+                return View(staff);
+            }
+            else
+            {
+                var staffList = await _dlctContext.Staff
+                    .Include(s => s.Branch)
+                    .Include(s => s.RoleId)
+                    .ToListAsync();
+                return View(staffList);
             }
         }
         //logout
