@@ -145,7 +145,6 @@ namespace DoAn.Areas.Admin.Controllers
             return View("Index", staffList);
         }
 
-        
 
         //button choose image
         [HttpPost]
@@ -241,6 +240,97 @@ namespace DoAn.Areas.Admin.Controllers
                     .Include(s => s.RoleId)
                     .ToListAsync();
                 return View(staffList);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int staffId)
+        {
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                return RedirectToAction("Login", "Staff");
+            }
+            var staff = _dlctContext.Staff
+              .Include(s => s.Scheduledetails)
+              .ThenInclude(s => s.Schedule)
+              .FirstOrDefault(s => s.StaffId == staffId);
+
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
+            var roles = _dlctContext.Roles.ToList();
+            var branches = _dlctContext.Branches.ToList();
+
+            ViewBag.Roles = new SelectList(roles, "RoleId", "Name");
+            ViewBag.Branches = new SelectList(branches, "BranchId", "Address");
+
+            return View(staff);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(int staffId, Staff updateModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                var roles = _dlctContext.Roles.ToList();
+                var branches = _dlctContext.Branches.ToList();
+
+                ViewBag.Roles = new SelectList(roles, "RoleId", "Name");
+                ViewBag.Branches = new SelectList(branches, "BranchId", "Address");
+
+                return View(updateModel);
+            }
+
+            var phoneRegex = new Regex(@"^(03|05|07|08|09|01[2|6|8|9])(?!84)[0-9]{8}$");
+            if (!phoneRegex.IsMatch(updateModel.Phone) || updateModel.Phone.Length > 10)
+            {
+                ModelState.AddModelError("Phone", "Số điện thoại không hợp lệ");
+                return View(updateModel);
+            }
+            updateModel.Status = Request.Form["Status"] == "true";
+
+            var apiUrl = $"https://localhost:7109/api/AdminApi/update/{staffId}";
+
+            var json = JsonConvert.SerializeObject(updateModel);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync(apiUrl, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                try
+                {
+                    var updatedStaff = await _dlctContext.Staff.FirstOrDefaultAsync(s => s.StaffId == staffId);
+                    if (updatedStaff != null)
+                    {
+                        string editorName = HttpContext.Session.GetString("Name");
+                        updatedStaff.UpdatedBy = editorName;
+
+                        _dlctContext.Entry(updatedStaff).State = EntityState.Modified;
+                        await _dlctContext.SaveChangesAsync();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "An error occurred while saving the editor's name: " + ex.Message);
+                }
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("API Response Content: " + responseContent);
+
+                var errorResponse = JsonConvert.DeserializeObject<object>(responseContent);
+                var roles = _dlctContext.Roles.ToList();
+                var branches = _dlctContext.Branches.ToList();
+
+                ViewBag.Roles = new SelectList(roles, "RoleId", "Name");
+                ViewBag.Branches = new SelectList(branches, "BranchId", "Address");
+
+                ModelState.AddModelError("", errorResponse.ToString());
+                return View(updateModel);
             }
         }
         //logout

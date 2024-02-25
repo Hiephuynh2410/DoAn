@@ -17,52 +17,46 @@ namespace DoAn.Areas.Admin.Services
 
         public async Task<IActionResult> UpdateStaffAsync(int staffId, Staff updateModel)
         {
-            var staffToUpdate = await _dbContext.Staff
-                .Include(p => p.Branch)
-                .Include(p => p.Role)
+            var staff = await _dbContext.Staff
                 .FirstOrDefaultAsync(p => p.StaffId == staffId);
-            if (staffToUpdate == null)
+
+            if (staff == null)
             {
-                return new NotFoundObjectResult("Not found staff");
+                return new NotFoundResult();
             }
 
-            if (!string.IsNullOrWhiteSpace(updateModel.Name))
+            staff.Name = updateModel.Name;
+            staff.Username = updateModel.Username;
+            staff.Phone = updateModel.Phone;
+            staff.Address = updateModel.Address;
+            staff.Avatar = updateModel.Avatar;
+            staff.Status = updateModel.Status;
+            staff.UpdatedAt = DateTime.Now;
+            staff.UpdatedBy = updateModel.UpdatedBy;
+            if (updateModel.BranchId != staff.BranchId)
             {
-                staffToUpdate.Name = updateModel.Name;
-            }
-
-            if (!string.IsNullOrWhiteSpace(updateModel.Username))
-            {
-                staffToUpdate.Username = updateModel.Username;
-            }
-
-            if (updateModel.BranchId.HasValue)
-            {
-                var updatedProductType = await _dbContext.Branches.FindAsync(updateModel.BranchId);
-                if (updatedProductType != null)
+                var newBranch = await _dbContext.Branches.FindAsync(updateModel.BranchId);
+                if (newBranch != null)
                 {
-                    staffToUpdate.Branch = updatedProductType;
+                    staff.Branch = newBranch;
                 }
             }
 
-            if (updateModel.RoleId.HasValue)
+            if (updateModel.RoleId != staff.RoleId)
             {
-                var updatedProvider = await _dbContext.Roles.FindAsync(updateModel.RoleId);
-                if (updatedProvider != null)
+                var newRole = await _dbContext.Roles.FindAsync(updateModel.RoleId);
+                if (newRole != null)
                 {
-                    staffToUpdate.Role = updatedProvider;
+                    staff.Role = newRole;
                 }
             }
 
-            staffToUpdate.UpdatedAt = DateTime.Now;
-            staffToUpdate.UpdatedBy = updateModel.UpdatedBy;
-
-            _dbContext.Entry(staffToUpdate).State = EntityState.Modified;
+            _dbContext.Entry(staff).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
 
             var updateSuccessResponse = new
             {
-                Message = "Product updated successfully"
+                Message = "Staff updated successfully"
             };
 
             return new OkObjectResult(updateSuccessResponse);

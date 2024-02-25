@@ -127,6 +127,16 @@ namespace DoAn.Areas.Admin.Services
                 return new BadRequestObjectResult(loginErrorResponse);
             }
 
+            // Kiểm tra nếu tài khoản chưa được kích hoạt
+            if (staff.Status == false)
+            {
+                var inactiveAccountResponse = new
+                {
+                    Message = "Account has not been activated"
+                };
+                return new BadRequestObjectResult(inactiveAccountResponse);
+            }
+
             if (staff.FailedLoginAttemps >= 5 && staff.LastFailedLoginAttempts != null)
             {
                 var timeSinceLastFailedAttempt = DateTime.Now - staff.LastFailedLoginAttempts.Value;
@@ -189,6 +199,7 @@ namespace DoAn.Areas.Admin.Services
                 return new BadRequestObjectResult(invalidLoginErrorResponse);
             }
         }
+
 
         public async Task<IActionResult> GetStaffInfoById(int staffId)
         {

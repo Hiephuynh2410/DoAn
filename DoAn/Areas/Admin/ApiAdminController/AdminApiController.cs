@@ -27,6 +27,25 @@ namespace DoAn.Areas.Admin.ApiAdminController
             _loginService = loginService;
             _staffServives = staffServives;
         }
+        [HttpPut("update/{staffId}")]
+        public async Task<IActionResult> UpdateProductsAsync(int staffId, Staff updateModel)
+        {
+            var result = await _staffServives.UpdateStaffAsync(staffId, updateModel);
+
+            if (result is OkObjectResult okResult)
+            {
+                return Ok(okResult.Value);
+            }
+            else if (result is NotFoundObjectResult notFoundResult)
+            {
+                return NotFound(notFoundResult.Value);
+            }
+            else
+            {
+                return StatusCode(500, "Internal Server Error");
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetStaffById(int id)
         {
@@ -77,7 +96,6 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 return BadRequest("Invalid search result.");
             }
         }
-
 
         [HttpPost("login")]
         public async Task<IActionResult> LoginAsync(Staff loginModel)
