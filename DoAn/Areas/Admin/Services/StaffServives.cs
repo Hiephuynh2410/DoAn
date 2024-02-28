@@ -1,6 +1,8 @@
 ﻿using DoAn.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System.Net.Http;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace DoAn.Areas.Admin.Services
@@ -8,10 +10,12 @@ namespace DoAn.Areas.Admin.Services
     public class StaffServives
     {
         private readonly DlctContext _dbContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public StaffServives(DlctContext dbContext)
+        public StaffServives(DlctContext dbContext, IHttpContextAccessor httpContextAccessor)
         {
             _dbContext = dbContext;
+            _httpContextAccessor = httpContextAccessor;
         }
 
 
@@ -61,8 +65,6 @@ namespace DoAn.Areas.Admin.Services
 
             return new OkObjectResult(updateSuccessResponse);
         }
-    
-
 
         public async Task<List<object>> searchStaff(string keyword)
         {
@@ -139,6 +141,53 @@ namespace DoAn.Areas.Admin.Services
                     Name = x.Role?.Name,    
                 }
             }).Cast<object>().ToList();
+        }
+
+        [HttpDelete("delete/{staffId}")]
+        public async Task<IActionResult> DeleteStaff(int staffId)
+        {
+            var staff = await _dbContext.Staff.FindAsync(staffId);
+
+            if (staff == null)
+            {
+                return new NotFoundResult();
+            }   
+
+            staff.IsDisabled = true;
+            staff.Status = false;
+            _dbContext.Entry(staff).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+
+            var deleteSuccessResponse = new
+            {
+                Message = "Staff disabled successfully"
+            };
+
+            return new OkObjectResult(deleteSuccessResponse);
+        }
+
+        [HttpPut("add/{staffId}")]
+        public async Task<IActionResult> AddStaff(int staffId)
+        {
+            var staff = await _dbContext.Staff
+                .FirstOrDefaultAsync(p => p.StaffId == staffId);
+
+            if (staff == null)
+            {
+                return new NotFoundResult();
+            }
+
+            staff.IsDisabled = false;
+            staff.Status = true;
+            _dbContext.Entry(staff).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+
+            var reloadSuccessResponse = new
+            {
+                Message = "Staff add successfully"
+            };
+
+            return new OkObjectResult(reloadSuccessResponse);
         }
     }
 }

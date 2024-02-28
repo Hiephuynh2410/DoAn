@@ -27,6 +27,73 @@ namespace DoAn.Areas.Admin.ApiAdminController
             _loginService = loginService;
             _staffServives = staffServives;
         }
+
+        [HttpDelete("delete/{staffId}")]
+        public async Task<IActionResult> DeleteStaff(int staffId)
+        {
+            var staff = await _dbContext.Staff.FindAsync(staffId);
+
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
+            staff.IsDisabled = true;
+            staff.Status = false;
+            _dbContext.Entry(staff).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+
+            var deleteSuccessResponse = new
+            {
+                Message = "Staff disabled successfully"
+            };
+
+            return Ok(deleteSuccessResponse);
+        }
+
+        [HttpDelete("deleteAll")]
+        public async Task<IActionResult> DeleteStaffAsync([FromBody] List<int> staffIds)
+        {
+            try
+            {
+                foreach (var staffId in staffIds)
+                {
+                    var result = await _staffServives.DeleteStaff(staffId);
+                }
+
+                var deleteSuccessResponse = new
+                {
+                    Message = "staff deleted successfully"
+                };
+
+                return new OkObjectResult(deleteSuccessResponse);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error deleting staff: {ex.Message}");
+                return new StatusCodeResult(500);
+            }
+        }
+
+        [HttpPut("add/{staffId}")]
+        public async Task<IActionResult> addStaffsAsync(int staffId)
+        {
+            var result = await _staffServives.AddStaff(staffId);
+
+            if (result is OkObjectResult okResult)
+            {
+                return Ok(okResult.Value);
+            }   
+            else if (result is NotFoundObjectResult notFoundResult)
+            {
+                return NotFound(notFoundResult.Value);
+            }
+            else
+            {
+                return StatusCode(500, "Internal Server Error");
+            }
+        }
+
         [HttpPut("update/{staffId}")]
         public async Task<IActionResult> UpdateProductsAsync(int staffId, Staff updateModel)
         {

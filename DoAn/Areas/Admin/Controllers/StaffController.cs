@@ -27,6 +27,58 @@ namespace DoAn.Areas.Admin.Controllers
             _dlctContext = dlctContext;
             _httpContextAccessor = httpContextAccessor;
         }
+        //Delete
+        public async Task<IActionResult> Delete(int staffId)
+        {
+            if (HttpContext.Session.GetString("UserId") == null)
+            {
+                HttpContext.Session.SetString("ReturnUrl", Url.Action("Delete", "Staff", new { staffId }));
+
+                return RedirectToAction("Login", "Staff");
+            }
+            var apiUrl = $"https://localhost:7109/api/AdminApi/delete/{staffId}";
+
+            var response = await _httpClient.DeleteAsync(apiUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("API Response Content: " + responseContent);
+
+                var errorResponse = JsonConvert.DeserializeObject<object>(responseContent);
+
+                ModelState.AddModelError("", errorResponse.ToString());
+                return RedirectToAction("Index");
+            }
+        }
+
+        //AddEmlpoyeee
+        [HttpGet]
+        public async Task<IActionResult> ReloadEmployee(int staffId)
+        {
+            var apiUrl = $"https://localhost:7109/api/AdminApi/add/{staffId}";
+            var response = await _httpClient.PutAsync(apiUrl, null);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("API Response Content: " + responseContent);
+
+                var errorResponse = JsonConvert.DeserializeObject<object>(responseContent);
+
+                ModelState.AddModelError("", errorResponse.ToString());
+                return RedirectToAction("Index");
+            }
+        }
+
 
         public IActionResult Register()
         {
@@ -49,6 +101,8 @@ namespace DoAn.Areas.Admin.Controllers
 
             if (response.IsSuccessStatusCode)
             {
+               
+                registrationModel.Status = Request.Form["Status"] == "true";
                 var roles = _dlctContext.Roles.ToList();
                 var branches = _dlctContext.Branches.ToList();
                 ViewBag.Roles = new SelectList(roles, "RoleId", "Name");
@@ -304,6 +358,7 @@ namespace DoAn.Areas.Admin.Controllers
                     var updatedStaff = await _dlctContext.Staff.FirstOrDefaultAsync(s => s.StaffId == staffId);
                     if (updatedStaff != null)
                     {
+                        
                         string editorName = HttpContext.Session.GetString("Name");
                         updatedStaff.UpdatedBy = editorName;
 

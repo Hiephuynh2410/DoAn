@@ -24,6 +24,9 @@
     <div class="table-infoStaff">
         <table class="table-List">
             <tr class="title-infoList">
+                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                    <input type="checkbox" id="selectAll" />
+                </th>
                 <th>Staff ID</th>
                 <th>Name</th>
                 <th>UserName</th>
@@ -39,6 +42,8 @@
                 <th>Branch</th>
                 <th>Role</th>
                 <th>Action</th>
+                <button id="deleteSelected" class="btn btn-danger">Delete Selected</button>
+
             </tr>
 
             <tbody  class="box-tbody">
@@ -49,7 +54,11 @@
                     {
                         @if(item.IsDisabled == false)
                         {
+                         
                             <tr class="item-infoList">
+                            <td class="align-middle text-center">
+                                <input type="checkbox" class="productCheckbox" data-product-id="@item.StaffId" />
+                            </td>
                                 <td>@item.StaffId</td>
 
                                 <td>@item.Name</td>
@@ -80,13 +89,12 @@
                                     <button class="button-38" role="button" onclick="navigateTo('Sendmail', @item.StaffId)">
                                         sendMail
                                     </button>
-                                    <button class="btn-edit" onclick="navigateTo('Edit', @item.StaffId)">
-                                        Edit
-                                    </button>
-
-                                    <button class="btn-delete" onclick="deleteStaff(@item.StaffId)">
-                                        Delete
-                                    </button>
+                                <a onclick="navigateTo('Edit', @item.StaffId)" role="button" class="text-secondary btn font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+                                    Edit
+                                </a>
+                                <a onclick="deleteStaff(@item.StaffId)" role="button" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+                                    <i class="btn-outline-primary btn fa-solid fa-x"></i>
+                                </a>
                                 </td>
                             </tr>
                         }
@@ -170,38 +178,8 @@
 </div>
 
 
-<script>
-    const searchInput = document.getElementById("searchInput");
-    const searchButton = document.getElementById("searchButton");
+<script src="~/assets/js/CRUD/CRUD_Staff.js" />
 
-    searchInput.addEventListener("input", function () {
-        if (searchInput.value.trim() === "") {
-            searchButton.disabled = true;
-        } else {
-            searchButton.disabled = false;
-        }
-    });
-
-    function addStaff(staffId) {
-        window.location.href = `/Admin/Staff/ReloadEmployee?staffId=${staffId}`;
-    }
-
-    function navigateTo(action, staffId) {
-        window.location.href = `/Admin/Staff/${action}?StaffId=${staffId}`;
-    }
-
-    function deleteStaff(staffId) {
-        if (confirm('Are you sure you want to delete this staff?')) {
-            navigateTo('Delete', staffId);
-        }
-    }
-
-    function ReloaStaff(staffId) {
-        if (confirm('Are you sure you want to add this staff?')) {
-            window.location.href = `/Admin/Staff/ReloadEmployee?staffId=${staffId}`;
-        }
-    }
-</script>
 
 <style>
     .button-38 {
