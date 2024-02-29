@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\assets\js\CRUD\CRUD_Branch.js" />
     <Content Remove="wwwroot\assets\js\CRUD\CRUD_Staff.js" />
   </ItemGroup>
 
@@ -79,6 +80,7 @@
     <None Include="wwwroot\assets\js\core\bootstrap.bundle.min.js" />
     <None Include="wwwroot\assets\js\core\bootstrap.min.js" />
     <None Include="wwwroot\assets\js\core\popper.min.js" />
+    <None Include="wwwroot\assets\js\CRUD\CRUD_Branch.js" />
     <None Include="wwwroot\assets\js\CRUD\CRUD_Staff.js" />
     <None Include="wwwroot\assets\js\CRUD\CRUD.js" />
     <None Include="wwwroot\assets\js\CRUD\CRUD_ProductType.js" />

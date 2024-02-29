@@ -1,4 +1,5 @@
-﻿using DoAn.Models;
+﻿using DoAn.Areas.Admin.Services;
+using DoAn.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Operations;
@@ -12,92 +13,52 @@ namespace DoAn.Areas.Admin.ApiAdminController
     public class BranchApiController : Controller
     {
         private readonly DlctContext _dbContext;
-        public BranchApiController(DlctContext dbContext)
+        private readonly BranchServices _branchServices;
+        public BranchApiController(DlctContext dbContext, BranchServices branchServices)
         {
             _dbContext = dbContext;
+            _branchServices = branchServices;
         }
         [HttpGet]
         public async Task<IActionResult> GetAllBranch()
         {
-            var Branch = await _dbContext.Branches
-                .Include(s => s.Staff)
-                .ToListAsync();
-
-            var BranchsWithFullInfo = Branch.Select(s => new
-            {
-                s.BranchId,
-                s.Address,
-                s.Hotline,
-            }).ToList();
-
-            return Ok(BranchsWithFullInfo);
+            var branchInfo = await _branchServices.GetAllBranch();
+            return Ok(branchInfo);
         }
+
         [HttpPost("create")]
         public async Task<IActionResult> CreateBranch(Branch createModel)
         {
-            if (ModelState.IsValid)
+            var result = await _branchServices.CreateBranch(createModel);
+            if( result is OkObjectResult okResutl)
             {
-                var addressExists = await _dbContext.Branches.AnyAsync(b => b.Address == createModel.Address);
-                if (addressExists)
-                {
-                    return BadRequest(new { Message = "Branch already exists." });
-                }
-
-                var newBranch = new Branch
-                {
-                    Address = createModel.Address,
-                    Hotline = createModel.Hotline
-                };
-
-                _dbContext.Branches.Add(newBranch);
-                await _dbContext.SaveChangesAsync();
-
-                var registrationSuccessResponse = new
-                {
-                    Message = "Branch registration successful",
-                    BranchId = newBranch.BranchId
-                };
-                return Ok(registrationSuccessResponse);
+                return Ok(okResutl.Value);
+            } else if(result is BadRequestObjectResult badRequestObjectResult)
+            {
+                return Ok(badRequestObjectResult.Value);
             }
-
-            var invalidDataErrorResponse = new
-            {
-                Message = "Invalid branch data",
-                Errors = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList()
-            };
-            return BadRequest(invalidDataErrorResponse);
+            return StatusCode(500, "Internal server Errror");
         }
+
         [HttpPut("update/{branchId}")]
-        public async Task<IActionResult> UpdateBranch(int branchId, Branch updateModel)
+        public async Task<IActionResult> UpdateBranchsAsync(int branchId, Branch updateModel)
         {
-            var Branch = await _dbContext.Branches.FindAsync(branchId);
-            if (Branch == null)
+            var result = await _branchServices.UpdateBranch(branchId, updateModel);
+
+            if (result is OkObjectResult okResult)
             {
-                return NotFound();
+                return Ok(okResult.Value);
             }
-
-            if (!string.IsNullOrWhiteSpace(updateModel.Address))
+            else if (result is NotFoundObjectResult notFoundResult)
             {
-                Branch.Address = updateModel.Address;
+                return NotFound(notFoundResult.Value);
             }
-            if (!string.IsNullOrWhiteSpace(updateModel.Hotline))
+            else
             {
-                Branch.Hotline = updateModel.Hotline;
+                return StatusCode(500, "Internal Server Error");
             }
-
-            _dbContext.Entry(Branch).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
-
-            var updateSuccessResponse = new
-            {
-                Message = "Branch updated successfully"
-            };
-
-            return Ok(updateSuccessResponse);
         }
+
         [HttpDelete("delete/{branchId}")]
         public async Task<IActionResult> DeleteBranch(int branchId)
         {
@@ -117,6 +78,52 @@ namespace DoAn.Areas.Admin.ApiAdminController
 
             return Ok(deleteSuccessResponse);
         }
+
+        [HttpDelete("deleteAll")]
+        public async Task<IActionResult> DeleteBrnachAllAsync([FromBody] List<int> branchId)
+        {
+            try
+            {
+                foreach (var BranchId in branchId)
+                {
+                    var result = await _branchServices.DeleteAllBrnachAsync(BranchId);
+                }
+
+                var deleteSuccessResponse = new
+                {
+                    Message = "Branch deleted successfully"
+                };
+
+                return new OkObjectResult(deleteSuccessResponse);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details
+                Console.Error.WriteLine($"Error deleting Brnach: {ex.Message}");
+                return new StatusCodeResult(500);
+            }
+        }
+
+
+        [HttpDelete("delete/{branchId}")]
+        public async Task<IActionResult> DeleteBranchAsync(int branchId)
+        {
+            var result = await _branchServices.DeleteBranchAsync(branchId);
+
+            if (result is OkObjectResult okResult)
+            {
+                return Ok(okResult.Value);
+            }
+            else if (result is NotFoundObjectResult notFoundResult)
+            {
+                return NotFound(notFoundResult.Value);
+            }
+            else
+            {
+                return StatusCode(500, "Internal Server Error");
+            }
+        }
+
         [HttpGet("detail/{branchId}")]
         public async Task<IActionResult> GetBranchDetail(int branchId)
         {

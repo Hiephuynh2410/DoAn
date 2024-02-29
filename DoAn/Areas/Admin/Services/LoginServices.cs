@@ -8,9 +8,9 @@ namespace DoAn.Areas.Admin.Services
     public class LoginServices
     {
         private readonly DlctContext _dlctContext;
-
         private readonly GenerateRandomKey _generateRandomKey;
         private readonly IHttpContextAccessor _httpContextAccessor;
+       
         public LoginServices(DlctContext dlctContext, GenerateRandomKey ganerateRandomKey, IHttpContextAccessor httpContextAccessor)
         {
             _dlctContext = dlctContext;
@@ -224,12 +224,9 @@ namespace DoAn.Areas.Admin.Services
                 Email = staff.Email,
                 avatar = staff.Avatar,
 
-                // Add other properties as needed
             };
 
             return new OkObjectResult(staffInfo);
         }
-
-        
     }
 }

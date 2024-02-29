@@ -86,7 +86,8 @@ namespace DoAn.Areas.Admin.Controllers
             var branches = _dlctContext.Branches.ToList();
             ViewBag.Roles = new SelectList(roles, "RoleId", "Name");
             ViewBag.Branches = new SelectList(branches, "BranchId", "Address");
-
+            string createdBy = HttpContext.Session.GetString("Name");
+            ViewBag.CreatedBy = createdBy;
             return View();
         }
 
@@ -95,13 +96,14 @@ namespace DoAn.Areas.Admin.Controllers
         {
             var apiUrl = "https://localhost:7109/api/AdminApi/register";
 
+            registrationModel.CreatedBy = HttpContext.Session.GetString("Name");
+
             var content = new StringContent(JsonConvert.SerializeObject(registrationModel), Encoding.UTF8, "application/json");
 
             var response = await _httpClient.PostAsync(apiUrl, content);
-
+         
             if (response.IsSuccessStatusCode)
             {
-               
                 registrationModel.Status = Request.Form["Status"] == "true";
                 var roles = _dlctContext.Roles.ToList();
                 var branches = _dlctContext.Branches.ToList();
