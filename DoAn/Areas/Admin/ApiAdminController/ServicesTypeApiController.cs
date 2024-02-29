@@ -1,4 +1,5 @@
-﻿using DoAn.Models;
+﻿using DoAn.Areas.Admin.Services;
+using DoAn.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,25 +10,18 @@ namespace DoAn.Areas.Admin.ApiAdminController
     public class ServicesTypeApiController : Controller
     {
         private readonly DlctContext _dbContext;
-        public ServicesTypeApiController(DlctContext dbContext)
+        private readonly ServiceTypeServices _serviceTypeServices;
+        public ServicesTypeApiController(DlctContext dbContext, ServiceTypeServices serviceTypeServices)
         {
             _dbContext = dbContext;
+            _serviceTypeServices = serviceTypeServices; 
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllServicesType()
         {
-            var ServicesTypes = await _dbContext.Servicetypes
-                .ToListAsync();
-
-            var ServicesTypesWithFullInfo = ServicesTypes.Select(s => new
-            {
-                s.ServiceTypeId,
-                s.Name,
-               
-            }).ToList();
-
-            return Ok(ServicesTypesWithFullInfo);
+            var ServiceTypeInfo = await _serviceTypeServices.GetAllServicesType();
+            return Ok(ServiceTypeInfo);
         }
 
         [HttpGet("search")]
@@ -44,66 +38,46 @@ namespace DoAn.Areas.Admin.ApiAdminController
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateServicesType(Servicetype createModel)
+        public async Task<IActionResult> CreateProductsType(Servicetype registrationModel)
         {
-            if (ModelState.IsValid)
+
+            var result = await _serviceTypeServices.CreateServicesType(registrationModel);
+
+            if (result is OkObjectResult okResult)
             {
-                var ServicetypeExists = await _dbContext.Servicetypes.AnyAsync(b => b.Name == createModel.Name);
-                if (ServicetypeExists)
-                {
-                    return BadRequest(new { Message = "Servicetype already exists." });
-                }
-
-                var newServicetype = new Servicetype
-                {
-                    Name = createModel.Name,
-                };
-
-                _dbContext.Servicetypes.Add(newServicetype);
-                await _dbContext.SaveChangesAsync();
-
-                var registrationSuccessResponse = new
-                {
-                    Message = "Servicetype registration successful",
-                    ServiceTypeId = newServicetype.ServiceTypeId
-                };
-                return Ok(registrationSuccessResponse);
+                return Ok(okResult.Value);
             }
-
-            var invalidDataErrorResponse = new
+            else if (result is BadRequestObjectResult badRequestObjectResult)
             {
-                Message = "Invalid Servicetype data",
-                Errors = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList()
-            };
-            return BadRequest(invalidDataErrorResponse);
+                return BadRequest(badRequestObjectResult.Value);
+            }
+            return StatusCode(500, "Internal Server Error");
         }
 
-        [HttpPut("update/{Servicetypeid}")]
-        public async Task<IActionResult> UpdateServicesType(int Servicetypeid, Combo updateModel)
+        [HttpPut("update/{serviceTypeId}")]
+        public async Task<IActionResult> UpdateServicesTypesAsync(int serviceTypeId, Servicetype servicetype)
         {
-            var Servicetype = await _dbContext.Servicetypes.FindAsync(Servicetypeid);
-            if (Servicetype == null)
+
+            var result = await _serviceTypeServices.UpdateServicesType(serviceTypeId, servicetype);
+
+            if (result is OkObjectResult okResult)
             {
-                return NotFound();
+
+                return Ok(okResult.Value);
+
             }
-
-            if (!string.IsNullOrWhiteSpace(updateModel.Name))
+            else if (result is NotFoundObjectResult notFoundResult)
             {
-                Servicetype.Name = updateModel.Name;
+
+                return NotFound(notFoundResult.Value);
+
             }
-            
-            _dbContext.Entry(Servicetype).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
-
-            var updateSuccessResponse = new
+            else
             {
-                Message = "Servicetype updated successfully"
-            };
 
-            return Ok(updateSuccessResponse);
+                return StatusCode(500, "Internal Server Error");
+
+            }
         }
 
         [HttpDelete("delete/{Servicetypeid}")]

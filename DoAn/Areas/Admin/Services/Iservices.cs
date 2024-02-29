@@ -17,6 +17,7 @@ namespace DoAn.Areas.Admin.Services
             services.AddScoped<ProductServices>();
             services.AddScoped<BranchServices>();
             services.AddScoped<LoginServices>();
+            services.AddScoped<ServiceTypeServices>();
             services.AddScoped<GenerateRandomKey>();
 
             return services;
