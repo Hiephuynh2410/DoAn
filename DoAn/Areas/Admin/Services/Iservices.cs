@@ -26,6 +26,7 @@ namespace DoAn.Areas.Admin.Services
             services.AddScoped<BookingServices>();
             services.AddScoped<SendMail>();
             services.AddScoped<ClientSearchProductServices>();
+            services.AddScoped<BookingDateServices>();
 
 
             return services;

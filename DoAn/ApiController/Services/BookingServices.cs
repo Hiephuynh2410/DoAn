@@ -33,6 +33,7 @@ namespace DoAn.ApiController.Services
                 var staff = await _dbContext.Staff.FindAsync(registrationModel.StaffId);
                 var combo = await _dbContext.Combos.FindAsync(registrationModel.ComboId);
                 var branch = await _dbContext.Branches.FindAsync(registrationModel.BranchId);
+
                 //chổ này check xem có null để báo lên log cho ông coi nè Minh !! báo xem có null gì
                 if (staff == null || combo == null || branch == null)
                 {

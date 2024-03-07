@@ -5,8 +5,6 @@ VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DoAn", "DoAn\DoAn.csproj", "{58046D79-692A-4710-8386-1DB8F16DF855}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoAnT4", "D:\DoAnT4\DoAnT4.csproj", "{A28F866C-0648-4C6C-A384-40F18E8F5F0F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{58046D79-692A-4710-8386-1DB8F16DF855}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58046D79-692A-4710-8386-1DB8F16DF855}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58046D79-692A-4710-8386-1DB8F16DF855}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A28F866C-0648-4C6C-A384-40F18E8F5F0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A28F866C-0648-4C6C-A384-40F18E8F5F0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A28F866C-0648-4C6C-A384-40F18E8F5F0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A28F866C-0648-4C6C-A384-40F18E8F5F0F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
