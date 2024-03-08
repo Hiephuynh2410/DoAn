@@ -44,6 +44,15 @@ namespace DoAn.ApiController.Services
                     return new NotFoundObjectResult($"Thieu tp nay: {string.Join(", ", Check)}.");
                 }
 
+                var existingBooking = await _dbContext.Bookings
+                    .FirstOrDefaultAsync(b => b.StaffId == registrationModel.StaffId &&
+                                              b.DateTime == registrationModel.DateTime);
+
+                if (existingBooking != null)
+                {
+                    return new BadRequestObjectResult("Nhân viên đã được đặt vào thời gian này.");
+                }
+
                 // Kiểm tra lịch làm việc của nhân viên
                 var scheduleDetails = await _dbContext.Scheduledetails
                     .Where(sd => sd.StaffId == registrationModel.StaffId &&
