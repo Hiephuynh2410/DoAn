@@ -69,6 +69,7 @@ namespace DoAn.Areas.Admin.Controllers
             if (response.IsSuccessStatusCode)
             {
                 booking.Status = false;
+                booking.IsBooking = false   ;
                 db.Entry(booking).State = EntityState.Modified;
                 await db.SaveChangesAsync();
 

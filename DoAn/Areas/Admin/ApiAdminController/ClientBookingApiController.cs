@@ -72,6 +72,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
                 return NotFound();
             }
             booking.Status = false;
+            booking.IsBooking = false;
             _dbContext.Entry(booking).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
 

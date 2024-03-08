@@ -145,6 +145,7 @@ public partial class DlctContext : DbContext
             entity.Property(e => e.DateTime)
                 .HasColumnType("datetime")
                 .HasColumnName("Date_time");
+            entity.Property(e => e.IsBooking).HasDefaultValueSql("((1))");
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Note).HasMaxLength(255);
             entity.Property(e => e.Phone)

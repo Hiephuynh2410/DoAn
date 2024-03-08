@@ -27,6 +27,8 @@ public partial class Booking
 
     public int? BranchId { get; set; }
 
+    public bool? IsBooking { get; set; }
+
     public virtual ICollection<Bookingdetail> Bookingdetails { get; set; } = new List<Bookingdetail>();
 
     public virtual Branch? Branch { get; set; }
