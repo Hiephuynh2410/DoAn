@@ -21,13 +21,6 @@ namespace DoAn.ApiController
             _bookingServices = bookingServices;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllBooking()
-        {
-            var AllBookingFullInfo = await _bookingServices.GetAllBooking();
-
-            return Ok(AllBookingFullInfo);
-        }
 
         [HttpPost("create")]
         public async Task<IActionResult> CreateBooking([FromBody] Booking registrationModel)
@@ -46,6 +39,13 @@ namespace DoAn.ApiController
             return StatusCode(500, "Internal Server Error");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllBooking()
+        {
+            var AllBookingFullInfo = await _bookingServices.GetAllBooking();
+
+            return Ok(AllBookingFullInfo);
+        }
 
         [HttpPut("update/{bookingId}")]
         public async Task<IActionResult> UpdateBookingClient(int bookingId, Booking updateModel)

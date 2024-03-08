@@ -34,7 +34,6 @@ namespace DoAn.ApiController.Services
                 var combo = await _dbContext.Combos.FindAsync(registrationModel.ComboId);
                 var branch = await _dbContext.Branches.FindAsync(registrationModel.BranchId);
 
-                //chổ này check xem có null để báo lên log cho ông coi nè Minh !! báo xem có null gì
                 if (staff == null || combo == null || branch == null)
                 {
                     var Check = new List<string>();
@@ -45,62 +44,67 @@ namespace DoAn.ApiController.Services
                     return new NotFoundObjectResult($"Thieu tp nay: {string.Join(", ", Check)}.");
                 }
 
-                var newBooking = new Booking
+                // Kiểm tra lịch làm việc của nhân viên
+                var scheduleDetails = await _dbContext.Scheduledetails
+                    .Where(sd => sd.StaffId == registrationModel.StaffId &&
+                                 sd.Date == registrationModel.DateTime)
+                    .ToListAsync();
+
+                if (scheduleDetails.Any())
                 {
-                    Client = client,
-                    Staff = staff,
-                    Combo = combo,
-                    Branch = branch,
-                    Name = registrationModel.Name,
-                    Phone = registrationModel.Phone,
-                    DateTime = registrationModel.DateTime,
-                    Note = registrationModel.Note,
-                    Status = registrationModel.Status,
-                    CreatedAt = DateTime.Now
-                };
+                    var newBooking = new Booking
+                    {
+                        Client = client,
+                        Staff = staff,
+                        Combo = combo,
+                        Branch = branch,
+                        Name = registrationModel.Name,
+                        Phone = registrationModel.Phone,
+                        DateTime = registrationModel.DateTime,
+                        Note = registrationModel.Note,
+                        Status = registrationModel.Status,
+                        CreatedAt = DateTime.Now
+                    };
 
-                _dbContext.Bookings.Add(newBooking);
-                await _dbContext.SaveChangesAsync();
+                    _dbContext.Bookings.Add(newBooking);
+                    await _dbContext.SaveChangesAsync();
 
-                _sendMail.SendBookingNotificationEmail(staff.Email, registrationModel);
+                    var registrationSuccessResponse = new
+                    {
+                        Message = "Registration successful",
+                        BookingId = newBooking.BookingId,
+                        ClientId = newBooking.ClientId,
+                        Staff = new
+                        {
+                            StaffId = newBooking.Staff?.StaffId,
+                            Name = newBooking.Staff?.Name,
+                            Phone = newBooking.Staff?.Phone,
+                        },
+                        Combo = new
+                        {
+                            ComboId = newBooking.Combo?.ComboId,
+                            Address = newBooking.Combo?.Name
+                        },
+                        Branch = new
+                        {
+                            BranchId = newBooking.Branch?.BranchId,
+                            Address = newBooking.Branch?.Address,
+                            Hotline = newBooking.Branch?.Hotline
+                        },
+                        Name = registrationModel.Name,
+                        Phone = registrationModel.Phone,
+                        DateTime = registrationModel.DateTime,
+                        Note = registrationModel.Note,
+                        Status = registrationModel.Status,
+                        CreatedAt = newBooking.CreatedAt,
+                    };
 
-
-                if (client != null)
-                {
-                    _sendMail.SendBookingConfirmationEmail(client.Email, registrationModel);
+                    return new OkObjectResult(registrationSuccessResponse);
                 }
-
-                var registrationSuccessResponse = new
+                else
                 {
-                    Message = "Registration successful",
-                    BookingId = newBooking.BookingId,
-                    ClientId = newBooking.ClientId,
-                    Staff = new
-                    {
-                        StaffId = newBooking.Staff?.StaffId,
-                        Name = newBooking.Staff?.Name,
-                        Phone = newBooking.Staff?.Phone,
-                    },
-                    Combo = new
-                    {
-                        ComboId = newBooking.Combo?.ComboId,
-                        Address = newBooking.Combo?.Name
-                    },
-                    Branch = new
-                    {
-                        BranchId = newBooking.Branch?.BranchId,
-                        Address = newBooking.Branch?.Address,
-                        Hotline = newBooking.Branch?.Hotline
-                    },
-                    Name = registrationModel.Name,
-                    Phone = registrationModel.Phone,
-                    DateTime = registrationModel.DateTime,
-                    Note = registrationModel.Note,
-                    Status = registrationModel.Status,
-                    CreatedAt = newBooking.CreatedAt,
-                };
-
-                return new OkObjectResult(registrationSuccessResponse);
+                    return new BadRequestObjectResult("Nhân viên không có lịch làm việc vào thời gian này.");
+                }
             }
             catch (Exception ex)
             {
@@ -229,3 +233,10 @@ namespace DoAn.ApiController.Services
         }
     }
 }
+//_sendMail.SendBookingNotificationEmail(staff.Email, registrationModel);
+
+
+//if (client != null)
+//{
+//    _sendMail.SendBookingConfirmationEmail(client.Email, registrationModel);
+//}
