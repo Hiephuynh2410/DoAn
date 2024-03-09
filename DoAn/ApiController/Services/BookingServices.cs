@@ -120,7 +120,6 @@ namespace DoAn.ApiController.Services
                 return new ObjectResult($"An error occurred: {ex.Message}") { StatusCode = 500 };
             }
         }
-
         public async Task<List<object>> GetAllBooking()
         {
             var AllBookings = await _dbContext.Bookings
