@@ -72,7 +72,13 @@ namespace DoAn.ApiController.Services
 
                         _dbContext.Bookings.Add(newBooking);
                         await _dbContext.SaveChangesAsync();
+                        _sendMail.SendBookingNotificationEmail(staff.Email, registrationModel);
 
+
+                        if (client != null)
+                        {
+                            _sendMail.SendBookingConfirmationEmail(client.Email, registrationModel);
+                        }
                         var registrationSuccessResponse = new
                         {
                             Message = "Registration successful",
@@ -102,7 +108,7 @@ namespace DoAn.ApiController.Services
                             Status = registrationModel.Status,
                             CreatedAt = newBooking.CreatedAt,
                         };
-
+                    
                         return new OkObjectResult(registrationSuccessResponse);
                     }
                     else
@@ -134,7 +140,13 @@ namespace DoAn.ApiController.Services
 
                         _dbContext.Bookings.Add(newBooking);
                         await _dbContext.SaveChangesAsync();
+                        _sendMail.SendBookingNotificationEmail(staff.Email, registrationModel);
 
+
+                        if (client != null)
+                        {
+                            _sendMail.SendBookingConfirmationEmail(client.Email, registrationModel);
+                        }
                         var registrationSuccessResponse = new
                         {
                             Message = "Registration successful",
