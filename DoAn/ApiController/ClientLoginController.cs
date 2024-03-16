@@ -28,7 +28,9 @@ namespace DoAn.ApiController
                 return BadRequest(errorResponse);
             }
 
-            var client = await _dbContext.Clients.FirstOrDefaultAsync(c => c.Username == loginModel.Username);
+            var trimLoginModel = loginModel.Username.TrimEnd();
+
+            var client = await _dbContext.Clients.FirstOrDefaultAsync(c => c.Username == trimLoginModel);
             if (client == null)
             {
                 var loginErrorResponse = new
