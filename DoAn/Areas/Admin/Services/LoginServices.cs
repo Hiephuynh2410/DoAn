@@ -10,7 +10,6 @@ namespace DoAn.Areas.Admin.Services
         private readonly DlctContext _dlctContext;
         private readonly GenerateRandomKey _generateRandomKey;
         private readonly IHttpContextAccessor _httpContextAccessor;
-       
         public LoginServices(DlctContext dlctContext, GenerateRandomKey ganerateRandomKey, IHttpContextAccessor httpContextAccessor)
         {
             _dlctContext = dlctContext;
@@ -199,6 +198,7 @@ namespace DoAn.Areas.Admin.Services
                 return new BadRequestObjectResult(invalidLoginErrorResponse);
             }
         }
+
 
 
         public async Task<IActionResult> GetStaffInfoById(int staffId)

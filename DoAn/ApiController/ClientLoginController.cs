@@ -109,6 +109,16 @@ namespace DoAn.ApiController
                 };
                 return BadRequest(emailEmailFormat);
             }
+
+            var existingClient = await _dbContext.Clients.FirstOrDefaultAsync(c => c.Email == registrationModel.Email);
+            if (existingClient != null)
+            {
+                var emailAlreadyExistsErrorResponse = new
+                {
+                    Message = "Email đã được đăng ký trước đó.",
+                };
+                return BadRequest(emailAlreadyExistsErrorResponse);
+            }
             if (ModelState.IsValid)
             {
                 var passwordHasher = new PasswordHasher<Client>();

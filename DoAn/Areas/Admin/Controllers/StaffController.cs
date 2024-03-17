@@ -11,6 +11,7 @@ using MailKit.Net.Smtp;
 using PagedList;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DoAn.Areas.Admin.Controllers
 {

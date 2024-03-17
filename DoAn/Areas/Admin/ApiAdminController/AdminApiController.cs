@@ -1,12 +1,14 @@
 ﻿using DoAn.Areas.Admin.Services;
 using DoAn.Data;
 using DoAn.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
 
@@ -21,12 +23,63 @@ namespace DoAn.Areas.Admin.ApiAdminController
 
         private readonly LoginServices _loginService;
         private readonly StaffServives _staffServives;
-        public AdminApiController(DlctContext dbContext, LoginServices loginService, StaffServives staffServives)
+        private readonly ForgotPassServices _forgotPassServices;
+
+        public AdminApiController(DlctContext dbContext, 
+            LoginServices loginService, 
+            StaffServives staffServives,
+            ForgotPassServices forgotPassServices)
         {
             _dbContext = dbContext;
             _loginService = loginService;
             _staffServives = staffServives;
+            _forgotPassServices = forgotPassServices;
         }
+
+        [HttpPost("forgotpassword/{staffId}")]
+        public IActionResult ForgotPassword([FromBody] Staff model, int staffId)
+        {
+            if (ModelState.IsValid)
+            {
+                var enteredPassword = model.Password; // Lấy mật khẩu đã nhập từ người dùng
+
+                var decryptedPassword = _forgotPassServices.GetOldPassword(model.Email, enteredPassword);
+
+                if (decryptedPassword != null)
+                {
+                    return Ok($"Old password: {decryptedPassword}");
+                }
+                else
+                {
+                    return NotFound("User not found");
+                }
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+        }
+
+
+
+
+        [HttpPost("login")]
+        public async Task<IActionResult> LoginAsync(Staff loginModel)
+        {
+            var result = await _loginService.Login(loginModel);
+
+            if (result is OkObjectResult okResult)
+            {
+                return Ok(okResult.Value);
+            }
+            else if (result is BadRequestObjectResult badRequestResult)
+            {
+                return BadRequest(badRequestResult.Value);
+            }
+
+            return StatusCode(500, "Internal Server Error");
+        }
+
 
         [HttpDelete("delete/{staffId}")]
         public async Task<IActionResult> DeleteStaff(int staffId)
@@ -164,23 +217,9 @@ namespace DoAn.Areas.Admin.ApiAdminController
             }
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> LoginAsync(Staff loginModel)
-        {
-            var result = await _loginService.Login(loginModel);
+        
 
-            if (result is OkObjectResult okResult)
-            {
-                return Ok(okResult.Value);
-            }
-            else if (result is BadRequestObjectResult badRequestResult)
-            {
-                return BadRequest(badRequestResult.Value);
-            }
-
-            return StatusCode(500, "Internal Server Error");
-        }
-
+     
     }
 
 }
