@@ -1,6 +1,8 @@
-﻿using DoAn.Models;
+﻿using DoAn.Areas.Admin.Services;
+using DoAn.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace DoAn.Areas.Admin.ApiAdminController
 {
@@ -8,88 +10,51 @@ namespace DoAn.Areas.Admin.ApiAdminController
     [Route("api/[controller]")]
     public class RoleApiController : Controller
     {
+        private readonly RoleServices _roleServices;
         private readonly DlctContext _dbContext;
-        public RoleApiController(DlctContext dbContext)
+        public RoleApiController(DlctContext dbContext, RoleServices roleServices)
         {
             _dbContext = dbContext;
+            _roleServices = roleServices;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllRole()
         {
-            var Roles = await _dbContext.Roles
-                .ToListAsync();
-
-            var RolessWithFullInfo = Roles.Select(s => new
-            {
-                s.RoleId,
-                s.Name,
-            }).ToList();
-
-            return Ok(RolessWithFullInfo);
+           var result = await _roleServices.GetAllRole();
+            return Ok(result);
         }
 
         [HttpPost("create")]
         public async Task<IActionResult> CreateRole(Role createModel)
         {
-            if (ModelState.IsValid)
-            {
-                var RoleExists = await _dbContext.Combos.AnyAsync(b => b.Name == createModel.Name);
-                if (RoleExists)
-                {
-                    return BadRequest(new { Message = "Role already exists." });
-                }
-
-                var newRole = new Role
-                {
-                    Name = createModel.Name,
-                };
-
-                _dbContext.Roles.Add(newRole);
-                await _dbContext.SaveChangesAsync();
-
-                var registrationSuccessResponse = new
-                {
-                    Message = "Role registration successful",
-                    RoleId = newRole.RoleId
-                };
-                return Ok(registrationSuccessResponse);
-            }
-
-            var invalidDataErrorResponse = new
-            {
-                Message = "Invalid Role data",
-                Errors = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList()
-            };
-            return BadRequest(invalidDataErrorResponse);
+            var role = await _roleServices.CreateRole(createModel);
+            return Ok(role);
         }
 
         [HttpPut("update/{roleId}")]
-        public async Task<IActionResult> UpdateRole(int roleId, Combo updateModel)
+        public async Task<IActionResult> UpdateRole(Role role, int roleId)
         {
-            var Roles = await _dbContext.Roles.FindAsync(roleId);
-            if (Roles == null)
+
+            var result = await _roleServices.UpdatedRole(role, roleId);
+            if (result is OkObjectResult okResult)
             {
-                return NotFound();
+
+                return Ok(okResult.Value);
+
             }
-
-            if (!string.IsNullOrWhiteSpace(updateModel.Name))
+            else if (result is NotFoundObjectResult notFoundResult)
             {
-                Roles.Name = updateModel.Name;
+
+                return NotFound(notFoundResult.Value);
+
             }
-           
-            _dbContext.Entry(Roles).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
-
-            var updateSuccessResponse = new
+            else
             {
-                Message = "Roles updated successfully"
-            };
 
-            return Ok(updateSuccessResponse);
+                return StatusCode(500, "Internal Server Error");
+
+            }
         }
 
         [HttpDelete("delete/{roleId}")]

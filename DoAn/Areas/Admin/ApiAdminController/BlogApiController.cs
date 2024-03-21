@@ -1,6 +1,8 @@
-﻿using DoAn.Models;
+﻿using DoAn.Areas.Admin.Services;
+using DoAn.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 
 namespace DoAn.Areas.Admin.ApiAdminController
@@ -10,106 +12,47 @@ namespace DoAn.Areas.Admin.ApiAdminController
     public class BlogApiController : Controller
     {
         private readonly DlctContext _dbContext;
-        public BlogApiController(DlctContext dbContext)
+        private readonly BlogServices _blogServices;
+        public BlogApiController(DlctContext dbContext, BlogServices blogServices)
         {
             _dbContext = dbContext;
+            _blogServices = blogServices;
         }
 
         [HttpPost("create")]
         public async Task<IActionResult> createBlogPost(BlogPost registrationModel)
         {
-            if (ModelState.IsValid)
+            var result = await _blogServices.CreatedBlogPost(registrationModel);
+
+            if (result is OkObjectResult okResult)
             {
-
-                var Blogcategories = await _dbContext.BlogCategories.FindAsync(registrationModel.BlogCategoryId);
-                var Staffs = await _dbContext.Staff.FindAsync(registrationModel.StaffId);
-                var newBlogPost = new BlogPost
-                {
-                    Titile = registrationModel.Titile,
-                    Body = registrationModel.Body,
-                    Thumbnail = registrationModel.Thumbnail,
-                    DateTime = DateTime.Now,
-                    Staff = Staffs,
-                    BlogCategory = Blogcategories,
-                };
-
-                _dbContext.BlogPosts.Add(newBlogPost);
-                await _dbContext.SaveChangesAsync();
-
-                _dbContext.Entry(newBlogPost).Reference(s => s.Staff).Load();
-                _dbContext.Entry(newBlogPost).Reference(s => s.BlogCategory).Load();
-
-                var registrationSuccessResponse = new
-                {
-                    Message = "Registration successful",
-                    BlogPostId = newBlogPost.BlogPostId,
-                    Staff = new
-                    {
-                        StaffId = newBlogPost.Staff?.StaffId,
-                        Name = newBlogPost.Staff?.Name
-                    },
-                    BlogCategory = new
-                    {
-                        BlogCategoryId = newBlogPost.BlogCategory?.BlogCategoryId,
-                        Title = newBlogPost.BlogCategory?.Title,
-                        Description = newBlogPost?.BlogCategory?.Description
-                    }
-                };
-                return Ok(registrationSuccessResponse);
+                return Ok(okResult.Value);
+            }
+            else if (result is BadRequestObjectResult badRequestResult)
+            {
+                return BadRequest(badRequestResult.Value);
             }
 
-            var invalidDataErrorResponse = new
-            {
-                Message = "Invalid registration data",
-                Errors = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList()
-            };
-            return BadRequest(invalidDataErrorResponse);
+            return StatusCode(500, "Internal Server Error");
         }
 
         [HttpPut("update/{blogPostId}")]
-        public async Task<IActionResult> UpdateBlogPost(int blogPostId, BlogPost updateModel)
+        public async Task<IActionResult> UpdateBlogPost(BlogPost blogPost, int blogPostId)
         {
-            var Blogposts = await _dbContext.BlogPosts
-                .FirstOrDefaultAsync(p => p.BlogPostId == blogPostId);
+            var result = await _blogServices.UpdatedBlogPost(blogPost, blogPostId);
 
-            if (Blogposts == null)
+            if (result is OkObjectResult okResult)
             {
-                return NotFound();
+                return Ok(okResult.Value);
             }
-
-            Blogposts.Titile = updateModel.Titile;
-            Blogposts.Body = updateModel.Body;
-            Blogposts.Thumbnail = updateModel.Thumbnail;
-            if (updateModel.BlogCategoryId != Blogposts.BlogCategoryId)
+            else if (result is NotFoundObjectResult notFoundResult)
             {
-                var newBlogCategory = await _dbContext.BlogCategories.FindAsync(updateModel.BlogCategoryId);
-                if (newBlogCategory != null)
-                {
-                    Blogposts.BlogCategory = newBlogCategory;
-                }
+                return NotFound(notFoundResult.Value);
             }
-
-            if (updateModel.StaffId != Blogposts.StaffId)
+            else
             {
-                var newStaff = await _dbContext.Staff.FindAsync(updateModel.StaffId);
-                if (newStaff != null)
-                {
-                    Blogposts.Staff = newStaff;
-                }
+                return StatusCode(500, "Internal Server Error");
             }
-
-            _dbContext.Entry(Blogposts).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
-
-            var updateSuccessResponse = new
-            {
-                Message = "Blogposts updated successfully"
-            };
-
-            return Ok(updateSuccessResponse);
         }
 
         [HttpDelete("delete/{blogPostId}")]
@@ -136,33 +79,7 @@ namespace DoAn.Areas.Admin.ApiAdminController
         [HttpGet]
         public async Task<IActionResult> GetAllBlogPost()
         {
-            var blogpost = await _dbContext.BlogPosts
-                .Include(s => s.BlogCategory)
-                .Include(s => s.Staff)
-                .ToListAsync();
-
-            var blogpostsWithFullInfo = blogpost.Select(s => new
-            {
-                s.BlogPostId,
-                s.Titile,
-                s.Body,
-                s.Thumbnail,
-                s.DateTime,
-                s.BlogCategoryId,
-                s.StaffId,
-                Staff = new
-                {
-                    s.Staff.StaffId,
-                    s.Staff.Name
-                },
-                BlogCategory = new
-                {
-                    s.BlogCategory.BlogCategoryId, 
-                    s.BlogCategory.Title,
-                    s.BlogCategory.Description
-                },
-
-            }).ToList();
+           var blogpostsWithFullInfo = await _blogServices.GetAllBlog();
 
             return Ok(blogpostsWithFullInfo);
         }
@@ -170,78 +87,40 @@ namespace DoAn.Areas.Admin.ApiAdminController
         [HttpGet("GetBlogById/{blogPostId}")]
         public async Task<IActionResult> GetBlogPostById(int blogPostId)
         {
-            var blogpost = await _dbContext.BlogPosts
-                .Include(s => s.BlogCategory)
-                .Include(s => s.Staff)
-                .FirstOrDefaultAsync(s => s.BlogPostId == blogPostId);
+            var result = await _blogServices.GetBlogPostByID(blogPostId);
 
-            if (blogpost == null)
+            if (result is OkObjectResult okResult)
             {
-                return NotFound();
+                return Ok(okResult.Value);
             }
-
-            var blogpostWithFullInfo = new
+            else if (result is NotFoundObjectResult notFoundResult)
             {
-                blogpost.BlogPostId,
-                blogpost.Titile,
-                blogpost.Body,
-                blogpost.Thumbnail,
-                blogpost.DateTime,
-                blogpost.BlogCategoryId,
-                blogpost.StaffId,
-                Staff = new
-                {
-                    blogpost.Staff.StaffId,
-                    blogpost.Staff.Name
-                },
-                BlogCategory = new
-                {
-                    blogpost.BlogCategory.BlogCategoryId,
-                    blogpost.BlogCategory.Title,
-                    blogpost.BlogCategory.Description
-                },
-            };
-
-            return Ok(blogpostWithFullInfo);
+                return NotFound(notFoundResult.Value);
+            }
+            else
+            {
+                return StatusCode(500, "Internal Server Error");
+            }
         }
 
         [HttpGet("byCategory/{blogCategoryId}")]
         public async Task<IActionResult> GetBlogsByCategory(int blogCategoryId)
         {
-            var blogposts = await _dbContext.BlogPosts
-                .Include(s => s.BlogCategory)
-                .Include(s => s.Staff)
-                .Where(s => s.BlogCategoryId == blogCategoryId)
-                .ToListAsync();
 
-            if (blogposts == null || blogposts.Count == 0)
+            var result = await _blogServices.GetBlogByCategory(blogCategoryId);
+
+            if (result is OkObjectResult okResult)
             {
-                return NotFound();
+                return Ok(okResult.Value);
             }
-
-            var blogsByCategory = blogposts.Select(s => new
+            else if (result is NotFoundObjectResult notFoundResult)
             {
-                s.BlogPostId,
-                s.Titile,
-                s.Body,
-                s.Thumbnail,
-                s.DateTime,
-                s.BlogCategoryId,
-                s.StaffId,
-                Staff = new
-                {
-                    s.Staff.StaffId,
-                    s.Staff.Name
-                },
-                BlogCategory = new
-                {
-                    s.BlogCategory.BlogCategoryId,
-                    s.BlogCategory.Title,
-                    s.BlogCategory.Description
-                },
-            }).ToList();
-
-            return Ok(blogsByCategory);
+                return NotFound(notFoundResult.Value);
+            }
+            else
+            {
+                return StatusCode(500, "Internal Server Error");
+            }
         }
 
     }

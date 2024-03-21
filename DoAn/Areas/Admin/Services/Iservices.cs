@@ -21,6 +21,10 @@ namespace DoAn.Areas.Admin.Services
             services.AddScoped<LoginServices>();
             services.AddScoped<ServiceTypeServices>();
             services.AddScoped<GenerateRandomKey>();
+            services.AddScoped<RoleServices>();
+            services.AddScoped<BlogServices>();
+
+
 
             //Client
             services.AddScoped<BookingServices>();
