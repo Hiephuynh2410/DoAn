@@ -1,4 +1,5 @@
-﻿using DoAn.Models;
+﻿using DoAn.Areas.Admin.Services;
+using DoAn.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,93 +11,60 @@ namespace DoAn.Areas.Admin.ApiAdminController
     {
 
         private readonly DlctContext _dbContext;
-
-        public BlogCategoryApiController(DlctContext dbContext)
+        private readonly BlogCategoryServices _blogCategoryServices;
+        public BlogCategoryApiController(DlctContext dbContext, BlogCategoryServices blogCategoryServices)
         {
             _dbContext = dbContext;
+            _blogCategoryServices = blogCategoryServices;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllBlogCategory()
         {
-            var BlogCategorys = await _dbContext.BlogCategories
-                .ToListAsync();
+            var blogCate  = await _blogCategoryServices.GetAllBlogCate();
 
-            var BlogCategorysWithFullInfo = BlogCategorys.Select(s => new
-            {
-                s.BlogCategoryId,
-                s.Title,
-                s.Description,
-            }).ToList();
-
-            return Ok(BlogCategorysWithFullInfo);
+            return Ok(blogCate);
         }
 
         [HttpPost("create")]
         public async Task<IActionResult> CreateBlogCategory(BlogCategory createModel)
         {
-            if (ModelState.IsValid)
+            var result = await _blogCategoryServices.CreatedBlogCate(createModel);
+
+            if (result is OkObjectResult okResult)
             {
-                var BlogCategoryExists = await _dbContext.BlogCategories.AnyAsync(b => b.BlogCategoryId == createModel.BlogCategoryId);
-                if (BlogCategoryExists)
-                {
-                    return BadRequest(new { Message = "BlogCategory already exists." });
-                }
-
-                var newBlogCategory = new BlogCategory
-                {
-                    Title = createModel.Title,
-                    Description = createModel.Description,
-                };
-
-                _dbContext.BlogCategories.Add(newBlogCategory);
-                await _dbContext.SaveChangesAsync();
-
-                var registrationSuccessResponse = new
-                {
-                    Message = "BlogCategory registration successful",
-                    BlogCategoryId = newBlogCategory.BlogCategoryId
-                };
-                return Ok(registrationSuccessResponse);
+                return Ok(okResult.Value);
             }
-
-            var invalidDataErrorResponse = new
+            else if (result is BadRequestObjectResult badRequestObjectResult)
             {
-                Message = "Invalid Combo data",
-                Errors = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList()
-            };
-            return BadRequest(invalidDataErrorResponse);
+                return BadRequest(badRequestObjectResult.Value);
+            }
+            return StatusCode(500, "Internal Server Error");
         }
 
         [HttpPut("update/{BlogcategoriesId}")]
         public async Task<IActionResult> UpdateCombo(int BlogcategoriesId, BlogCategory updateModel)
         {
-            var Blogcategories = await _dbContext.BlogCategories.FindAsync(BlogcategoriesId);
-            if (Blogcategories == null)
-            {
-                return NotFound();
-            }
+            var result = await _blogCategoryServices.UpdateBlogCate(BlogcategoriesId, updateModel);
 
-            if (!string.IsNullOrWhiteSpace(updateModel.Title))
+            if (result is OkObjectResult okResult)
             {
-                Blogcategories.Title = updateModel.Title;
-            }
-            if (!string.IsNullOrWhiteSpace(updateModel.Description))
-            {
-                Blogcategories.Description = updateModel.Description;
-            }
-            _dbContext.Entry(Blogcategories).State = EntityState.Modified;
-            await _dbContext.SaveChangesAsync();
 
-            var updateSuccessResponse = new
-            {
-                Message = "Blogcategories updated successfully"
-            };
+                return Ok(okResult.Value);
 
-            return Ok(updateSuccessResponse);
+            }
+            else if (result is NotFoundObjectResult notFoundResult)
+            {
+
+                return NotFound(notFoundResult.Value);
+
+            }
+            else
+            {
+
+                return StatusCode(500, "Internal Server Error");
+
+            }
         }
 
         [HttpDelete("delete/{BlogcategoriesId}")]

@@ -23,6 +23,8 @@ namespace DoAn.Areas.Admin.Services
             services.AddScoped<GenerateRandomKey>();
             services.AddScoped<RoleServices>();
             services.AddScoped<BlogServices>();
+            services.AddScoped<BlogCategoryServices>();
+
 
 
 

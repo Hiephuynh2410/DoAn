@@ -31,6 +31,7 @@ builder.Services.AddLocalization(options =>
 {
     options.ResourcesPath = "Resouces";
 });
+
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     var supportedCultures = new[]
