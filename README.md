@@ -1,5 +1,5 @@
 - Khi lấy về nhớ mở package manager console và paste:
-- Scaffold-DbContext "Server=YourDBName;Database=DLCT;Integrated Security=true;Encrypt=true;TrustServerCertificate=true;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -force
+- Scaffold-DbContext "Server=YourServerName;Database=YpurDbName;Integrated Security=true;Encrypt=true;TrustServerCertificate=true;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -force
 - Sau đó lên Github https://github.com/Hiephuynh2410/DoAn mở Model vào Cart.cs copy đoạn
 
 
